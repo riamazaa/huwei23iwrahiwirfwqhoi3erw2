@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Discord Image</title>
+</head>
+<body>
+<img
+src="https://media.discordapp.net/attachments/1506493550219497676/1510336859065024563/image.png?ex=6a1e6c8f&is=6a1d1b0f&hm=00bc2b2a0f8bc89ebdec46c96f1afe49f4aa5db18da503f66a7764109b1b2951&=&format=webp&quality=lossless"
+alt="Image"
+style="max-width:100%; height:auto;"
+>
+</body>
+</html>
