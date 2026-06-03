@@ -1,0 +1,20 @@
+kogama.com-20220307/
+kogama-profile-669419960/
+kogama-reconstructed/
+Crispy Kirby KaGaMa/
+node_modules/
+*.log
+-SimpleMatch
+0
+serve-copy*.mjs
+copy-wayback-site.mjs
+fix-creations.mjs
+fix-profile.mjs
+patch-login-signup.mjs
+reconstruct-archive.mjs
+replace-profile.mjs
+replace-profile2.mjs
+update-bootstrap.mjs
+.env
+.DS_Store
+Thumbs.db
