@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var ROOT = "/KaGaMa";
+  var ROOT = "";
   var PROFILE_KEY = "kogama.offline.profile";
   var PROFILES_KEY = "kogama.offline.profiles";
   var NEXT_ID_KEY = "kogama.offline.nextId";

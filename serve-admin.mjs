@@ -834,6 +834,21 @@ function injectOverrides(html) {
   html = html.replace(/href="\/profile\/669419960\/"/g, 'href="#"');
   html = html.replace(/href='\/profile\/669419960\/'/g, "href='#'");
 
+  // Replace dead CDN CSS with local copies
+  html = html.replace(/https?:\/\/static\.kogstatic\.com\/0000\/fd54ee6e0520161805f6f6465d3969a261607f3d\/app-less\.css/g, '/static/local/css/app-less.css');
+  html = html.replace(/https?:\/\/static\.kogstatic\.com\/0000\/fd54ee6e0520161805f6f6465d3969a261607f3d\/app-sass\.css/g, '/static/local/css/app-sass.css');
+  html = html.replace(/https?:\/\/static\.kogstatic\.com\/0000\/d9c1e5da76aa8de67a3be7e8541d0ba21f064294\/app-less\.css/g, '/static/local/css/app-less-v2.css');
+  html = html.replace(/https?:\/\/static\.kogstatic\.com\/0000\/d9c1e5da76aa8de67a3be7e8541d0ba21f064294\/app-sass\.css/g, '/static/local/css/app-sass-v2.css');
+  html = html.replace(/https?:\/\/static\.kogstatic\.com\/0000\/6cb435bca8640999117210cf1a71d93eb793b351\/app-less\.css/g, '/static/local/css/app-less-v3.css');
+  html = html.replace(/https?:\/\/static\.kogstatic\.com\/0000\/6cb435bca8640999117210cf1a71d93eb793b351\/app-sass\.css/g, '/static/local/css/app-sass-v3.css');
+  // Also fix protocol-relative URLs
+  html = html.replace(/\/\/static\.kogstatic\.com\/0000\/fd54ee6e0520161805f6f6465d3969a261607f3d\/app-less\.css/g, '/static/local/css/app-less.css');
+  html = html.replace(/\/\/static\.kogstatic\.com\/0000\/fd54ee6e0520161805f6f6465d3969a261607f3d\/app-sass\.css/g, '/static/local/css/app-sass.css');
+  html = html.replace(/\/\/static\.kogstatic\.com\/0000\/d9c1e5da76aa8de67a3be7e8541d0ba21f064294\/app-less\.css/g, '/static/local/css/app-less-v2.css');
+  html = html.replace(/\/\/static\.kogstatic\.com\/0000\/d9c1e5da76aa8de67a3be7e8541d0ba21f064294\/app-sass\.css/g, '/static/local/css/app-sass-v2.css');
+  html = html.replace(/\/\/static\.kogstatic\.com\/0000\/6cb435bca8640999117210cf1a71d93eb793b351\/app-less\.css/g, '/static/local/css/app-less-v3.css');
+  html = html.replace(/\/\/static\.kogstatic\.com\/0000\/6cb435bca8640999117210cf1a71d93eb793b351\/app-sass\.css/g, '/static/local/css/app-sass-v3.css');
+
   const injection = [
     '<link rel="stylesheet" href="/static/local/offline-overrides.css">',
     '<script defer src="/static/local/offline-overrides.js"></script>',
@@ -925,8 +940,6 @@ function normalizeArchivePath(rawPathname) {
   if (pathname.startsWith('/www.kogama.com')) {
     pathname = pathname.slice('/www.kogama.com'.length) || '/';
   }
-  return pathname;
-}
   return pathname;
 }
 
