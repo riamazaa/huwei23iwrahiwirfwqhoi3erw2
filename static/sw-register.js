@@ -1,4 +1,4 @@
-// This optional code is used to register a service worker.
+﻿// This optional code is used to register a service worker.
 // register() is not called by default.
 
 // This lets the app load faster on subsequent visits in production, and gives
@@ -12,7 +12,7 @@
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
-    window.location.hostname === 'local.kogama.com' ||
+    window.location.hostname === 'local.KaGaMa.com' ||
     // [::1] is the IPv6 localhost address.
     window.location.hostname === '[::1]' ||
     // 127.0.0.0/8 are considered localhost for IPv4.

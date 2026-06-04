@@ -1,7 +1,7 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
 <head>
-<title>Friends - KoGaMa</title>
+<title>Friends - KaGaMa</title>
 <link rel="icon" href="//static/img/favicon.ico?v=3" type="image/x-icon">
 <link rel="stylesheet" href="/static/local/css/app-less-v2.css" type="text/css">
 <link rel="stylesheet" href="/static/local/css/app-sass-v2.css" type="text/css">
@@ -57,9 +57,11 @@
   .breadcrumb li a:hover { color: #fff; }
   .breadcrumb li svg { width: 18px; height: 18px; fill: #8796a2; margin: 0 4px; }
 </style>
+<link rel="stylesheet" href="/static/local/offline-overrides.css">
+<script defer src="/static/local/offline-overrides.js"></script>
 </head>
 <body id="root-page-mobile" class="">
-<header id="pageheader"><div class="pageheader-inner"><a href="/games/" title="KoGaMa" class="logo"><div class="logo-image"></div></a><nav class="menu anonymous"><ol><li class="game "><a href="/games/"><i class="icon-gamepad"></i><span class="text">Play</span></a></li><li class="build "><a href="/build/"><i class="icon-cubes"></i><span class="text">Build</span></a></li><li class="shop "><a href="/marketplace/"><i class="icon-basket"></i><span class="text">Shop</span></a></li><li class="news "><a href="/news/"><i class="icon-news"></i><span class="text">News</span></a></li><li class="news "><a href="/videos/"><i class="icon-youtube-play"></i><span class="text">Videos</span></a></li></ol></nav><div id="account-header"></div></div></header>
+<header id="pageheader"><div class="pageheader-inner"><a href="/games/" title="KaGaMa" class="logo"><div class="logo-image"></div></a><nav class="menu anonymous"><ol><li class="game "><a href="/games/"><i class="icon-gamepad"></i><span class="text">Play</span></a></li><li class="build "><a href="/build/"><i class="icon-cubes"></i><span class="text">Build</span></a></li><li class="shop "><a href="/marketplace/"><i class="icon-basket"></i><span class="text">Shop</span></a></li><li class="news "><a href="/news/"><i class="icon-news"></i><span class="text">News</span></a></li><li class="news "><a href="/videos/"><i class="icon-youtube-play"></i><span class="text">Videos</span></a></li></ol></nav><div id="account-header"></div></div></header>
 
 <div id="content" class="">
   <div id="content-container">
@@ -106,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
   var avatarImage = "/static/img/blockboy_large_330x451.jpg";
 
   try {
-    var raw = localStorage.getItem("kogama.offline.profiles");
+    var raw = localStorage.getItem("KaGaMa.offline.profiles");
     if (raw) {
       var profiles = JSON.parse(raw);
       var profile = profiles[profileId];
@@ -117,13 +119,13 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   } catch(e) {}
 
-  document.title = username + "'s Friends - KoGaMa";
+  document.title = username + "'s Friends - KaGaMa";
   var bc = document.getElementById("breadcrumb-username");
   if (bc) bc.textContent = username;
 
   var friends = [];
   try {
-    var raw2 = localStorage.getItem("kogama.offline.friends." + profileId);
+    var raw2 = localStorage.getItem("KaGaMa.offline.friends." + profileId);
     if (raw2) friends = JSON.parse(raw2);
   } catch(e) {}
 

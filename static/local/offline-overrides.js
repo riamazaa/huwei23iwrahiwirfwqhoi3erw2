@@ -1,16 +1,16 @@
-(function () {
+﻿(function () {
   "use strict";
 
   var ROOT = "";
-  var PROFILE_KEY = "kogama.offline.profile";
-  var PROFILES_KEY = "kogama.offline.profiles";
-  var NEXT_ID_KEY = "kogama.offline.nextId";
-  var COMMENT_KEY_PREFIX = "kogama.offline.comments.";
+  var PROFILE_KEY = "KaGaMa.offline.profile";
+  var PROFILES_KEY = "KaGaMa.offline.profiles";
+  var NEXT_ID_KEY = "KaGaMa.offline.nextId";
+  var COMMENT_KEY_PREFIX = "KaGaMa.offline.comments.";
   var BRAND_NAME = "KaGaMa";
   var BRAND_TITLE = "KaGaMa - Play, create And Share";
   var PROFILE_PATH = ROOT + "/profile/1";
-  var BRAND_ICON = ROOT + "/static/img/kogama-logo.webp";
-  var BRAND_NAV_ICON = ROOT + "/static/img/kogama-nav-icon.webp";
+  var BRAND_ICON = ROOT + "/static/img/KaGaMa-logo.webp";
+  var BRAND_NAV_ICON = ROOT + "/static/img/KaGaMa-nav-icon.webp";
   var GOLD_ICON = ROOT + "/static/img/gold-icon.svg";
   var LOGIN_ART = ROOT + "/static/img/auth-login-bg.jpg";
   var AVATAR_PLATFORM = ROOT + "/static/img/signup-avatar-platform.png";
@@ -276,7 +276,7 @@
       var logoImg = document.createElement("img");
       logoImg.src = BRAND_ICON;
       logoImg.alt = "KaGaMa";
-      logoImg.className = "kogama-logo-img";
+      logoImg.className = "KaGaMa-logo-img";
       logoImg.style.cssText = "height:36px;width:auto;display:block;";
       var oldLogo = logoLink.querySelector(".logo-image, .title-image");
       if (oldLogo) {
@@ -290,7 +290,7 @@
     if (footerCompany) {
       var container = footerCompany.querySelector(".container");
       if (container) {
-        container.innerHTML = '<div class="kg-disclaimer"><p>KaGaMa\u00AE is an independent revival project inspired by the user-created game experiences that were popular in the past. KaGaMa\u00AE has no affiliation, partnership, or endorsement from KoGaMa\u00AE or Multiverse APS. This project is non-profit and exists solely for educational purposes and to preserve the historical spirit of the community. All trademarks and copyrights mentioned are the property of their respective owners.</p></div>';
+        container.innerHTML = '<div class="kg-disclaimer"><p>KaGaMa\u00AE is an independent revival project inspired by the user-created game experiences that were popular in the past. KaGaMa\u00AE has no affiliation, partnership, or endorsement from KaGaMa\u00AE or Multiverse APS. This project is non-profit and exists solely for educational purposes and to preserve the historical spirit of the community. All trademarks and copyrights mentioned are the property of their respective owners.</p></div>';
       }
     }
   }
@@ -480,7 +480,7 @@
 
   function loginMarkup() {
     return dialogFrame(
-      "KoGaMa Login",
+      "KaGaMa Login",
       [
         '<div class="kg-login-layout">',
         '<div class="kg-login-art sc-jbKcbu SYXGM" style="background-image:url(',
@@ -502,7 +502,7 @@
   function signupAvatarMarkup() {
     var avatar = AUTH_AVATARS[authAvatarIndex];
     return dialogFrame(
-      "KoGaMa Signup",
+      "KaGaMa Signup",
       [
         '<form class="kg-signup-combined sc-TOsTZ iIxGkO" action="#">',
         '<div class="kg-signup-avatar sc-kgAjT cvNYjd">',
@@ -714,7 +714,7 @@
       '</ul>',
       '</div>',
       '<a href="' + ROOT + '/help/" class="kg-menu-link"><img class="menu-icon" src="' + iconBase + '/icn_contact.svg"> <span class="text">Contact us</span></a>',
-      '<a href="https://www.support.kogama.com/hc/en-us" class="kg-menu-link"><img class="menu-icon" src="' + iconBase + '/icn_help.svg"> <span class="text">Help</span></a>',
+      '<a href="https://www.support.KaGaMa.com/hc/en-us" class="kg-menu-link"><img class="menu-icon" src="' + iconBase + '/icn_help.svg"> <span class="text">Help</span></a>',
       '</div>',
       "</li>"
     ].join("");
@@ -738,7 +738,7 @@
   function initializeVideoTiles() {
     Array.prototype.forEach.call(document.querySelectorAll(".youtube-tile[video-id]"), function (tile) {
       var id = tile.getAttribute("video-id");
-      var title = tile.getAttribute("video-name") || "Kogama video";
+      var title = tile.getAttribute("video-name") || "KaGaMa video";
       if (!id || tile.querySelector(".kg-youtube-card")) return;
       tile.innerHTML = [
         '<a class="kg-youtube-card" href="https://www.youtube.com/watch?v=',
@@ -1075,7 +1075,7 @@
     ].join("");
   }
 
-  var NEWS_COMMENT_KEY_PREFIX = "kogama.offline.news-comments.";
+  var NEWS_COMMENT_KEY_PREFIX = "KaGaMa.offline.news-comments.";
 
   function newsCommentsKey(newsId) {
     return NEWS_COMMENT_KEY_PREFIX + String(newsId || "default");
@@ -1362,7 +1362,7 @@
       '<div class="username"><h2>', safeName, '</h2></div>',
       progressionMarkup(pageStats),
       profileBadgesFull(isModerator),
-      '<div class="profile-meta"><div class="profile-created-date">', escapeHtml(joinedText(profile).replace(BRAND_NAME, "KoGaMa")), '</div></div>',
+      '<div class="profile-meta"><div class="profile-created-date">', escapeHtml(joinedText(profile).replace(BRAND_NAME, "KaGaMa")), '</div></div>',
       '</section>',
       moderatorBar,
       '<div class="creation-list">',
@@ -1742,7 +1742,7 @@
     }, true);
   }
 
-  var FRIENDS_LIST_KEY = "kogama.offline.friends-list";
+  var FRIENDS_LIST_KEY = "KaGaMa.offline.friends-list";
 
   function getFriendsListData() {
     try {
@@ -1791,7 +1791,7 @@
     return getMyFriends().indexOf(targetId) !== -1;
   }
 
-  var WALL_POST_KEY_PREFIX = "kogama.offline.wall-posts.";
+  var WALL_POST_KEY_PREFIX = "KaGaMa.offline.wall-posts.";
 
   function wallPostsKey(profileId) {
     return WALL_POST_KEY_PREFIX + String(profileId || "default");
@@ -1971,9 +1971,9 @@
     showToast("Post updated.");
   }
 
-  var PRODUCT_COMMENT_KEY_PREFIX = "kogama.offline.product-comments.";
-  var PRODUCT_LIKE_KEY_PREFIX = "kogama.offline.product-likes.";
-  var PRODUCT_PURCHASE_KEY_PREFIX = "kogama.offline.product-purchases.";
+  var PRODUCT_COMMENT_KEY_PREFIX = "KaGaMa.offline.product-comments.";
+  var PRODUCT_LIKE_KEY_PREFIX = "KaGaMa.offline.product-likes.";
+  var PRODUCT_PURCHASE_KEY_PREFIX = "KaGaMa.offline.product-purchases.";
 
   function productCommentsKey(productId) {
     return PRODUCT_COMMENT_KEY_PREFIX + String(productId || "default");
@@ -2178,7 +2178,7 @@
     }
   }
 
-  var NEWS_KEY = "kogama.offline.news-items";
+  var NEWS_KEY = "KaGaMa.offline.news-items";
 
   function getNewsItems() {
     try {
@@ -2263,7 +2263,7 @@
       var empty = document.createElement("div");
       empty.className = "kg-empty-news";
       empty.style.cssText = "text-align:center;padding:60px 20px;color:#8796a2;";
-      empty.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="#4e6987"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg><h2 style="color:#fff;font-size:18px;margin:16px 0 8px;">No News Articles Yet</h2><p style="font-size:13px;line-height:1.5;">Check back soon for the latest KoGaMa news and updates!</p>';
+      empty.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="#4e6987"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg><h2 style="color:#fff;font-size:18px;margin:16px 0 8px;">No News Articles Yet</h2><p style="font-size:13px;line-height:1.5;">Check back soon for the latest KaGaMa news and updates!</p>';
       newsPage.appendChild(empty);
     }
   }
@@ -2282,7 +2282,7 @@
     var items = getNewsItems();
     var item = items.find(function(n) { return n.id === articleId; });
     if (!item) return;
-    document.title = item.title + " - KoGaMa";
+    document.title = item.title + " - KaGaMa";
     var date = new Date(item.createdAt);
     var dateStr = date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
     var mobileContent = document.querySelector("#mobile-page-content");
@@ -2342,25 +2342,25 @@
     var news = getNewsItems();
     news.slice(0, 5).forEach(function(n) {
       if (n.author) {
-        items.push({ user: n.author, text: "published a news article!", img: n.imageUrl || ROOT + "/static/img/kogama-logo.webp" });
+        items.push({ user: n.author, text: "published a news article!", img: n.imageUrl || ROOT + "/static/img/KaGaMa-logo.webp" });
       }
     });
     var avatars = [];
-    try { avatars = JSON.parse(localStorage.getItem("kogama.offline.avatars") || "[]"); } catch(e) {}
+    try { avatars = JSON.parse(localStorage.getItem("KaGaMa.offline.avatars") || "[]"); } catch(e) {}
     avatars.slice(0, 5).forEach(function(a) {
       if (a.author) {
         items.push({ user: a.author, text: "published a new avatar!", img: a.imageUrl || BLOCK_BOY_PROFILE_IMAGE });
       }
     });
     var models = [];
-    try { models = JSON.parse(localStorage.getItem("kogama.offline.models") || "[]"); } catch(e) {}
+    try { models = JSON.parse(localStorage.getItem("KaGaMa.offline.models") || "[]"); } catch(e) {}
     models.slice(0, 5).forEach(function(m) {
       if (m.author) {
         items.push({ user: m.author, text: "published a new model!", img: m.imageUrl || BLOCK_BOY_PROFILE_IMAGE });
       }
     });
     if (items.length === 0) {
-      items.push({ user: "KaGaMa", text: "Welcome to KaGaMa!", img: ROOT + "/static/img/kogama-logo.webp" });
+      items.push({ user: "KaGaMa", text: "Welcome to KaGaMa!", img: ROOT + "/static/img/KaGaMa-logo.webp" });
     }
     el.innerHTML = items.slice(0, 10).map(function(a) {
       return '<a href="#">' +

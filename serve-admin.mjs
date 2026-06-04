@@ -1,4 +1,4 @@
-import http from 'node:http';
+﻿import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -352,8 +352,8 @@ function marketplaceDetailPage(item, type) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${escapeHtml(item.name)} - KoGaMa Marketplace</title>
-<link rel="icon" href="/static/img/kogama-logo.webp" type="image/webp">
+<title>${escapeHtml(item.name)} - KaGaMa Marketplace</title>
+<link rel="icon" href="/static/img/KaGaMa-logo.webp" type="image/webp">
 <link rel="stylesheet" href="/static.kogstatic.com/0000/d9c1e5da76aa8de67a3be7e8541d0ba21f064294/app-less.css" type="text/css">
 <link rel="stylesheet" href="/static.kogstatic.com/0000/d9c1e5da76aa8de67a3be7e8541d0ba21f064294/app-sass.css" type="text/css">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,800&subset=latin" rel="stylesheet" type="text/css">
@@ -777,7 +777,7 @@ const server = http.createServer(async (request, response) => {
 });
 
 server.listen(port, '127.0.0.1', () => {
-  console.log(`KoGaMa Archive + Admin Panel`);
+  console.log(`KaGaMa Archive + Admin Panel`);
   console.log(`Site:  http://127.0.0.1:${port}/`);
   console.log(`Admin: http://127.0.0.1:${port}/admin`);
 });
@@ -824,8 +824,8 @@ function injectOverrides(html) {
     return html;
   }
 
-  html = html.replace(/"\.\.\/\.\.\/www\.kogama\.com\//g, '"/');
-  html = html.replace(/'\.\.\/\.\.\/www\.kogama\.com\//g, "'/");
+  html = html.replace(/"\.\.\/\.\.\/www\.KaGaMa\.com\//g, '"/');
+  html = html.replace(/'\.\.\/\.\.\/www\.KaGaMa\.com\//g, "'/");
   html = html.replace(/"\.\.\/\.\.\/\.\.\/static\.kogstatic\.com\//g, '"/static.kogstatic.com/');
   html = html.replace(/'\.\.\/\.\.\/\.\.\/static\.kogstatic\.com\//g, "'/static.kogstatic.com/");
   html = html.replace(/"\.\.\/\.\.\/static\.kogstatic\.com\//g, '"/static.kogstatic.com/');
@@ -937,8 +937,8 @@ function fallbackPage(rawPathname) {
 
 function normalizeArchivePath(rawPathname) {
   let pathname = decodeURIComponent(rawPathname);
-  if (pathname.startsWith('/www.kogama.com')) {
-    pathname = pathname.slice('/www.kogama.com'.length) || '/';
+  if (pathname.startsWith('/www.KaGaMa.com')) {
+    pathname = pathname.slice('/www.KaGaMa.com'.length) || '/';
   }
   return pathname;
 }
