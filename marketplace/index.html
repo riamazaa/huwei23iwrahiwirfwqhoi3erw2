@@ -9,38 +9,11 @@ window.kogama = (window.kogama || {});
 kogama.stats=function(){function t(t,n){var e=0,r=0,o=i.length;n=n||Date.now(),o>0&&(e=n-i[o-1].time,r=n-i[0].time),i.push({name:t.toLowerCase(),time:n,dt:e,duration:r}),a()}function n(t){t=t.toLowerCase();for(var n=i.length-1;n>=0;n--){var e=i[n];if(e.name===t)return e}}function e(t,e){var r=n(t),a=n(e);if(!r||!a)return 0;var i=a.time-r.time;return 0>i?0:i}function r(t){o.push({cb:t,idx:0}),a()}function a(){for(var t=i.length,n=0;n<o.length;n++){var e=o[n];if(e.idx!==t)for(var r=e.idx;t>r;r++)e.idx++,e.cb(i[r])}}var i=[],o=[];return{items:i,add:t,get:n,delta:e,onstats:r}}();
 kogama.stats.add("HTMLReady"); DOMReady(function() {kogama.stats.add("DOMReady");});
 kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document.cookie.split("; "),o={},e=r.length-1;e>=0;e--)t=r[e].split("="),o[t[0]]=t[1];return o[n]}var o;return n}();
-</script><script type="text/javascript">try { var adsqueue = adsqueue || []; var superadsqueue = superadsqueue || [] } catch (e) { console.log("ads-ex", e); }</script>   
+</script><script type="text/javascript">try {  } catch (e) { console.log("ads-ex", e); }</script>   
 			  
 			  <script>
-				window.googletag = window.googletag || {cmd: []};
-				googletag.cmd.push(function() {
-				  googletag
-					  .defineSlot(
-						  '46278883/leaderboard', [[970, 250], [728, 90], [970, 90]], 'kogama_mobile_leaderboard_1')
-					  .addService(googletag.pubads());
-				  googletag
-					  .defineSlot(
-						  '46278883/skyscraper', [160, 600], 'kogama-skyscraper-left')
-					  .addService(googletag.pubads());
-				  googletag
-					  .defineSlot(
-						  '46278883/skyscraper', [160, 600], 'kogama-skyscraper-right')
-					  .addService(googletag.pubads());
-				  googletag
-					  .defineSlot(
-						  '46278883/wide_skyscraper', [300, 600], 'kogama-wide-skyscraper')
-					  .addService(googletag.pubads());
-				  googletag
-					  .defineSlot(
-						  '46278883/leaderboard_bottom', [[728, 90], [970, 250], [970, 90]], 'kogama_mobile_leaderboard_2')
-					  .addService(googletag.pubads());
-				  googletag
-					  .defineSlot(
-						  '46278883/rectangle', [300, 250], 'kogama_rectangle')
-					  .addService(googletag.pubads());
-				googletag.pubads().enableSingleRequest();
-				googletag.enableServices();
-				});
+				
+				
 			  </script>
 		   <script type="text/javascript">
         function isIOSDevice(){
@@ -165,65 +138,12 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        function track(tracking_path){
-            ga('send', 'pageview', tracking_path);
-        }
+        
 
-        async function open_with_tracking(tracking_path, link){
-            ga('send', 'pageview', tracking_path);
-            await sleep(100);
-            window.location = link;
-        }
+        
     </script>
 
-    <style type="text/css">
-        .ad_consent_popup {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background-color: rgba(0,0,0,.4);
-
-            display: none;
-            overflow: hidden;
-            z-index: 2000;
-        }
-        @media screen and ( max-height: 450px ) {
-            .ad_consent_popup .box {
-                overflow-y: scroll;
-            }
-        }
-        .ad_consent_popup .box {
-            width: 350px;
-            max-width: 80%;
-            height: 600px;
-            max-height: 80%;
-
-            background-color: rgba(255,255,255,1);
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 2em;
-            padding: 0;
-        }
-        .ad_consent_popup .box .header {
-            background-color: #434a54;
-            margin: none;
-            padding: 1em;
-            color: white;
-            text-align: center;
-            text-transform: uppercase;
-        }
-        .ad_consent_popup .box .content {
-            color: black;
-            padding: 1em;
-        }
-        .ad_consent_popup .box .content select {
-            width: 100%;
-            border-radius: 0;
-            border: 2px solid gray;
-        }
-    </style>
+    
 </head>
 <body id="root-page-mobile" class="shop">
 
@@ -343,15 +263,11 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
                 <div id="mobile-page-content">
                 <div id="kogama-skyscraper-left-container" class="skyscraper_container  user-not-logged-in "> <div id="" class="ads-display ads-skyscraper"> <div class="ads-label ads-label-center">Advertisement </div> <!-- kogama_160x600 --> <div id="kogama-skyscraper-left"> 
 			<script type='text/javascript'>
-				googletag.cmd.push(function(){
-				        googletag.display('kogama-skyscraper-left');
-				});
+				
 			</script>
 		 </div> </div> </div>    <article class="content-shop content-content">  <!-- kogama_mobile_leaderboard --><div id="kogama_mobile_leaderboard_1_container" class="ads-display ads-leaderboard "><div class="ads-label ads-label-center">Advertisement</div><div id="kogama_mobile_leaderboard_1">
 			<script type='text/javascript'>
-				googletag.cmd.push(function(){
-				        googletag.display('kogama_mobile_leaderboard_1');
-				});
+				
 			</script>
 		</div></div> <section class="carousel"><header><h3><a href="/marketplace/avatar-popular/">Popular Avatars</a></h3><div id="popular-avatar-help" class="help-popup-manager"></div></header><div class="carousel-container"><ul class="shop-list shop-list-avatar carousel-list carousel-shop-list carousel-shop-list-avatar" id="shop-popular-avatar"><li class="shop-item"><a href="/marketplace/avatar/a-26277478/" title="Oculus (Ver 2)"><div class="shop-name">Oculus (Ver 2)</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-13111956/" title="cσηєנιтα ? / prntscr.com/fcwyfl"><div class="shop-name">cσηєנιтα ? / prntscr.com/fcwyfl</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-11103730/" title="Minecraft Bee"><div class="shop-name">Minecraft Bee</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-7594098/" title=":3"><div class="shop-name">:3</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-4352203/" title="pikachu"><div class="shop-name">pikachu</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-28103617/" title="Runa Yomozuki "><div class="shop-name">Runa Yomozuki </div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-24921944/" title="Wither Boss Minecraft"><div class="shop-name">Wither Boss Minecraft</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-24890849/" title="Toga Himiko "><div class="shop-name">Toga Himiko </div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-23938013/" title="Samos Hagai: Sage of green Eco"><div class="shop-name">Samos Hagai: Sage of green Eco</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-21484781/" title=".... "><div class="shop-name">.... </div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-19778293/" title="by: M311"><div class="shop-name">by: M311</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-19138964/" title="ᴾᵃᶰᵈᵃ ᴮᵒʸ:3 [KoGaMa]"><div class="shop-name">ᴾᵃᶰᵈᵃ ᴮᵒʸ:3 [KoGaMa]</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-13868580/" title="unicornio *^*~N.K"><div class="shop-name">unicornio *^*~N.K</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-12982706/" title="iron man mark 50"><div class="shop-name">iron man mark 50</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-11655153/" title="פֿ=S.T="><div class="shop-name">פֿ=S.T=</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-11401332/" title="פֿ-Boy-Gas mask-&#39;"><div class="shop-name">פֿ-Boy-Gas mask-&#39;</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-11164525/" title=" AWAKE"><div class="shop-name"> AWAKE</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-11140997/" title="Tails The Fox (NEON. SKINS)"><div class="shop-name">Tails The Fox (NEON. SKINS)</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-10748511/" title="[ *Q* ] -=X=- #Rainbow"><div class="shop-name">[ *Q* ] -=X=- #Rainbow</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-9039388/" title="Unicornio!!! *-*"><div class="shop-name">Unicornio!!! *-*</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-8216658/" title="Super Sonic "><div class="shop-name">Super Sonic </div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-5831421/" title="αηgєƖ ;-; ?"><div class="shop-name">αηgєƖ ;-; ?</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-5675796/" title=" "><div class="shop-name"> </div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-20223315/" title="MW~ Cat Boy"><div class="shop-name">MW~ Cat Boy</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-20096317/" title=",)"><div class="shop-name">,)</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-11309678/" title="פֿ -Neko Boy- &#39;&gt;&#39; "><div class="shop-name">פֿ -Neko Boy- &#39;&gt;&#39; </div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-11079817/" title="Merry Christmas"><div class="shop-name">Merry Christmas</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-9705005/" title="Original."><div class="shop-name">Original.</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-8558603/" title="Fallen"><div class="shop-name">Fallen</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-5037515/" title="Pickachu Anime :3 "><div class="shop-name">Pickachu Anime :3 </div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-3956979/" title="panda"><div class="shop-name">panda</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-582030/" title="Scorpio"><div class="shop-name">Scorpio</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-26514844/" title="Berd [BR]"><div class="shop-name">Berd [BR]</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-26281618/" title="[A]ddiction (Male ver.) "><div class="shop-name">[A]ddiction (Male ver.) </div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-25318856/" title="Vanilla"><div class="shop-name">Vanilla</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/avatar/a-22161668/" title="Mi skin más preciado ;;"><div class="shop-name">Mi skin más preciado ;;</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">140 Gold</span></div> </a></li></ul><div class="control-left" id="shop-popular-avatar-left"><i class="icon-left-circle"></i></div><div class="control-right" id="shop-popular-avatar-right"><i class="icon-right-circle"></i></div><script>
             </script></div></section><section class="carousel"><header><h3><a href="/marketplace/model-popular/">Popular Models</a></h3><div id="popular-model-help" class="help-popup-manager"></div></header><div class="carousel-container"><ul class="shop-list shop-list-model carousel-list carousel-shop-list carousel-shop-list-model" id="shop-popular-model"><li class="shop-item"><a href="/marketplace/model/i-9950076/" title="[PS26] Islands"><div class="shop-name">[PS26] Islands</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12049939/" title="Cube"><div class="shop-name">Cube</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12049732/" title="DOORS"><div class="shop-name">DOORS</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12049567/" title="TINY"><div class="shop-name">TINY</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12048961/" title="Nano Cube Nintendo Switch"><div class="shop-name">Nano Cube Nintendo Switch</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12048303/" title="..."><div class="shop-name">...</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12025362/" title="Грибок"><div class="shop-name">Грибок</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12012736/" title="Джип"><div class="shop-name">Джип</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12002908/" title="Rick Astley"><div class="shop-name">Rick Astley</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-11953008/" title="Животное #2"><div class="shop-name">Животное #2</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-11902692/" title="Coke cola"><div class="shop-name">Coke cola</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-11868181/" title="player"><div class="shop-name">player</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-11836737/" title="&lt;3"><div class="shop-name">&lt;3</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-11478570/" title="Ray | Commission"><div class="shop-name">Ray | Commission</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-11375836/" title="ЖД переезд"><div class="shop-name">ЖД переезд</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-11057626/" title="Tournament PVP model"><div class="shop-name">Tournament PVP model</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-11056279/" title="ChairS"><div class="shop-name">ChairS</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-10241209/" title="| Potted plants |"><div class="shop-name">| Potted plants |</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-10188984/" title="| Halloween set |"><div class="shop-name">| Halloween set |</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-10077809/" title="[PS26] Forgotten Mountain"><div class="shop-name">[PS26] Forgotten Mountain</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-10030217/" title="| Cakes |"><div class="shop-name">| Cakes |</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-9976966/" title="| House |"><div class="shop-name">| House |</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-9967699/" title="| Cafe \ bar  furniture |"><div class="shop-name">| Cafe \ bar  furniture |</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-9251460/" title="2"><div class="shop-name">2</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-9251234/" title="1"><div class="shop-name">1</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-8573601/" title="Cute Girl"><div class="shop-name">Cute Girl</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-8563945/" title="fruit crate "><div class="shop-name">fruit crate </div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-7422815/" title="subaru impreza wrx sti"><div class="shop-name">subaru impreza wrx sti</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-6772639/" title="| Cafe set |"><div class="shop-name">| Cafe set |</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-6179390/" title="Treee House"><div class="shop-name">Treee House</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-11482642/" title="BMW"><div class="shop-name">BMW</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-11212800/" title="KoGaMa Logo"><div class="shop-name">KoGaMa Logo</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-10553942/" title="Luxe kitchen"><div class="shop-name">Luxe kitchen</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-10432466/" title="House #1 ( Remake )"><div class="shop-name">House #1 ( Remake )</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-10098915/" title="Starbucks"><div class="shop-name">Starbucks</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-10025358/" title="Army Store"><div class="shop-name">Army Store</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li></ul><div class="control-left" id="shop-popular-model-left"><i class="icon-left-circle"></i></div><div class="control-right" id="shop-popular-model-right"><i class="icon-right-circle"></i></div><script>
@@ -359,15 +275,11 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
             </script></div></section><section class="carousel"><header><h3><a href="/marketplace/model/">New Models</a></h3></header><div class="carousel-container"><ul class="shop-list shop-list-model carousel-list carousel-shop-list carousel-shop-list-model" id="shop-new-model"><li class="shop-item"><a href="/marketplace/model/i-12050149/" title="с"><div class="shop-name">с</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12050143/" title="box"><div class="shop-name">box</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12050116/" title="     "><div class="shop-name">     </div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12050129/" title="какашка"><div class="shop-name">какашка</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12037922/" title="wierzyczka"><div class="shop-name">wierzyczka</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-11957697/" title="сэнс"><div class="shop-name">сэнс</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12050098/" title="Dead Pool had"><div class="shop-name">Dead Pool had</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12050097/" title="Dead Pool torso"><div class="shop-name">Dead Pool torso</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12049348/" title="dead hool legs"><div class="shop-name">dead hool legs</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12050095/" title="wiąsek raciecki"><div class="shop-name">wiąsek raciecki</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12050091/" title="Рука"><div class="shop-name">Рука</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12050065/" title="Halloween set 1"><div class="shop-name">Halloween set 1</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-9251460/" title="2"><div class="shop-name">2</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-7422815/" title="subaru impreza wrx sti"><div class="shop-name">subaru impreza wrx sti</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-7413073/" title="vaz 2105"><div class="shop-name">vaz 2105</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-7412920/" title="Nissan Atlas"><div class="shop-name">Nissan Atlas</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-9251234/" title="1"><div class="shop-name">1</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12050086/" title="bunker"><div class="shop-name">bunker</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12050073/" title="Camp military 2"><div class="shop-name">Camp military 2</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12044991/" title="серебриная кнопка ютуба"><div class="shop-name">серебриная кнопка ютуба</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12048245/" title="сайран хэд"><div class="shop-name">сайран хэд</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12048303/" title="..."><div class="shop-name">...</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-12048319/" title="кравать"><div class="shop-name">кравать</div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li><li class="shop-item"><a href="/marketplace/model/i-9171817/" title=" [PS26] Creeper "><div class="shop-name"> [PS26] Creeper </div><div class="shop-price"><i class="sprite sprite-icon_gold_dark"></i><span class="caption">10 Gold</span></div> </a></li></ul><div class="control-left" id="shop-new-model-left"><i class="icon-left-circle"></i></div><div class="control-right" id="shop-new-model-right"><i class="icon-right-circle"></i></div><script>
             </script></div></section> <!-- kogama_mobile_leaderboard --><div id="kogama_mobile_leaderboard_2" class="ads-display ads-leaderboard ads-leaderboard-bottom"><div class="ads-label ads-label-center">Advertisement</div>
 			<script type='text/javascript'>
-				googletag.cmd.push(function(){
-				        googletag.display('kogama_mobile_leaderboard_2');
-				});
+				
 			</script>
 		</div>  </article>    <div id="kogama-skyscraper-right-container" class="skyscraper_container  user-not-logged-in "> <div id="" class="ads-display ads-skyscraper"> <div class="ads-label ads-label-center">Advertisement</div> <!-- kogama_160x600 --> <div id='kogama-skyscraper-right'> 
 			<script type='text/javascript'>
-				googletag.cmd.push(function(){
-				        googletag.display('kogama-skyscraper-right');
-				});
+				
 			</script>
 		 </div> </div> </div>    
                 </div>
@@ -398,7 +310,7 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
 function jsLoadedCallback() {
     DOMReady(function() {
         var _ = _ || ({ extend: Object.assign });
-        var options = {"ADSENSE_GAMES_ENABLED": true, "ADSENSE_GAMES_TESTING_ENABLED": false, "ANALYTICS_ENABLED": true, "ANDROID_ENABLED": true, "ANDROID_STORE_LISTING_URL": "https://play.google.com/store/apps/details?id=com.multiverse.kogama", "AWAY_TIMEOUT": 300000, "CARRY_SERVICE_ENABLED": true, "CHAT_ENABLED": true, "CHAT_SERVICE_ENABLED": false, "COOKIE_POLICY_VERSION": 2, "EMBED_ENABLED": false, "LANGUAGE_DEFAULT": "en_US", "NOTIFY_SERVICE_ENABLED": true, "PING_SERVICE_ENABLED": false, "PUBLIC_DOMAIN_API": "//api-www.kgoma.com", "PUBLIC_STATIC_URL_BASE": "//static.kogstatic.com", "PUBLIC_URL": "//www.kogama.com", "RECAPTCHA_LOGIN_ENABLED": false, "REGION": "EU", "SESSION_LOCATOR_DOMAIN_API": null, "SESSION_LOCATOR_SERVICE_ENABLED": true, "USERNAME_CHANGE_GOLD_PRICE": 25, "WEBSITE_CODENAME": "www", "XP_LEVEL_ENABLED": true, "PAYMENT_STRIPE_KEY": "pk_live_9JuTnQflh2YehcmzL45dHTQ4", "PAYMENT_PAYMENTWALL_URI": "http://api-www.kgoma.com/v1/payment/paymentwall/", "PAYMENT_URI": "https://api-www.kgoma.com/v1/payment/", "GOOGLE_RECAPTCHA_V3_SITE_KEY": "6LfebYsUAAAAACpXcBjLBbP2U109NCagVJ3sFnn1"};
+        var options = {"ADSENSE_GAMES_ENABLED": true, "ADSENSE_GAMES_TESTING_ENABLED": false, "ANALYTICS_ENABLED": false, "ANDROID_ENABLED": true, "ANDROID_STORE_LISTING_URL": "https://play.google.com/store/apps/details?id=com.multiverse.kogama", "AWAY_TIMEOUT": 300000, "CARRY_SERVICE_ENABLED": true, "CHAT_ENABLED": true, "CHAT_SERVICE_ENABLED": false, "COOKIE_POLICY_VERSION": 2, "EMBED_ENABLED": false, "LANGUAGE_DEFAULT": "en_US", "NOTIFY_SERVICE_ENABLED": true, "PING_SERVICE_ENABLED": false, "PUBLIC_DOMAIN_API": "//api-www.kgoma.com", "PUBLIC_STATIC_URL_BASE": "/static/local", "PUBLIC_URL": "/", "RECAPTCHA_LOGIN_ENABLED": false, "REGION": "EU", "SESSION_LOCATOR_DOMAIN_API": null, "SESSION_LOCATOR_SERVICE_ENABLED": true, "USERNAME_CHANGE_GOLD_PRICE": 25, "WEBSITE_CODENAME": "www", "XP_LEVEL_ENABLED": true, "PAYMENT_STRIPE_KEY": "pk_live_9JuTnQflh2YehcmzL45dHTQ4", "PAYMENT_PAYMENTWALL_URI": "http://api-www.kgoma.com/v1/payment/paymentwall/", "PAYMENT_URI": "https://api-www.kgoma.com/v1/payment/", "GOOGLE_RECAPTCHA_V3_SITE_KEY": "6LfebYsUAAAAACpXcBjLBbP2U109NCagVJ3sFnn1"};
         options.bootstrap = {"locale": "en_US"};
         
         options.MOBILE_WEBSITE = true;
@@ -450,11 +362,9 @@ function jsLoadedCallback() {
 
 
         if (isModernBrowser()) {
-            importScript("//static.kogstatic.com/0000/6cb435bca8640999117210cf1a71d93eb793b351/app.js")
+            
         } else {
-            importScript("//static.kogstatic.com/0000/6cb435bca8640999117210cf1a71d93eb793b351/polyfill.js", function() {
-                importScript("//static.kogstatic.com/0000/6cb435bca8640999117210cf1a71d93eb793b351/app.js")
-            })
+            
         }
     })()
 </script>  <script type="text/javascript">
@@ -466,10 +376,8 @@ function jsLoadedCallback() {
         }, w[ref].l = 1 * new Date();
     })(window, "ga");
 
-    ga('create', 'UA-28054200-1', 'auto', {
-            "sampleRate": 100
-    });
-    ga('set', 'anonymizeIp', true);
+    
+    
 
     // fetch analytics remote script
     DOMReady(function() {
@@ -481,7 +389,7 @@ function jsLoadedCallback() {
             ga("set", "dimension1", ref);
         }
 
-        ga('send', 'pageview');
+        
 
         (function(d, o, url, a, m) {
             a = d.createElement(o),

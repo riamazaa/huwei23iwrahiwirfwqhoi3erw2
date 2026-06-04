@@ -6,7 +6,7 @@
             DOMReady(function() {
                 console.log('DOMReady');
                 var _ = _ || ({ extend: Object.assign });
-                var options = {"ADSENSE": true, "ADSENSE_GAMES_ENABLED": true, "ADSENSE_GAMES_TESTING_ENABLED": false, "ANALYTICS_ENABLED": true, "ANDROID_ENABLED": true, "ANDROID_STORE_LISTING_URL": "https://play.google.com/store/apps/details?id=com.multiverse.kogama", "AWAY_TIMEOUT": 300000, "CARRY_SERVICE_ENABLED": true, "CHAT_ENABLED": true, "CHAT_SERVICE_ENABLED": false, "COOKIE_POLICY_VERSION": 2, "EMBED_ENABLED": false, "LANGUAGE_DEFAULT": "en_US", "NOTIFY_SERVICE_ENABLED": true, "PING_SERVICE_ENABLED": false, "PUBLIC_DOMAIN_API": "//api-www.kgoma.com", "PUBLIC_STATIC_URL_BASE": "//static.kogstatic.com", "PUBLIC_URL": "//www.kogama.com", "RECAPTCHA_LOGIN_ENABLED": false, "REGION": "EU", "SESSION_LOCATOR_DOMAIN_API": null, "SESSION_LOCATOR_SERVICE_ENABLED": true, "USERNAME_CHANGE_GOLD_PRICE": 25, "WEBSITE_CODENAME": "www", "XP_LEVEL_ENABLED": true, "PAYMENT_STRIPE_KEY": "pk_live_9JuTnQflh2YehcmzL45dHTQ4", "PAYMENT_PAYMENTWALL_URI": "https://api-www.kgoma.com/v1/payment/paymentwall/", "PAYMENT_URI": "https://api-www.kgoma.com/v1/payment/", "GOOGLE_RECAPTCHA_V3_SITE_KEY": "6LfebYsUAAAAACpXcBjLBbP2U109NCagVJ3sFnn1", "GOOGLE_ANALYTICS_GA4_ENABLED": true, "GOOGLE_ANALYTICS_GA4_ID": "G-EELXW7F2HT"};
+                var options = {"ADSENSE": true, "ADSENSE_GAMES_ENABLED": true, "ADSENSE_GAMES_TESTING_ENABLED": false, "ANALYTICS_ENABLED": false, "ANDROID_ENABLED": true, "ANDROID_STORE_LISTING_URL": "https://play.google.com/store/apps/details?id=com.multiverse.kogama", "AWAY_TIMEOUT": 300000, "CARRY_SERVICE_ENABLED": true, "CHAT_ENABLED": true, "CHAT_SERVICE_ENABLED": false, "COOKIE_POLICY_VERSION": 2, "EMBED_ENABLED": false, "LANGUAGE_DEFAULT": "en_US", "NOTIFY_SERVICE_ENABLED": true, "PING_SERVICE_ENABLED": false, "PUBLIC_DOMAIN_API": "//api-www.kgoma.com", "PUBLIC_STATIC_URL_BASE": "/static/local", "PUBLIC_URL": "/", "RECAPTCHA_LOGIN_ENABLED": false, "REGION": "EU", "SESSION_LOCATOR_DOMAIN_API": null, "SESSION_LOCATOR_SERVICE_ENABLED": true, "USERNAME_CHANGE_GOLD_PRICE": 25, "WEBSITE_CODENAME": "www", "XP_LEVEL_ENABLED": true, "PAYMENT_STRIPE_KEY": "pk_live_9JuTnQflh2YehcmzL45dHTQ4", "PAYMENT_PAYMENTWALL_URI": "https://api-www.kgoma.com/v1/payment/paymentwall/", "PAYMENT_URI": "https://api-www.kgoma.com/v1/payment/", "GOOGLE_RECAPTCHA_V3_SITE_KEY": "6LfebYsUAAAAACpXcBjLBbP2U109NCagVJ3sFnn1", "GOOGLE_ANALYTICS_GA4_ENABLED": true, "GOOGLE_ANALYTICS_GA4_ID": "G-EELXW7F2HT"};
                 options.bootstrap = {"ADSONPAGE": true, "category": "playing", "locale": "en_US", "ads_data": {"host": "www.kogama.com", "ref": 1, "consent": true, "name": "Google AdManager (old account)", "ads": {"top_banner": {"num": "0", "id": "kogama_mobile_leaderboard_1", "ad_unit_code": "leaderboard", "sizes": "[728, 90]", "huge_sizes": "[[980, 90], [970, 90], [950, 90]]", "big_sizes": "[[980, 90], [970, 90], [950, 90]]", "mid_sizes": "[[728, 90],[468, 60]]", "small_sizes": "[[320, 50], [300, 50]]"}, "skyscraper_left": {"num": "1", "id": "kogama-skyscraper-left", "ad_unit_code": "skyscraper_left", "sizes": "[160, 600]"}, "skyscraper_right": {"num": "2", "id": "kogama-skyscraper-right", "ad_unit_code": "skyscraper", "sizes": "[160, 600]"}, "bottom_banner": {"num": "4", "id": "kogama_mobile_leaderboard_2", "ad_unit_code": "leaderboard_bottom", "sizes": "[728, 90]", "huge_sizes": "[[980, 90], [970, 90], [950, 90]]", "big_sizes": "[[980, 90], [970, 90], [950, 90]]", "mid_sizes": "[[728, 90],[468, 60]]", "small_sizes": "[[320, 50], [300, 50]]"}, "comment_ad": {"num": "5", "id": "kogama_rectangle", "ad_unit_code": "rectangle", "sizes": "[300, 250]"}, "wide_skyscraper": {"num": "3", "id": "kogama-wide-skyscraper", "ad_unit_code": "wide_skyscraper", "sizes": "[300, 600]"}, "game_list_banner": {"num": "6", "id": "kogama_mobile_game_list_banner", "ad_unit_code": "game_list_banner", "sizes": "[728, 90]", "huge_sizes": "[[980, 90], [970, 90], [950, 90]]", "big_sizes": "[[980, 90], [970, 90], [950, 90]]", "mid_sizes": "[[728, 90],[468, 60]]", "small_sizes": "[[320, 50], [300, 50]]"}}, "network_code": "46278883"}};
                   _.extend(options, { ENABLE_POPUP_NEWS: true }); 
                 options.MOBILE_WEBSITE = true;
@@ -53,11 +53,9 @@
 
         console.log("Importing scripts, isModernBrowser", isModernBrowser());
         if (isModernBrowser()) {
-            importScript("//static.kogstatic.com/0000/ca4b54209255dd6f733d1ce22f944a08bebd3d1b/app.js")
+            
         } else {
-            importScript("//static.kogstatic.com/0000/ca4b54209255dd6f733d1ce22f944a08bebd3d1b/polyfill.js", function() {
-                importScript("//static.kogstatic.com/0000/ca4b54209255dd6f733d1ce22f944a08bebd3d1b/app.js")
-            })
+            
         }
     })()
 </script>    <script>
@@ -79,16 +77,11 @@ window.kogama = (window.kogama || {});
 kogama.stats=function(){function t(t,n){var e=0,r=0,o=i.length;n=n||Date.now(),o>0&&(e=n-i[o-1].time,r=n-i[0].time),i.push({name:t.toLowerCase(),time:n,dt:e,duration:r}),a()}function n(t){t=t.toLowerCase();for(var n=i.length-1;n>=0;n--){var e=i[n];if(e.name===t)return e}}function e(t,e){var r=n(t),a=n(e);if(!r||!a)return 0;var i=a.time-r.time;return 0>i?0:i}function r(t){o.push({cb:t,idx:0}),a()}function a(){for(var t=i.length,n=0;n<o.length;n++){var e=o[n];if(e.idx!==t)for(var r=e.idx;t>r;r++)e.idx++,e.cb(i[r])}}var i=[],o=[];return{items:i,add:t,get:n,delta:e,onstats:r}}();
 kogama.stats.add("HTMLReady"); DOMReady(function() {kogama.stats.add("DOMReady");});
 kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document.cookie.split("; "),o={},e=r.length-1;e>=0;e--)t=r[e].split("="),o[t[0]]=t[1];return o[n]}var o;return n}();
-</script><title>KoGaMa - Play, Create And Share Multiplayer Games</title> <meta property="og:title" content="KoGaMa - Play, Create And Share Multiplayer Games"><meta name="twitter:title" content="KoGaMa - Play, Create And Share Multiplayer Games"><meta name="description" content="Play, Create And Share Multiplayer Games. Games in KoGaMa are all user created, meaning you can build your own world! But why build alone, when you can build with your friends? Bring your friends to KoGaMa and build awesome worlds together, completely free!."><meta property="og:description" content="Play, Create And Share Multiplayer Games. Games in KoGaMa are all user created, meaning you can build your own world! But why build alone, when you can build with your friends? Bring your friends to KoGaMa and build awesome worlds together, completely free!."><meta name="twitter:description" content="Play, Create And Share Multiplayer Games. Games in KoGaMa are all user created, meaning you can build your own world! But why build alone, when you can build with your friends? Bring your friends to KoGaMa and build awesome worlds together, completely free!."><meta property="og:image" content="/static/img/poster_700x350.jpg"><meta name="twitter:image" content="/static/img/poster_700x350.jpg"> <link href="/static/img/favicon__q_v=3.ico" rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48"><link rel="icon" href="/static/img/kogama_icon-32x32.png" sizes="32x32"><link rel="icon" href="/static/img/kogama_icon-48x48.png" sizes="48x48"><link rel="icon" href="/static/img/kogama_icon-64x64.png" sizes="64x64"><link rel="icon" href="/static/img/kogama_icon-128x128.png" sizes="128x128"><link rel="icon" href="/static/img/kogama_icon-192x192.png" sizes="192x192"><link rel="apple-touch-icon" href="/static/img/kogama_icon-128x128.png" sizes="128x128"><link rel="apple-touch-icon" href="/static/img/kogama_icon-192x192.png" sizes="192x192"><meta name="msapplication-TileColor" content="#FFFFFF"><meta name="msapplication-TileImage" content="/static/img/kogama_icon-192x192.png"><link href="https://static.kogstatic.com/0000/ca4b54209255dd6f733d1ce22f944a08bebd3d1b/app-less.css" rel="stylesheet" type="text/css" rel="preload" as="style"><link href="https://static.kogstatic.com/0000/ca4b54209255dd6f733d1ce22f944a08bebd3d1b/app-sass.css" rel="stylesheet" type="text/css" rel="preload" as="style"><link rel="manifest" href="/static/manifest__q_v=2.json"><link href='https://fonts.googleapis.com/css__q_family=Open-Sans-400-700-800-subset=latin.css' rel='stylesheet' type='text/css' rel="preload" as="style"><link rel="canonical" href="https://www.kogama.com/m/" /><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"><meta name="msapplication-tap-highlight" content="no" /><meta name="CSRFToken" content=""><meta name="Notify-Token" content=""><meta name="adsonpage" content="1"><meta name="author" content="KoGaMa"/><meta name="theme-color" content="#000b1d"><meta name="msapplication-navbutton-color" content="#000b1d"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><script type="application/ld+json">{"@context":"/schema.org/index.bin","@type":["VideoGame","MobileApplication","WebApplication","WebSite"],"name":"KoGaMa","url":"https://www.kogama.com","author":{"@type":"Organization","name":"Multiverse ApS","url":"/multiverseaps.com/index.bin","logo":"/static/img/logo_bluewhite.png"},"description":"Play, Create And Share Multiplayer Games. Games in KoGaMa are all user created, meaning you can build your own world! But why build alone, when you can build with your friends? Bring your friends to KoGaMa and build awesome worlds together, completely free!","genre":["Adventure","Action-adventure","Shooter game","Platform game","3D"],"playMode":["MultiPlayer","SinglePlayer"],"image":"https://www.kogstatic.com/download/android/poster.jpg","screenshot":"https://www.kogstatic.com/download/android/background.jpg","sameAs":["/kogama.com.br/index.bin","/www.youtube.com/KoGaMagamemaker.bin","/www.facebook.com/Kogamians/index.bin","/twitter.com/kogamagame.bin","/kogama.fandom.com/wiki/Kogama_Wiki.bin","/discord.com/invite/kogama.bin","/play.google.com/store/apps/details__q_id=com.multiverse.kogama.bin"],"trailer":{"@type":"VideoObject","url":"/www.youtube.com/watch__q_v=6Z81YKEmn9c.bin","inLanguage":"en","description":"Play, Create And Share Multiplayer Games. Games in KoGaMa are all user created, meaning you can build your own world! But why build alone, when you can build with your friends? Bring your friends to KoGaMa and build awesome worlds together, completely free!","name":"KoGaMa","thumbnailUrl":"https://www.kogstatic.com/download/android/background.jpg","uploadDate":"2013-06-20","embedUrl": "/www.youtube.com/embed/6Z81YKEmn9c.bin"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.kogama.com/search?q={q}"},"query-input":"required name=q"},"exampleOfWork":[{"@type":"VideoGame","gamePlatform":["/en.wikipedia.org/wiki/Browser_game.bin","/en.wikipedia.org/wiki/PC_game.bin"],"contentRating":"PEGI 3","releasedEvent":{"@type":"PublicationEvent","startDate":"2011-12-01","location":{"@type":"Place","name":"WW"}}},{"@type":"VideoGame","gamePlatform":"/en.wikipedia.org/wiki/Android_(operating_system).bin","contentRating":"PEGI 3","name":"KoGaMa","image":"https://www.kogstatic.com/download/android/poster.jpg","url":"https://www.kogama.com","releasedEvent":{"@type":"PublicationEvent","name": "KoGaMa","startDate":"2016-11-10","location":{"@type":"Place","name":"WW"},"aggregateRating":{"@type":"AggregateRating","bestRating":"5","ratingValue":"4.4","ratingCount":"5000"}}}]}</script><meta property="og:type" content="game"><meta property="og:site_name" content="KoGaMa"><meta property="og:url" content="https://www.kogama.com/m/"><meta name="twitter:card" content="summary_large_image"><meta property="twitter:domain" content="kogama.com"><script type="text/javascript">try { var adsqueue = adsqueue || []; var superadsqueue = superadsqueue || [] } catch (e) { console.log("ads-ex", e); }</script>   
+</script><title>KoGaMa - Play, Create And Share Multiplayer Games</title> <meta property="og:title" content="KoGaMa - Play, Create And Share Multiplayer Games"><meta name="twitter:title" content="KoGaMa - Play, Create And Share Multiplayer Games"><meta name="description" content="Play, Create And Share Multiplayer Games. Games in KoGaMa are all user created, meaning you can build your own world! But why build alone, when you can build with your friends? Bring your friends to KoGaMa and build awesome worlds together, completely free!."><meta property="og:description" content="Play, Create And Share Multiplayer Games. Games in KoGaMa are all user created, meaning you can build your own world! But why build alone, when you can build with your friends? Bring your friends to KoGaMa and build awesome worlds together, completely free!."><meta name="twitter:description" content="Play, Create And Share Multiplayer Games. Games in KoGaMa are all user created, meaning you can build your own world! But why build alone, when you can build with your friends? Bring your friends to KoGaMa and build awesome worlds together, completely free!."><meta property="og:image" content="/static/img/poster_700x350.jpg"><meta name="twitter:image" content="/static/img/poster_700x350.jpg"> <link href="/static/img/favicon__q_v=3.ico" rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48"><link rel="icon" href="/static/img/kogama_icon-32x32.png" sizes="32x32"><link rel="icon" href="/static/img/kogama_icon-48x48.png" sizes="48x48"><link rel="icon" href="/static/img/kogama_icon-64x64.png" sizes="64x64"><link rel="icon" href="/static/img/kogama_icon-128x128.png" sizes="128x128"><link rel="icon" href="/static/img/kogama_icon-192x192.png" sizes="192x192"><link rel="apple-touch-icon" href="/static/img/kogama_icon-128x128.png" sizes="128x128"><link rel="apple-touch-icon" href="/static/img/kogama_icon-192x192.png" sizes="192x192"><meta name="msapplication-TileColor" content="#FFFFFF"><meta name="msapplication-TileImage" content="/static/img/kogama_icon-192x192.png"><link href="https://static.kogstatic.com/0000/ca4b54209255dd6f733d1ce22f944a08bebd3d1b/app-less.css" rel="stylesheet" type="text/css" rel="preload" as="style"><link href="https://static.kogstatic.com/0000/ca4b54209255dd6f733d1ce22f944a08bebd3d1b/app-sass.css" rel="stylesheet" type="text/css" rel="preload" as="style"><link rel="manifest" href="/static/manifest__q_v=2.json"><link href='https://fonts.googleapis.com/css__q_family=Open-Sans-400-700-800-subset=latin.css' rel='stylesheet' type='text/css' rel="preload" as="style"><link rel="canonical" href="https://www.kogama.com/m/" /><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"><meta name="msapplication-tap-highlight" content="no" /><meta name="CSRFToken" content=""><meta name="Notify-Token" content=""><meta name="adsonpage" content="1"><meta name="author" content="KoGaMa"/><meta name="theme-color" content="#000b1d"><meta name="msapplication-navbutton-color" content="#000b1d"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><script type="application/ld+json">{"@context":"/schema.org/index.bin","@type":["VideoGame","MobileApplication","WebApplication","WebSite"],"name":"KoGaMa","url":"https://www.kogama.com","author":{"@type":"Organization","name":"Multiverse ApS","url":"/multiverseaps.com/index.bin","logo":"/static/img/logo_bluewhite.png"},"description":"Play, Create And Share Multiplayer Games. Games in KoGaMa are all user created, meaning you can build your own world! But why build alone, when you can build with your friends? Bring your friends to KoGaMa and build awesome worlds together, completely free!","genre":["Adventure","Action-adventure","Shooter game","Platform game","3D"],"playMode":["MultiPlayer","SinglePlayer"],"image":"https://www.kogstatic.com/download/android/poster.jpg","screenshot":"https://www.kogstatic.com/download/android/background.jpg","sameAs":["/kogama.com.br/index.bin","/www.youtube.com/KoGaMagamemaker.bin","/www.facebook.com/Kogamians/index.bin","/twitter.com/kogamagame.bin","/kogama.fandom.com/wiki/Kogama_Wiki.bin","/discord.com/invite/kogama.bin","/play.google.com/store/apps/details__q_id=com.multiverse.kogama.bin"],"trailer":{"@type":"VideoObject","url":"/www.youtube.com/watch__q_v=6Z81YKEmn9c.bin","inLanguage":"en","description":"Play, Create And Share Multiplayer Games. Games in KoGaMa are all user created, meaning you can build your own world! But why build alone, when you can build with your friends? Bring your friends to KoGaMa and build awesome worlds together, completely free!","name":"KoGaMa","thumbnailUrl":"https://www.kogstatic.com/download/android/background.jpg","uploadDate":"2013-06-20","embedUrl": "/www.youtube.com/embed/6Z81YKEmn9c.bin"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.kogama.com/search?q={q}"},"query-input":"required name=q"},"exampleOfWork":[{"@type":"VideoGame","gamePlatform":["/en.wikipedia.org/wiki/Browser_game.bin","/en.wikipedia.org/wiki/PC_game.bin"],"contentRating":"PEGI 3","releasedEvent":{"@type":"PublicationEvent","startDate":"2011-12-01","location":{"@type":"Place","name":"WW"}}},{"@type":"VideoGame","gamePlatform":"/en.wikipedia.org/wiki/Android_(operating_system).bin","contentRating":"PEGI 3","name":"KoGaMa","image":"https://www.kogstatic.com/download/android/poster.jpg","url":"https://www.kogama.com","releasedEvent":{"@type":"PublicationEvent","name": "KoGaMa","startDate":"2016-11-10","location":{"@type":"Place","name":"WW"},"aggregateRating":{"@type":"AggregateRating","bestRating":"5","ratingValue":"4.4","ratingCount":"5000"}}}]}</script><meta property="og:type" content="game"><meta property="og:site_name" content="KoGaMa"><meta property="og:url" content="https://www.kogama.com/m/"><meta name="twitter:card" content="summary_large_image"><meta property="twitter:domain" content="kogama.com"><script type="text/javascript">try {  } catch (e) { console.log("ads-ex", e); }</script>   
 			  
 			  <script>
-				window.googletag = window.googletag || {cmd: []};
-				googletag.cmd.push(function() {
-					googletag.pubads().setTargeting("is_anonymous", "true")
-					googletag.pubads().setTargeting("domain", "www.kogama.com")
-					googletag.pubads().enableSingleRequest();
-					googletag.enableServices();
-				});
+				
+				
 				console.log("Google AdManager for Slots: 46278883");
 			  </script>
 		   <script type="text/javascript">
@@ -140,32 +133,23 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        function track(tracking_path){
-            ga('send', 'pageview', tracking_path);
-        }
+        
 
-        async function open_with_tracking(tracking_path, link){
-            ga('send', 'pageview', tracking_path);
-            await sleep(100);
-            window.location = link;
-        }
+        
     </script> </head> <body id="root-page-mobile" class="game winter">       <header id=pageheader><div class="pageheader-inner"><a href="/games/" title="KoGaMa" class="logo"><div class="logo-image"></div></a><span class="menu" id="toggle-nav-menu"><i class="icon-down-open"></i></span><nav class="menu anonymous" id="nav-menu"><ol><li class="game active"><a href="/games/"><i class="icon-gamepad"></i><span class="text">Play</span></a></li><li class="build "><a href="/build/"><i class="icon-cubes"></i><span class="text">Build</span></a></li><li class="shop "><a href="/marketplace/"><i class="icon-basket"></i><span class="text">Shop</span></a></li><li class="news "><a href="/news/"><i class="icon-news"></i><span class="text">News</span></a></li> <!--<li class="news "><a href="/videos/"><i class="icon-youtube-play"></i><span class="text">Videos</span></a></li>--><li class="news "><a href="/leaderboard/"><i class="icon-crown"></i><span class="text">Leaderboard</span></a></li></ol></nav> <ol id="meta-nav"><li class="login"> <a id="login-button" class="login-button text" href="#"> Login </a></li><li class="signup"><a id="signup-button" class="pure-button pure-button-xlarge signup-button" href="#">Signup</a></li><li class="menu" id="profile-extended-toggle"></li> </ol></div><div id="react-become-member"></div> </header>  <div id="content" class=""><div id="content-container"><div id="spacer-cell"></div><div id="main-content"><div id="notification"></div><div id="news-popup-container"></div><div id="mobile-page"><div id="mobile-page-content">  <div id="kogama-skyscraper-left-container" class="skyscraper_container ads-display  user-not-logged-in "> <div id="kogama-skyscraper-left" class="ad-skyscraper"> 
 			<script defer type='text/javascript'>
 				var container = document.getElementById('kogama-skyscraper-left-container');
 				if (!container || window.getComputedStyle(container).display !== 'none') {
 					googletag.cmd.push(function(){
-						var slot = googletag
-											  .defineSlot(
-												  '46278883/skyscraper_left', [160, 600], 'kogama-skyscraper-left')
-											  .addService(googletag.pubads());
+						var slot = 
 						
 						var SECONDS_TO_WAIT_AFTER_VIEWABILITY = 45;
 						setTimeout(function() {
 							setInterval(function() {
-								googletag.pubads().refresh([slot]);
+								
 							}, SECONDS_TO_WAIT_AFTER_VIEWABILITY * 1000);
 						}, 1 * 5000);
-						googletag.display('kogama-skyscraper-left');
+						
 					});
 				}
 			</script>
@@ -174,10 +158,7 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
 				var container = document.getElementById('kogama_mobile_leaderboard_1-container');
 				if (!container || window.getComputedStyle(container).display !== 'none') {
 					googletag.cmd.push(function(){
-						var slot = googletag
-											  .defineSlot(
-												  '46278883/leaderboard', [728, 90], 'kogama_mobile_leaderboard_1')
-											  .addService(googletag.pubads());
+						var slot = 
 						
 				var size_mapping = googletag.sizeMapping()
 				.addSize([1430, 900], [[980, 90], [970, 90], [950, 90]])
@@ -190,10 +171,10 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
 						var SECONDS_TO_WAIT_AFTER_VIEWABILITY = 45;
 						setTimeout(function() {
 							setInterval(function() {
-								googletag.pubads().refresh([slot]);
+								
 							}, SECONDS_TO_WAIT_AFTER_VIEWABILITY * 1000);
 						}, 0 * 5000);
-						googletag.display('kogama_mobile_leaderboard_1');
+						
 					});
 				}
 			</script>
@@ -202,10 +183,7 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
 				var container = document.getElementById('kogama_mobile_leaderboard_2-container');
 				if (!container || window.getComputedStyle(container).display !== 'none') {
 					googletag.cmd.push(function(){
-						var slot = googletag
-											  .defineSlot(
-												  '46278883/leaderboard_bottom', [728, 90], 'kogama_mobile_leaderboard_2')
-											  .addService(googletag.pubads());
+						var slot = 
 						
 				var size_mapping = googletag.sizeMapping()
 				.addSize([1430, 900], [[980, 90], [970, 90], [950, 90]])
@@ -218,10 +196,10 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
 						var SECONDS_TO_WAIT_AFTER_VIEWABILITY = 45;
 						setTimeout(function() {
 							setInterval(function() {
-								googletag.pubads().refresh([slot]);
+								
 							}, SECONDS_TO_WAIT_AFTER_VIEWABILITY * 1000);
 						}, 4 * 5000);
-						googletag.display('kogama_mobile_leaderboard_2');
+						
 					});
 				}
 			</script>
@@ -230,18 +208,15 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
 				var container = document.getElementById('kogama-skyscraper-right-container');
 				if (!container || window.getComputedStyle(container).display !== 'none') {
 					googletag.cmd.push(function(){
-						var slot = googletag
-											  .defineSlot(
-												  '46278883/skyscraper', [160, 600], 'kogama-skyscraper-right')
-											  .addService(googletag.pubads());
+						var slot = 
 						
 						var SECONDS_TO_WAIT_AFTER_VIEWABILITY = 45;
 						setTimeout(function() {
 							setInterval(function() {
-								googletag.pubads().refresh([slot]);
+								
 							}, SECONDS_TO_WAIT_AFTER_VIEWABILITY * 1000);
 						}, 2 * 5000);
-						googletag.display('kogama-skyscraper-right');
+						
 					});
 				}
 			</script>

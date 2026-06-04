@@ -9,7 +9,7 @@ window.kogama = (window.kogama || {});
 kogama.stats=function(){function t(t,n){var e=0,r=0,o=i.length;n=n||Date.now(),o>0&&(e=n-i[o-1].time,r=n-i[0].time),i.push({name:t.toLowerCase(),time:n,dt:e,duration:r}),a()}function n(t){t=t.toLowerCase();for(var n=i.length-1;n>=0;n--){var e=i[n];if(e.name===t)return e}}function e(t,e){var r=n(t),a=n(e);if(!r||!a)return 0;var i=a.time-r.time;return 0>i?0:i}function r(t){o.push({cb:t,idx:0}),a()}function a(){for(var t=i.length,n=0;n<o.length;n++){var e=o[n];if(e.idx!==t)for(var r=e.idx;t>r;r++)e.idx++,e.cb(i[r])}}var i=[],o=[];return{items:i,add:t,get:n,delta:e,onstats:r}}();
 kogama.stats.add("HTMLReady"); DOMReady(function() {kogama.stats.add("DOMReady");});
 kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document.cookie.split("; "),o={},e=r.length-1;e>=0;e--)t=r[e].split("="),o[t[0]]=t[1];return o[n]}var o;return n}();
-</script><script type="text/javascript">try { var adsqueue = adsqueue || []; var superadsqueue = superadsqueue || [] } catch (e) { console.log("ads-ex", e); }</script>  <script type="text/javascript">
+</script><script type="text/javascript">try {  } catch (e) { console.log("ads-ex", e); }</script>  <script type="text/javascript">
         function isIOSDevice(){
             return false;
         }
@@ -132,65 +132,12 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        function track(tracking_path){
-            ga('send', 'pageview', tracking_path);
-        }
+        
 
-        async function open_with_tracking(tracking_path, link){
-            ga('send', 'pageview', tracking_path);
-            await sleep(100);
-            window.location = link;
-        }
+        
     </script>
 
-    <style type="text/css">
-        .ad_consent_popup {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background-color: rgba(0,0,0,.4);
-
-            display: none;
-            overflow: hidden;
-            z-index: 2000;
-        }
-        @media screen and ( max-height: 450px ) {
-            .ad_consent_popup .box {
-                overflow-y: scroll;
-            }
-        }
-        .ad_consent_popup .box {
-            width: 350px;
-            max-width: 80%;
-            height: 600px;
-            max-height: 80%;
-
-            background-color: rgba(255,255,255,1);
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 2em;
-            padding: 0;
-        }
-        .ad_consent_popup .box .header {
-            background-color: #434a54;
-            margin: none;
-            padding: 1em;
-            color: white;
-            text-align: center;
-            text-transform: uppercase;
-        }
-        .ad_consent_popup .box .content {
-            color: black;
-            padding: 1em;
-        }
-        .ad_consent_popup .box .content select {
-            width: 100%;
-            border-radius: 0;
-            border: 2px solid gray;
-        }
-    </style>
+    
 </head>
 <body id="root-page-mobile" class="tutorials">
 
@@ -397,7 +344,7 @@ kogama.readCookie=function(){function n(n,r,t,e){if(o)return o[n];for(r=document
 function jsLoadedCallback() {
     DOMReady(function() {
         var _ = _ || ({ extend: Object.assign });
-        var options = {"ADSENSE_GAMES_ENABLED": true, "ADSENSE_GAMES_TESTING_ENABLED": false, "ANALYTICS_ENABLED": true, "ANDROID_ENABLED": true, "ANDROID_STORE_LISTING_URL": "https://play.google.com/store/apps/details?id=com.multiverse.kogama", "AWAY_TIMEOUT": 300000, "CARRY_SERVICE_ENABLED": true, "CHAT_ENABLED": true, "CHAT_SERVICE_ENABLED": false, "COOKIE_POLICY_VERSION": 2, "EMBED_ENABLED": false, "LANGUAGE_DEFAULT": "en_US", "NOTIFY_SERVICE_ENABLED": true, "PING_SERVICE_ENABLED": false, "PUBLIC_DOMAIN_API": "//api-www.kgoma.com", "PUBLIC_STATIC_URL_BASE": "//static.kogstatic.com", "PUBLIC_URL": "//www.kogama.com", "RECAPTCHA_LOGIN_ENABLED": false, "REGION": "EU", "SESSION_LOCATOR_DOMAIN_API": null, "SESSION_LOCATOR_SERVICE_ENABLED": true, "USERNAME_CHANGE_GOLD_PRICE": 25, "WEBSITE_CODENAME": "www", "XP_LEVEL_ENABLED": true, "PAYMENT_STRIPE_KEY": "pk_live_9JuTnQflh2YehcmzL45dHTQ4", "PAYMENT_PAYMENTWALL_URI": "http://api-www.kgoma.com/v1/payment/paymentwall/", "PAYMENT_URI": "https://api-www.kgoma.com/v1/payment/", "GOOGLE_RECAPTCHA_V3_SITE_KEY": "6LfebYsUAAAAACpXcBjLBbP2U109NCagVJ3sFnn1"};
+        var options = {"ADSENSE_GAMES_ENABLED": true, "ADSENSE_GAMES_TESTING_ENABLED": false, "ANALYTICS_ENABLED": false, "ANDROID_ENABLED": true, "ANDROID_STORE_LISTING_URL": "https://play.google.com/store/apps/details?id=com.multiverse.kogama", "AWAY_TIMEOUT": 300000, "CARRY_SERVICE_ENABLED": true, "CHAT_ENABLED": true, "CHAT_SERVICE_ENABLED": false, "COOKIE_POLICY_VERSION": 2, "EMBED_ENABLED": false, "LANGUAGE_DEFAULT": "en_US", "NOTIFY_SERVICE_ENABLED": true, "PING_SERVICE_ENABLED": false, "PUBLIC_DOMAIN_API": "//api-www.kgoma.com", "PUBLIC_STATIC_URL_BASE": "/static/local", "PUBLIC_URL": "/", "RECAPTCHA_LOGIN_ENABLED": false, "REGION": "EU", "SESSION_LOCATOR_DOMAIN_API": null, "SESSION_LOCATOR_SERVICE_ENABLED": true, "USERNAME_CHANGE_GOLD_PRICE": 25, "WEBSITE_CODENAME": "www", "XP_LEVEL_ENABLED": true, "PAYMENT_STRIPE_KEY": "pk_live_9JuTnQflh2YehcmzL45dHTQ4", "PAYMENT_PAYMENTWALL_URI": "http://api-www.kgoma.com/v1/payment/paymentwall/", "PAYMENT_URI": "https://api-www.kgoma.com/v1/payment/", "GOOGLE_RECAPTCHA_V3_SITE_KEY": "6LfebYsUAAAAACpXcBjLBbP2U109NCagVJ3sFnn1"};
         options.bootstrap = {"locale": "en_US"};
         
         options.MOBILE_WEBSITE = true;
@@ -449,11 +396,9 @@ function jsLoadedCallback() {
 
 
         if (isModernBrowser()) {
-            importScript("//static.kogstatic.com/0000/fd54ee6e0520161805f6f6465d3969a261607f3d/app.js")
+            
         } else {
-            importScript("//static.kogstatic.com/0000/fd54ee6e0520161805f6f6465d3969a261607f3d/polyfill.js", function() {
-                importScript("//static.kogstatic.com/0000/fd54ee6e0520161805f6f6465d3969a261607f3d/app.js")
-            })
+            
         }
     })()
 </script>  <script type="text/javascript">
@@ -465,10 +410,8 @@ function jsLoadedCallback() {
         }, w[ref].l = 1 * new Date();
     })(window, "ga");
 
-    ga('create', 'UA-28054200-1', 'auto', {
-            "sampleRate": 100
-    });
-    ga('set', 'anonymizeIp', true);
+    
+    
 
     // fetch analytics remote script
     DOMReady(function() {
@@ -480,7 +423,7 @@ function jsLoadedCallback() {
             ga("set", "dimension1", ref);
         }
 
-        ga('send', 'pageview');
+        
 
         (function(d, o, url, a, m) {
             a = d.createElement(o),
