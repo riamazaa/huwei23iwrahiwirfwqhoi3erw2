@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>KaGaMa - Page Not Found</title>
+<script>
+  // Redirect all 404s to the home page
+  // This handles GitHub Pages project site routing
+  var path = window.location.pathname;
+  // Try to find the matching page
+  var segments = path.replace(/^\/KaGaMa\//, '/').split('/').filter(Boolean);
+  if (segments.length > 0) {
+    // Try to navigate to the page within the project
+    window.location.href = '/KaGaMa/' + segments.join('/') + '/';
+  } else {
+    window.location.href = '/KaGaMa/';
+  }
+</script>
+<style>
+  body { background: #16222d; color: #fff; font-family: "Open Sans", Arial, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
+  h1 { font-size: 28px; margin-bottom: 12px; }
+  p { color: #888; margin-bottom: 24px; }
+  a { display: inline-block; background: #8ac943; color: #0e1519; padding: 10px 24px; border-radius: 4px; text-decoration: none; font-weight: 700; }
+</style>
+</head>
+<body>
+<div>
+  <h1>Page Not Found</h1>
+  <p>The page you are looking for does not exist.</p>
+  <a href="/KaGaMa/">Back to Home</a>
+</div>
+</body>
+</html>
