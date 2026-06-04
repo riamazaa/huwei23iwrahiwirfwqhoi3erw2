@@ -9,8 +9,8 @@
   var BRAND_NAME = "KaGaMa";
   var BRAND_TITLE = "KaGaMa - Play, create And Share";
   var PROFILE_PATH = ROOT + "/profile/1";
-  var BRAND_ICON = ROOT + "/static/img/KaGaMa-logo.webp";
-  var BRAND_NAV_ICON = ROOT + "/static/img/KaGaMa-nav-icon.webp";
+  var BRAND_ICON = ROOT + "/static/img/kogama-logo.webp";
+  var BRAND_NAV_ICON = ROOT + "/static/img/kogama-nav-icon.webp";
   var GOLD_ICON = ROOT + "/static/img/gold-icon.svg";
   var LOGIN_ART = ROOT + "/static/img/auth-login-bg.jpg";
   var AVATAR_PLATFORM = ROOT + "/static/img/signup-avatar-platform.png";
@@ -157,7 +157,8 @@
   }
 
   function profileUrlForId(id) {
-    return ROOT + "/profile/" + id;
+    if (id === "1") return ROOT + "/profile/1";
+    return ROOT + "/profile/1/?p=" + id;
   }
 
   function profileAvatarsUrl() {
@@ -276,7 +277,7 @@
       var logoImg = document.createElement("img");
       logoImg.src = BRAND_ICON;
       logoImg.alt = "KaGaMa";
-      logoImg.className = "KaGaMa-logo-img";
+      logoImg.className = "kogama-logo-img";
       logoImg.style.cssText = "height:36px;width:auto;display:block;";
       var oldLogo = logoLink.querySelector(".logo-image, .title-image");
       if (oldLogo) {
@@ -401,13 +402,13 @@
         if (found) {
           localStorage.setItem(PROFILE_KEY, found.id);
           var existing = found.profile;
-          profileData.level = existing.level || 1;
-          profileData.xp = existing.xp || 0;
-          profileData.gold = existing.gold || 12570;
-          profileData.rank = existing.rank || 1;
-          profileData.friends = existing.friends || 0;
-          profileData.games = existing.games || 0;
-          profileData.avatars = existing.avatars || 1;
+          profileData.level = existing.level != null ? existing.level : 1;
+          profileData.xp = existing.xp != null ? existing.xp : 0;
+          profileData.gold = existing.gold != null ? existing.gold : 0;
+          profileData.rank = existing.rank != null ? existing.rank : 1;
+          profileData.friends = existing.friends != null ? existing.friends : 0;
+          profileData.games = existing.games != null ? existing.games : 0;
+          profileData.avatars = existing.avatars != null ? existing.avatars : 1;
           setProfile(profileData);
         } else {
           localStorage.setItem(PROFILE_KEY, String(bumpNextId()));
@@ -714,7 +715,7 @@
       '</ul>',
       '</div>',
       '<a href="' + ROOT + '/help/" class="kg-menu-link"><img class="menu-icon" src="' + iconBase + '/icn_contact.svg"> <span class="text">Contact us</span></a>',
-      '<a href="https://www.support.KaGaMa.com/hc/en-us" class="kg-menu-link"><img class="menu-icon" src="' + iconBase + '/icn_help.svg"> <span class="text">Help</span></a>',
+      '<a href="https://www.support.KoGaMa.com/hc/en-us" class="kg-menu-link"><img class="menu-icon" src="' + iconBase + '/icn_help.svg"> <span class="text">Help</span></a>',
       '</div>',
       "</li>"
     ].join("");
@@ -1494,7 +1495,7 @@
       '<li class="item is_first"><div><div class="bd"><img src="', PROFILE_ASSET_ROOT, '/badge-turtle-32.jpg" alt="Turtle"></div><div class="hover"><div class="arrow-top-border"></div><div class="arrow-top"></div><div class="popout-box"><span class="name">Turtle</span><div class="bd"><img src="', PROFILE_ASSET_ROOT, '/badge-turtle-64.jpg" alt="Turtle"></div></div></div></div></li>',
       '</ul></div></div>',
       '<a href="#" title="Badges"><div class="profile-badge-list" id="profile-badges"><div><ul class="thumbs badges">',
-      isKagaMa ? '<li class="item is_first"><div><div class="bd"><img src="' + PROFILE_ASSET_ROOT + '/badge-elite-32.jpg" alt="Elite"></div><div class="hover"><div class="arrow-top-border"></div><div class="arrow-top"></div><div class="popout-box"><span class="name">Elite</span><div class="bd"><img src="' + PROFILE_ASSET_ROOT + '/badge-elite-64.jpg" alt="Elite"></div></div></div></div></li>' : '',
+      isKagaMa ? '<li class="item is_first"><div><div class="bd"><img src="' + PROFILE_ASSET_ROOT + '/badge-elite-32.jpg" alt="Elite"></div><div class="hover"><div class="arrow-top-border"></div><div class="arrow-top"></div><div class="popout-box"><span class="name">Elite</span><div class="bd"><img src="' + PROFILE_ASSET_ROOT + '/badge-elite-32.jpg" alt="Elite"></div></div></div></div></li>' : '',
       '</ul></div></div></a>',
       '</div>'
     ].join("");
@@ -2180,15 +2181,53 @@
 
   var NEWS_KEY = "KaGaMa.offline.news-items";
 
-  function getNewsItems() {
+  function getNewsItemsLocal() {
     try {
       var items = JSON.parse(localStorage.getItem(NEWS_KEY) || "[]");
       return Array.isArray(items) ? items : [];
     } catch (e) { return []; }
   }
 
-  function setNewsItems(items) {
+  function setNewsItemsLocal(items) {
     localStorage.setItem(NEWS_KEY, JSON.stringify(items.slice(0, 50)));
+  }
+
+  async function fetchNewsItems() {
+    try {
+      var r = await fetch(ROOT + "/api/news");
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return getNewsItemsLocal();
+  }
+
+  async function fetchNewsArticle(id) {
+    try {
+      var r = await fetch(ROOT + "/api/news/" + encodeURIComponent(id));
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return getNewsItemsLocal().find(function(n) { return n.id === id; }) || null;
+  }
+
+  async function postNewsArticle(data) {
+    try {
+      var r = await fetch(ROOT + "/api/news", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(data) });
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    var item = Object.assign({ id: "n-" + Date.now(), createdAt: new Date().toISOString() }, data);
+    var items = getNewsItemsLocal();
+    items.unshift(item);
+    setNewsItemsLocal(items);
+    return item;
+  }
+
+  async function deleteNewsArticle(id) {
+    try {
+      var r = await fetch(ROOT + "/api/news/" + encodeURIComponent(id), { method: "DELETE" });
+      if (r.ok) return true;
+    } catch(e) {}
+    var items = getNewsItemsLocal().filter(function(n) { return n.id !== id; });
+    setNewsItemsLocal(items);
+    return true;
   }
 
   function populateNewsUpload() {
@@ -2207,27 +2246,21 @@
       '<textarea class="kg-news-body" placeholder="Write your news article here..." maxlength="5000"></textarea>',
       '<button type="button">Publish</button>'
     ].join("");
-    form.querySelector("button").addEventListener("click", function() {
+    form.querySelector("button").addEventListener("click", async function() {
       var title = form.querySelector(".kg-news-title").value.trim();
       var imageUrl = form.querySelector(".kg-news-image").value.trim();
       var body = form.querySelector(".kg-news-body").value.trim();
       if (!title || !body) { alert("Enter a title and content."); return; }
       if (!imageUrl) imageUrl = ROOT + "/static/img/game-screenshot-600x240.jpg";
       var profile = getProfile();
-      var newsId = "n-" + Date.now();
-      var item = {
-        id: newsId,
+      await postNewsArticle({
         title: title,
         imageUrl: imageUrl,
         body: body,
         author: profile ? profile.username : "KaGaMa",
-        authorAvatar: profile ? profile.avatarImage : BLOCK_BOY_PROFILE_IMAGE,
-        createdAt: new Date().toISOString()
-      };
-      var items = getNewsItems();
-      items.unshift(item);
-      setNewsItems(items);
-      renderNewsList();
+        authorAvatar: profile ? profile.avatarImage : BLOCK_BOY_PROFILE_IMAGE
+      });
+      await renderNewsList();
       form.querySelector(".kg-news-title").value = "";
       form.querySelector(".kg-news-image").value = "";
       form.querySelector(".kg-news-body").value = "";
@@ -2235,11 +2268,11 @@
     newsPage.parentNode.insertBefore(form, newsPage);
   }
 
-  function renderNewsList() {
+  async function renderNewsList() {
     var newsPage = document.querySelector("#news-list");
     if (!newsPage) return;
     var isAdmin = getCurrentProfileId() === "1";
-    var items = getNewsItems();
+    var items = await fetchNewsItems();
     var list = newsPage.querySelector(".news-list");
     if (!list) {
       list = document.createElement("ul");
@@ -2268,19 +2301,16 @@
     }
   }
 
-  function deleteNewsItem(newsId) {
-    var items = getNewsItems();
-    items = items.filter(function(n) { return n.id !== newsId; });
-    setNewsItems(items);
-    renderNewsList();
+  async function deleteNewsItem(newsId) {
+    await deleteNewsArticle(newsId);
+    await renderNewsList();
   }
 
-  function renderNewsArticle() {
+  async function renderNewsArticle() {
     var params = new URLSearchParams(window.location.search);
     var articleId = params.get("article");
     if (!articleId) return;
-    var items = getNewsItems();
-    var item = items.find(function(n) { return n.id === articleId; });
+    var item = await fetchNewsArticle(articleId);
     if (!item) return;
     document.title = item.title + " - KaGaMa";
     var date = new Date(item.createdAt);
@@ -2328,7 +2358,7 @@
     renderNewsComments();
   }
 
-  function populateActivity() {
+  async function populateActivity() {
     var el = document.getElementById("activity");
     if (!el) return;
     var items = [];
@@ -2339,10 +2369,10 @@
         items.push({ user: p.username, text: "joined PlayKaGaMa!", img: p.avatarImage || BLOCK_BOY_PROFILE_IMAGE });
       }
     });
-    var news = getNewsItems();
+    var news = await fetchNewsItems();
     news.slice(0, 5).forEach(function(n) {
       if (n.author) {
-        items.push({ user: n.author, text: "published a news article!", img: n.imageUrl || ROOT + "/static/img/KaGaMa-logo.webp" });
+        items.push({ user: n.author, text: "published a news article!", img: n.imageUrl || ROOT + "/static/img/kogama-logo.webp" });
       }
     });
     var avatars = [];
@@ -2360,7 +2390,7 @@
       }
     });
     if (items.length === 0) {
-      items.push({ user: "KaGaMa", text: "Welcome to KaGaMa!", img: ROOT + "/static/img/KaGaMa-logo.webp" });
+      items.push({ user: "KaGaMa", text: "Welcome to KaGaMa!", img: ROOT + "/static/img/kogama-logo.webp" });
     }
     el.innerHTML = items.slice(0, 10).map(function(a) {
       return '<a href="#">' +

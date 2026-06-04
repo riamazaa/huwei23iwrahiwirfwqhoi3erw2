@@ -642,7 +642,7 @@ a.logo .logo-image, a.title .title-image { display: none !important; }
 #pageheader .logo-image {
   width: 32px;
   height: 32px;
-  background: url(/www.kogama.com/static/img/kagama-red-icon.webp) center/contain no-repeat;
+  background: url(/static/img/kogama-logo.webp) center/contain no-repeat;
 }
 #pageheader nav {
   display: flex;
@@ -950,3 +950,7 @@ section.carousel:has(.carousel-container:empty) { display: none; }
 .kg-edit-comment-cancel:hover { background: #444; }
 .kg-disclaimer { padding: 20px; text-align: center; border-top: 1px solid #1a2a3a; margin-top: 20px; }
 .kg-disclaimer p { color: #6b7d8e; font-size: 11px; line-height: 1.6; margin: 0; max-width: 800px; margin-left: auto; margin-right: auto; }
+
+/* Hide consent popups */
+#ad_consent_popup, #ad_consent_withdraw_popup, .ad_consent_popup { display: none !important; }
+#consent_withdraw_menu, #consent_give_menu { display: none !important; }

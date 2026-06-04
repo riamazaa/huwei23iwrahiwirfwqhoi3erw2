@@ -67,6 +67,19 @@ async function saveModels(data) {
   await fs.writeFile(modelsFile, JSON.stringify(data, null, 2), 'utf8');
 }
 
+const newsFile = path.resolve(__dirname, 'data', 'news.json');
+
+async function loadNews() {
+  try {
+    const raw = await fs.readFile(newsFile, 'utf8');
+    return JSON.parse(raw);
+  } catch { return []; }
+}
+
+async function saveNews(data) {
+  await fs.writeFile(newsFile, JSON.stringify(data, null, 2), 'utf8');
+}
+
 async function readBody(request) {
   const chunks = [];
   for await (const chunk of request) chunks.push(chunk);
@@ -705,6 +718,47 @@ const server = http.createServer(async (request, response) => {
 
     if (pathname.startsWith('/admin/api/')) {
       await handleAdminAPI(request, response);
+      return;
+    }
+
+    // News API routes
+    if (pathname === '/api/news' && request.method === 'GET') {
+      const news = await loadNews();
+      sendJson(response, news);
+      return;
+    }
+    if (pathname.startsWith('/api/news/') && request.method === 'GET') {
+      const id = pathname.split('/api/news/')[1];
+      const news = await loadNews();
+      const article = news.find(n => n.id === id);
+      if (article) { sendJson(response, article); } else { sendJson(response, { error: 'Not found' }, 404); }
+      return;
+    }
+    if (pathname === '/api/news' && request.method === 'POST') {
+      const body = await readBody(request);
+      if (!body || !body.title) { sendJson(response, { error: 'Missing title' }, 400); return; }
+      const news = await loadNews();
+      const article = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+        title: body.title,
+        content: body.content || '',
+        imageUrl: body.imageUrl || '',
+        author: body.author || 'KaGaMa',
+        createdAt: new Date().toISOString()
+      };
+      news.unshift(article);
+      await saveNews(news);
+      sendJson(response, article, 201);
+      return;
+    }
+    if (pathname.startsWith('/api/news/') && request.method === 'DELETE') {
+      const id = pathname.split('/api/news/')[1];
+      const news = await loadNews();
+      const idx = news.findIndex(n => n.id === id);
+      if (idx === -1) { sendJson(response, { error: 'Not found' }, 404); return; }
+      news.splice(idx, 1);
+      await saveNews(news);
+      sendJson(response, { ok: true });
       return;
     }
 
