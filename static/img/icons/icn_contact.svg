@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="Contact_Us" data-name="Contact Us" class="cls-1" d="M2,6H30V24H14L8,30V24H2V6Zm4,8h4v4H6V14Zm8,0h4v4H14V14Zm8,0h4v4H22V14Z" transform="translate(0 -2)"/>
+</svg>

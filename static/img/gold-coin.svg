@@ -1,0 +1,13 @@
+<svg id="OnlineCube" xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <defs>
+    <style>
+      .cls-1 { fill: #febb46; }
+      .cls-1, .cls-2, .cls-3 { fill-rule: evenodd; }
+      .cls-2 { fill: #eca324; }
+      .cls-3 { fill: #ffd182; }
+    </style>
+  </defs>
+  <path id="Polygon_700" data-name="Polygon 700" class="cls-1" d="M81,2l68,40v77L81,158,12,119V41Z"/>
+  <path id="Polygon_700_copy_4" data-name="Polygon 700 copy 4" class="cls-2" d="M149,119L81,158V84l68-42v77Z"/>
+  <path id="Polygon_700_copy" data-name="Polygon 700 copy" class="cls-3" d="M81.014,1.986L149,42,81,84,12,41Z"/>
+</svg>

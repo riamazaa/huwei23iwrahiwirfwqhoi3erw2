@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Friends - KoGaMa</title>
+<link rel="icon" href="//static/img/favicon.ico?v=3" type="image/x-icon">
+<link rel="stylesheet" href="//static.kogstatic.com/0000/d9c1e5da76aa8de67a3be7e8541d0ba21f064294/app-less.css" type="text/css">
+<link rel="stylesheet" href="//static.kogstatic.com/0000/d9c1e5da76aa8de67a3be7e8541d0ba21f064294/app-sass.css" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Open+Sans:400,700,800&subset=latin" rel="stylesheet" type="text/css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="theme-color" content="#000b1d">
+<style>
+  #profile-friend-list { padding: 20px 16px; }
+  #profile-friend-list .friends-empty {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  #profile-friend-list .friends-empty .avatar-wrapper {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 16px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    overflow: hidden;
+  }
+  #profile-friend-list .friends-empty .avatar-wrapper img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+  #profile-friend-list .friends-empty h2 {
+    color: #fff;
+    font-size: 20px;
+    margin: 0 0 8px;
+  }
+  #profile-friend-list .friends-empty p {
+    color: #8796a2;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0 0 20px;
+  }
+  #profile-friend-list .friends-empty .find-friends-btn {
+    display: inline-block;
+    background: #4e6987;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    text-transform: none;
+  }
+  #profile-friend-list .friends-empty .find-friends-btn:hover {
+    background: #5a7a9a;
+  }
+  .breadcrumb { list-style: none; padding: 8px 16px; margin: 0; display: flex; align-items: center; }
+  .breadcrumb li { display: flex; align-items: center; }
+  .breadcrumb li a { color: #8796a2; font-size: 13px; text-decoration: none; font-weight: 700; }
+  .breadcrumb li a:hover { color: #fff; }
+  .breadcrumb li svg { width: 18px; height: 18px; fill: #8796a2; margin: 0 4px; }
+</style>
+</head>
+<body id="root-page-mobile" class="">
+<header id="pageheader"><div class="pageheader-inner"><a href="/games/" title="KoGaMa" class="logo"><div class="logo-image"></div></a><nav class="menu anonymous"><ol><li class="game "><a href="/games/"><i class="icon-gamepad"></i><span class="text">Play</span></a></li><li class="build "><a href="/build/"><i class="icon-cubes"></i><span class="text">Build</span></a></li><li class="shop "><a href="/marketplace/"><i class="icon-basket"></i><span class="text">Shop</span></a></li><li class="news "><a href="/news/"><i class="icon-news"></i><span class="text">News</span></a></li><li class="news "><a href="/videos/"><i class="icon-youtube-play"></i><span class="text">Videos</span></a></li></ol></nav><div id="account-header"></div></div></header>
+
+<div id="content" class="">
+  <div id="content-container">
+    <header id="pagesubheader" class=""><div class="submenu-container"><ul class="breadcrumb"><li><a href="../"><span class="title" id="breadcrumb-username">Profile</span></a></li><li><svg viewBox="0 0 48 48"><path d="M17.17 32.92l9.17-9.17-9.17-9.17L20 11.75l12 12-12 12z"></path></svg><a href="#"><span class="title">Friends</span></a></li></ul></div></header>
+    <div id="spacer-cell"></div>
+    <div id="main-content">
+      <div id="mobile-page">
+        <div id="mobile-page-content">
+          <article id="profile-friend-list" class="content-content">
+            <section class="friends">
+              <div class="friends-empty" id="friends-empty" style="display:none;">
+                <div class="avatar-wrapper" id="friends-avatar"></div>
+                <h2>Hey there!</h2>
+                <p>It seems you haven't found any friends yet.<br>Click the button to find friends.</p>
+                <a class="find-friends-btn" href="/games/">Find friends</a>
+              </div>
+              <ul class="friend-list" id="friend-list"></ul>
+            </section>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function getProfileId() {
+  var parts = window.location.pathname.split("/");
+  for (var i = 0; i < parts.length; i++) {
+    if (parts[i] === "profile" && parts[i+1]) return parts[i+1];
+  }
+  return "1";
+}
+
+function escapeHtml(s) {
+  var d = document.createElement("div");
+  d.appendChild(document.createTextNode(s || ""));
+  return d.innerHTML;
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var profileId = getProfileId();
+  var username = "Profile";
+  var avatarImage = "/static/img/blockboy_large_330x451.jpg";
+
+  try {
+    var raw = localStorage.getItem("kogama.offline.profiles");
+    if (raw) {
+      var profiles = JSON.parse(raw);
+      var profile = profiles[profileId];
+      if (profile && profile.username) {
+        username = profile.username;
+        if (profile.avatarImage) avatarImage = profile.avatarImage;
+      }
+    }
+  } catch(e) {}
+
+  document.title = username + "'s Friends - KoGaMa";
+  var bc = document.getElementById("breadcrumb-username");
+  if (bc) bc.textContent = username;
+
+  var friends = [];
+  try {
+    var raw2 = localStorage.getItem("kogama.offline.friends." + profileId);
+    if (raw2) friends = JSON.parse(raw2);
+  } catch(e) {}
+
+  if (friends.length === 0) {
+    document.getElementById("friends-empty").style.display = "block";
+    document.getElementById("friends-avatar").innerHTML =
+      '<img src="/static/img/friends-avatar.webp" alt="Avatar">';
+  } else {
+    var list = document.getElementById("friend-list");
+    friends.forEach(function(f) {
+      var li = document.createElement("li");
+      li.className = "friend-item";
+      li.innerHTML = '<a href="/profile/' + escapeHtml(f.id || "") + '/">' +
+        '<div class="friend-image"><div class="sub-avatar">' +
+        '<svg class="sub-avatar-image-svg" viewBox="0 0 32 32" height="32px" width="32px" clip-path-units="objectBoundingBox">' +
+        '<defs><clipPath id="clip-hexagon"><polygon points="16 0, 30 8, 30 24, 16 32, 2 24, 2 8"></polygon></clipPath></defs>' +
+        '<rect width="32" height="32"></rect>' +
+        '<image class="sub-avatar-image" xlink:href="' + escapeHtml(f.avatarImage || avatarImage) + '" width="32" height="32"></image>' +
+        '</svg></div></div>' +
+        '<div class="friend-name">' + escapeHtml(f.username || "Friend") + '</div></a>';
+      list.appendChild(li);
+    });
+  }
+});
+</script>
+</body>
+</html>

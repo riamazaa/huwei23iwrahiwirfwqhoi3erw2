@@ -1,0 +1,39 @@
+# Archive dumps
+kogama.com-20220307/
+kogama-profile-669419960/
+kogama-reconstructed/
+Crispy Kirby KaGaMa/
+
+# CDN cache copies (large, not needed in repo)
+static.kogstatic.com/
+www.kogstatic.com/
+fonts.gstatic.com/
+fonts.googleapis.com/
+www.google.com/
+www.googletagmanager.com/
+
+# Node
+node_modules/
+
+# Logs
+*.log
+
+# Utility scripts
+copy-wayback-site.mjs
+fix-creations.mjs
+fix-profile.mjs
+patch-login-signup.mjs
+reconstruct-archive.mjs
+replace-profile.mjs
+replace-profile2.mjs
+update-bootstrap.mjs
+serve-copy.mjs
+serve-copy-backup.mjs
+serve-copy-original.mjs
+
+# Junk
+-SimpleMatch
+0
+.env
+.DS_Store
+Thumbs.db
