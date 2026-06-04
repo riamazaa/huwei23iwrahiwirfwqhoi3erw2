@@ -5,6 +5,7 @@
   var PROFILE_KEY = "KaGaMa.offline.profile";
   var PROFILES_KEY = "KaGaMa.offline.profiles";
   var NEXT_ID_KEY = "KaGaMa.offline.nextId";
+  var PASSWORDS_KEY = "KaGaMa.offline.passwords";
   var COMMENT_KEY_PREFIX = "KaGaMa.offline.comments.";
   var BRAND_NAME = "KaGaMa";
   var BRAND_TITLE = "KaGaMa - Play, create And Share";
@@ -119,6 +120,16 @@
 
   function saveProfiles(profiles) {
     localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+  }
+
+  function getPasswords() {
+    try {
+      return JSON.parse(localStorage.getItem(PASSWORDS_KEY) || "{}");
+    } catch (e) { return {}; }
+  }
+
+  function savePasswords(pwds) {
+    localStorage.setItem(PASSWORDS_KEY, JSON.stringify(pwds));
   }
 
   function getNextId() {
@@ -400,6 +411,13 @@
       if (isLogin) {
         var found = findProfileByUsername(username);
         if (found) {
+          var passwords = getPasswords();
+          var enteredPw = password ? password.value : "";
+          if (passwords[found.id] && passwords[found.id] !== enteredPw) {
+            var msg = overlay.querySelector(".kg-auth-message");
+            if (msg) msg.textContent = "Wrong password. Please try again.";
+            return;
+          }
           localStorage.setItem(PROFILE_KEY, found.id);
           var existing = found.profile;
           profileData.level = existing.level != null ? existing.level : 1;
@@ -411,15 +429,9 @@
           profileData.avatars = existing.avatars != null ? existing.avatars : 1;
           setProfile(profileData);
         } else {
-          localStorage.setItem(PROFILE_KEY, String(bumpNextId()));
-          profileData.level = 1;
-          profileData.xp = 0;
-          profileData.gold = 0;
-          profileData.rank = getNextRank();
-          profileData.friends = 0;
-          profileData.games = 0;
-          profileData.avatars = 1;
-          setProfile(profileData);
+          var msg = overlay.querySelector(".kg-auth-message");
+          if (msg) msg.textContent = "No account found with that username. Please sign up first.";
+          return;
         }
       } else {
         profileData.level = 1;
@@ -431,6 +443,11 @@
         profileData.avatars = 1;
       }
       setProfile(profileData);
+      if (!isLogin) {
+        var passwords = getPasswords();
+        passwords[getCurrentProfileId()] = password ? password.value : "";
+        savePasswords(passwords);
+      }
       var message = overlay.querySelector(".kg-auth-message");
       if (message) message.textContent = "Signed in as " + username + ".";
       updateAuthUI();
@@ -2214,17 +2231,6 @@
 
   var NEWS_KEY = "KaGaMa.offline.news-items";
 
-  function getNewsItemsLocal() {
-    try {
-      var items = JSON.parse(localStorage.getItem(NEWS_KEY) || "[]");
-      return Array.isArray(items) ? items : [];
-    } catch (e) { return []; }
-  }
-
-  function setNewsItemsLocal(items) {
-    localStorage.setItem(NEWS_KEY, JSON.stringify(items.slice(0, 50)));
-  }
-
   async function fetchNewsItems() {
     try {
       var r = await fetch(ROOT + "/api/news");
@@ -2234,7 +2240,7 @@
       var r2 = await fetch(ROOT + "/data/news.json");
       if (r2.ok) { var d = await r2.json(); return Array.isArray(d) ? d : []; }
     } catch(e) {}
-    return getNewsItemsLocal();
+    return [];
   }
 
   async function fetchNewsArticle(id) {
@@ -2246,7 +2252,7 @@
       var r2 = await fetch(ROOT + "/data/news.json");
       if (r2.ok) { var items = await r2.json(); if (Array.isArray(items)) { var found = items.find(function(n) { return n.id === id; }); if (found) return found; } }
     } catch(e) {}
-    return getNewsItemsLocal().find(function(n) { return n.id === id; }) || null;
+    return null;
   }
 
   async function postNewsArticle(data) {
@@ -2254,11 +2260,7 @@
       var r = await fetch(ROOT + "/api/news", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(data) });
       if (r.ok) return await r.json();
     } catch(e) {}
-    var item = Object.assign({ id: "n-" + Date.now(), createdAt: new Date().toISOString() }, data);
-    var items = getNewsItemsLocal();
-    items.unshift(item);
-    setNewsItemsLocal(items);
-    return item;
+    return null;
   }
 
   async function deleteNewsArticle(id) {
@@ -2266,9 +2268,7 @@
       var r = await fetch(ROOT + "/api/news/" + encodeURIComponent(id), { method: "DELETE" });
       if (r.ok) return true;
     } catch(e) {}
-    var items = getNewsItemsLocal().filter(function(n) { return n.id !== id; });
-    setNewsItemsLocal(items);
-    return true;
+    return false;
   }
 
   function populateNewsUpload() {
