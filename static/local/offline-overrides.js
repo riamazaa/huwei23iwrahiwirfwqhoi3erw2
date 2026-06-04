@@ -1327,6 +1327,39 @@
     return days + " day" + (days === 1 ? "" : "s") + " ago";
   }
 
+  function renderLeaderboard() {
+    var el = document.querySelector("#leaderboard-list");
+    if (!el) return;
+    var profiles = getProfiles();
+    var list = [];
+    Object.keys(profiles).forEach(function(id) {
+      var p = profiles[id];
+      if (p && p.username) {
+        list.push({ id: id, username: p.username, avatarImage: p.avatarImage || BLOCK_BOY_PROFILE_IMAGE, level: Number(p.level) || 1, xp: Number(p.xp) || 0, gold: Number(p.gold) || 0, rank: Number(p.rank) || 0 });
+      }
+    });
+    list.sort(function(a, b) { return a.rank - b.rank; });
+    if (list.length === 0) {
+      el.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#8796a2;"><p>No players yet.</p></div>';
+      return;
+    }
+    var medals = ["", "#FFD700", "#C0C0C0", "#CD7F32"];
+    el.innerHTML = '<div class="lb-table">' + list.map(function(p, i) {
+      var medalHtml = medals[p.rank] ? '<span class="lb-medal" style="background:' + medals[p.rank] + ';">' + p.rank + '</span>' : '<span class="lb-rank">' + p.rank + '</span>';
+      return '<div class="lb-row" onclick="window.location.href=\'' + ROOT + '/profile/1/?p=' + p.id + '\'">' +
+        '<div class="lb-left">' +
+          medalHtml +
+          '<div class="lb-avatar" style="background-image:url(' + escapeHtml(p.avatarImage) + ');"></div>' +
+          '<span class="lb-name">' + escapeHtml(p.username) + '</span>' +
+        '</div>' +
+        '<div class="lb-right">' +
+          '<span class="lb-level">Level ' + p.level + '</span>' +
+          '<span class="lb-xp">' + String(p.xp).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' XP</span>' +
+        '</div>' +
+      '</div>';
+    }).join("") + '</div>';
+  }
+
   function renderProfilePage() {
     var root = document.querySelector("[data-kagama-profile-root]");
     if (!root) return;
@@ -2197,6 +2230,10 @@
       var r = await fetch(ROOT + "/api/news");
       if (r.ok) return await r.json();
     } catch(e) {}
+    try {
+      var r2 = await fetch(ROOT + "/data/news.json");
+      if (r2.ok) { var d = await r2.json(); return Array.isArray(d) ? d : []; }
+    } catch(e) {}
     return getNewsItemsLocal();
   }
 
@@ -2204,6 +2241,10 @@
     try {
       var r = await fetch(ROOT + "/api/news/" + encodeURIComponent(id));
       if (r.ok) return await r.json();
+    } catch(e) {}
+    try {
+      var r2 = await fetch(ROOT + "/data/news.json");
+      if (r2.ok) { var items = await r2.json(); if (Array.isArray(items)) { var found = items.find(function(n) { return n.id === id; }); if (found) return found; } }
     } catch(e) {}
     return getNewsItemsLocal().find(function(n) { return n.id === id; }) || null;
   }
@@ -2461,6 +2502,7 @@
     populateStatusUpdate();
     renderAvatarsPage();
     renderGamePage();
+    renderLeaderboard();
     populateNewsUpload();
     renderNewsList();
     renderNewsArticle();

@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "n-welcome-001",
+    "title": "Welcome to the official KaGaMa Beta!",
+    "content": "Welcome to KaGaMa! We are excited to launch our platform where you can play, create, and share multiplayer games with friends. Stay tuned for more updates!",
+    "imageUrl": "/static/img/game-screenshot-600x240.jpg",
+    "author": "KaGaMa",
+    "createdAt": "2026-06-03T00:00:00.000Z"
+  }
+]
