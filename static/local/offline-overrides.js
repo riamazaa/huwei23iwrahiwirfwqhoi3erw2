@@ -138,6 +138,22 @@
 
   if (!isSiteAuthed()) {
     showSitePasswordGate();
+
+    var _kgGateObserver = new MutationObserver(function() {
+      if (!isSiteAuthed() && !document.getElementById('kg-site-gate')) {
+        showSitePasswordGate();
+      }
+    });
+    _kgGateObserver.observe(document.documentElement, { childList: true, subtree: true });
+
+    var _kgGateInterval = setInterval(function() {
+      if (isSiteAuthed()) {
+        clearInterval(_kgGateInterval);
+        _kgGateObserver.disconnect();
+      } else if (!document.getElementById('kg-site-gate')) {
+        showSitePasswordGate();
+      }
+    }, 500);
   }
 
   function ready(fn) {
