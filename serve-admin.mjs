@@ -10,7 +10,7 @@ const siteRoot = root;
 const dataDir = path.resolve(__dirname, 'data');
 const port = Number(process.env.PORT ?? 8787);
 
-const SITE_PASSWORD = 'KaGaMaTesting';
+const SITE_PASSWORD = 'KaGaMatesting';
 const AUTH_COOKIE = 'kagama_auth';
 const AUTH_SECRET = 'kagama-site-secret-2026';
 

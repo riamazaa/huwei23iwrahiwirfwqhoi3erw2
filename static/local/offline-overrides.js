@@ -57,7 +57,7 @@
   };
 
   // Site-wide password gate (for GitHub Pages where server gate doesn't apply)
-  var SITE_PW = 'KaGaMaTesting';
+  var SITE_PW = 'KaGaMatesting';
   var AUTH_COOKIE_NAME = 'kagama_auth';
 
   function getCookie(name) {
