@@ -744,6 +744,13 @@ a.logo .logo-image, a.title .title-image { display: none !important; }
 }
 
 /* Profile progression icons */ .progression .progression-item .symbol i { display: inline-block !important; font-size: 16px !important; color: rgba(255,248,231,.65) !important; vertical-align: middle !important; }
+.progression { display: flex !important; align-items: center !important; gap: 16px !important; flex-wrap: wrap !important; padding: 8px 0 !important; }
+.progression .level { flex-shrink: 0 !important; }
+.progression .level img { height: 26px !important; }
+.progression .progression-item { display: flex !important; align-items: center !important; gap: 4px !important; }
+.progression .progression-item .symbol { display: flex !important; align-items: center !important; }
+.progression .progression-item .data { color: #fff !important; font-weight: 700 !important; font-size: 14px !important; }
+.profile-badges .popout-box .name { display: none !important; }
 
 svg:not(:root) { overflow: visible !important; }
 

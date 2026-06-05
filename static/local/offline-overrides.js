@@ -331,7 +331,7 @@
       gold: oldDefaultStats ? 0 : Number(source.gold ?? existing.gold ?? 0),
       rank: Number((source.rank || existing.rank) || 1),
       friends: Number((source.friends || existing.friends) || 0),
-      bio: source.bio || existing.bio || "Background: 9064641, filter: none;",
+      bio: source.bio || existing.bio || "",
       games: Number(source.games ?? existing.games ?? 0),
       avatars: Number(source.avatars ?? existing.avatars ?? 1),
       models: Number(source.models || existing.models || 0),
@@ -1508,8 +1508,8 @@
       creationItem("avatar", 
       profileAvatarsUrl(), "Avatars", pageStats.avatars + " " + plural(pageStats.avatars, "Avatar"),
       avatar),
-      creationItem("marketplace marketplace-model", ROOT + "/marketplace/model", "Model Marketplace", "6 Models for sale", ROOT + "/static/img/model-marketplace.webp"),
-      creationItem("marketplace marketplace-avatar", ROOT + "/marketplace/avatar", "Avatar Marketplace", "1 Avatar for sale", ROOT + "/static/img/blockboy_large_330x451.jpg"),
+      creationItem("marketplace marketplace-model", ROOT + "/marketplace/model", "Model Marketplace", pageStats.models + " " + plural(pageStats.models, "Model") + " for sale", ROOT + "/static/img/model-marketplace.webp"),
+      creationItem("marketplace marketplace-avatar", ROOT + "/marketplace/avatar", "Avatar Marketplace", pageStats.avatars + " " + plural(pageStats.avatars, "Avatar") + " for sale", ROOT + "/static/img/blockboy_large_330x451.jpg"),
       '</div>',
       bio ? '<div class="text"><p>' + bio + '</p></div>' : '',
       '</article>'
@@ -1568,7 +1568,8 @@
       friends: profile.friends || 0,
       gold: profile.gold || 0,
       games: profile.games || 0,
-      avatars: profile.avatars || 1
+      avatars: profile.avatars || 1,
+      models: profile.models || 0
     };
   }
 
