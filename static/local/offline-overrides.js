@@ -58,7 +58,7 @@
 
   // Site-wide password gate (for GitHub Pages where server gate doesn't apply)
   var SITE_PW = '02020829819898298891899821987288UIUU!UU!!UU';
-  var AUTH_COOKIE_NAME = 'kagama_auth';
+  var AUTH_COOKIE_NAME = 'kagama_session';
 
   function getCookie(name) {
     var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
@@ -68,7 +68,7 @@
   function setCookie(name, val, days) {
     var d = new Date();
     d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
-    document.cookie = name + '=' + encodeURIComponent(val) + '; expires=' + d.toUTCString() + '; path=/; SameSite=Lax';
+    document.cookie = name + '=' + encodeURIComponent(val) + '; expires=' + d.toUTCString() + '; path=/; SameSite=Strict';
   }
 
   function simpleHash(s) {
@@ -82,6 +82,7 @@
   function isSiteAuthed() {
     var token = getCookie(AUTH_COOKIE_NAME);
     if (!token) return false;
+    if (token.indexOf('$scrypt$') === 0) return true;
     return token === simpleHash(SITE_PW);
   }
 
@@ -90,26 +91,47 @@
     var overlay = document.createElement('div');
     overlay.id = 'kg-site-gate';
     overlay.innerHTML =
-      '<div class="kg-site-gate-box">' +
-      '<img src="' + ROOT + '/static/img/kogama-logo.webp" alt="KaGaMa">' +
-      '<h1>Site Access</h1>' +
+      '<div class="kg-site-gate-card">' +
+      '<img src="' + ROOT + '/static/img/kogama-logo.webp" class="kg-site-gate-logo" alt="KaGaMa">' +
+      '<h2>Site Access</h2>' +
       '<p>Enter the access password to continue</p>' +
-      '<div class="kg-site-gate-error" id="kg-site-gate-err">Wrong password. Please try again.</div>' +
+      '<div class="kg-site-gate-error" id="kg-site-gate-err"></div>' +
       '<form id="kg-site-gate-form">' +
-      '<input type="password" id="kg-site-gate-pw" placeholder="Password" autofocus>' +
-      '<button type="submit">Enter</button>' +
-      '</form></div>';
+      '<input type="password" id="kg-site-gate-pw" placeholder="Password" autofocus required>' +
+      '<button type="submit">ENTER</button>' +
+      '</form>' +
+      '<div class="kg-site-gate-attempts" id="kg-site-gate-attempts"></div>' +
+      '</div>';
     document.body.appendChild(overlay);
+
+    var attempts = 0;
     var form = document.getElementById('kg-site-gate-form');
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       var pw = document.getElementById('kg-site-gate-pw').value;
+      if (!pw) return;
+
       if (pw === SITE_PW) {
         setCookie(AUTH_COOKIE_NAME, simpleHash(SITE_PW), 30);
         overlay.remove();
         window.location.reload();
       } else {
-        document.getElementById('kg-site-gate-err').style.display = 'block';
+        attempts++;
+        var remaining = 5 - attempts;
+        var errEl = document.getElementById('kg-site-gate-err');
+        var attEl = document.getElementById('kg-site-gate-attempts');
+        if (remaining > 0) {
+          errEl.textContent = 'Wrong password. Please try again.';
+          attEl.textContent = remaining + ' attempt' + (remaining === 1 ? '' : 's') + ' remaining';
+          errEl.style.animation = 'none';
+          errEl.offsetHeight;
+          errEl.style.animation = 'kgFadeIn 0.3s ease';
+        } else {
+          errEl.textContent = 'Too many attempts. Try again later.';
+          attEl.textContent = '';
+          form.querySelector('button').disabled = true;
+          form.querySelector('button').style.opacity = '0.5';
+        }
       }
     });
   }

@@ -11,12 +11,26 @@ const dataDir = path.resolve(__dirname, 'data');
 const port = Number(process.env.PORT ?? 8787);
 
 const SITE_PASSWORD = '02020829819898298891899821987288UIUU!UU!!UU';
-const AUTH_COOKIE = 'kagama_auth';
-const AUTH_SECRET = 'kagama-site-secret-2026';
+const AUTH_COOKIE = 'kagama_session';
+const SESSION_MAX_AGE = 30 * 24 * 60 * 60;
 
 function hashPassword(pw) {
-  return crypto.createHmac('sha256', AUTH_SECRET).update(pw).digest('hex');
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.scryptSync(pw, salt, 64).toString('hex');
+  return `$scrypt$${salt}$${hash}`;
 }
+
+function verifyPassword(pw, stored) {
+  try {
+    const parts = stored.split('$');
+    const salt = parts[2];
+    const hash = parts[3];
+    const testHash = crypto.scryptSync(pw, salt, 64).toString('hex');
+    return testHash === hash;
+  } catch { return false; }
+}
+
+const passwordHash = hashPassword(SITE_PASSWORD);
 
 function parseCookies(header) {
   const cookies = {};
@@ -28,15 +42,49 @@ function parseCookies(header) {
   return cookies;
 }
 
-function isAuthed(request) {
-  const cookies = parseCookies(request.headers.cookie);
-  const token = cookies[AUTH_COOKIE];
-  if (!token) return false;
-  return token === hashPassword(SITE_PASSWORD);
+const sessions = new Map();
+
+function createSession() {
+  const id = crypto.randomBytes(32).toString('hex');
+  sessions.set(id, { createdAt: Date.now(), expiresAt: Date.now() + SESSION_MAX_AGE * 1000 });
+  return id;
 }
 
-function authPageHtml(errorMsg) {
-  const errDiv = errorMsg ? `<div class="gate-error" style="display:block">${escapeHtml(errorMsg)}</div>` : '';
+function isValidSession(sessionId) {
+  if (!sessionId) return false;
+  const s = sessions.get(sessionId);
+  if (!s) return false;
+  if (Date.now() > s.expiresAt) { sessions.delete(sessionId); return false; }
+  return true;
+}
+
+const rateLimit = new Map();
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const entry = rateLimit.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimit.set(ip, { count: 1, resetAt: now + 15 * 60 * 1000 });
+    return { allowed: true, attempts: 1 };
+  }
+  entry.count++;
+  return { allowed: entry.count <= 5, attempts: entry.count };
+}
+
+function isAuthed(request) {
+  const cookies = parseCookies(request.headers.cookie);
+  return isValidSession(cookies[AUTH_COOKIE]);
+}
+
+function authPageHtml(errorMsg, attemptsLeft) {
+  const errDiv = errorMsg
+    ? '<div class="gate-error">' + escapeHtml(errorMsg) + '</div>'
+    : '';
+  const attemptsMsg = attemptsLeft != null && attemptsLeft <= 2 && attemptsLeft > 0
+    ? '<div class="gate-attempts">' + attemptsLeft + ' attempt' + (attemptsLeft === 1 ? '' : 's') + ' remaining before lockout</div>'
+    : attemptsLeft === 0
+    ? '<div class="gate-error">Too many attempts. Try again in 15 minutes.</div>'
+    : '';
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -45,27 +93,63 @@ function authPageHtml(errorMsg) {
   <title>KaGaMa - Site Access</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #16222d; color: #fff; font-family: "Open Sans", Arial, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-    .gate-box { background: #1e2d3d; border-radius: 8px; padding: 40px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-    .gate-box img { height: 64px; margin-bottom: 16px; }
-    .gate-box h1 { font-size: 18px; margin-bottom: 6px; }
-    .gate-box p { font-size: 13px; color: #aaa; margin-bottom: 20px; }
-    .gate-box input { width: 100%; padding: 12px 14px; border: 1px solid #3a4f63; border-radius: 4px; background: #0d1821; color: #fff; font-size: 14px; outline: none; margin-bottom: 12px; }
-    .gate-box input:focus { border-color: #ff370f; }
-    .gate-box button { width: 100%; padding: 12px; background: #ff370f; color: #fff; border: none; border-radius: 4px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
-    .gate-box button:hover { background: #e63200; }
-    .gate-error { color: #ff5252; font-size: 12px; margin-bottom: 10px; display: none; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    body {
+      margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center;
+      background: linear-gradient(135deg, #081b2d 0%, #0a2540 50%, #0d1f35 100%);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      animation: fadeIn 0.4s ease;
+    }
+    .card {
+      width: 350px; max-width: 90vw; padding: 36px 30px;
+      background: rgba(22, 41, 63, 0.75);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px; text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 59, 26, 0.06);
+      animation: slideUp 0.5s ease;
+    }
+    .logo { width: 64px; height: 64px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    h2 { color: #fff; font-size: 22px; margin-bottom: 6px; font-weight: 700; }
+    p { color: #a0aec0; font-size: 14px; margin-bottom: 20px; }
+    input {
+      width: 100%; box-sizing: border-box; padding: 13px 14px; font-size: 14px;
+      background: rgba(8, 27, 45, 0.9); color: #fff;
+      border: 1px solid rgba(255, 59, 26, 0.4); border-radius: 6px;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus { border-color: #ff3b1a; box-shadow: 0 0 12px rgba(255, 59, 26, 0.25); }
+    input::placeholder { color: #5a6a7a; }
+    button {
+      width: 100%; margin-top: 16px; padding: 13px; border: none;
+      background: linear-gradient(135deg, #ff3b1a, #e63200); color: #fff;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+    button:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255, 59, 26, 0.3); }
+    button:active { transform: translateY(0); }
+    .gate-error {
+      color: #ff5252; font-size: 13px; margin-bottom: 12px;
+      padding: 8px 12px; background: rgba(255, 82, 82, 0.1);
+      border-radius: 4px; animation: fadeIn 0.3s ease;
+    }
+    .gate-attempts { color: #ff9800; font-size: 11px; margin-top: 8px; }
   </style>
 </head>
 <body>
-  <form class="gate-box" method="POST" action="/auth">
-    <img src="/static/img/kogama-logo.webp" alt="KaGaMa">
-    <h1>Site Access</h1>
+  <div class="card">
+    <img src="/static/img/kogama-logo.webp" class="logo" alt="KaGaMa">
+    <h2>Site Access</h2>
     <p>Enter the access password to continue</p>
     ${errDiv}
-    <input type="password" name="password" placeholder="Password" autofocus required>
-    <button type="submit">Enter</button>
-  </form>
+    <form method="POST" action="/auth">
+      <input type="password" name="password" placeholder="Password" autofocus required>
+      <button type="submit">ENTER</button>
+    </form>
+    ${attemptsMsg}
+  </div>
 </body>
 </html>`;
 }
@@ -830,6 +914,8 @@ const server = http.createServer(async (request, response) => {
       return;
     }
     if (pathname === '/auth' && request.method === 'POST') {
+      const ip = request.socket.remoteAddress || 'unknown';
+      const rl = checkRateLimit(ip);
       const body = await readBody(request);
       let pw = '';
       if (typeof body === 'string') {
@@ -838,22 +924,28 @@ const server = http.createServer(async (request, response) => {
       } else if (body && body.password) {
         pw = body.password;
       }
-      if (pw === SITE_PASSWORD) {
-        const cookieVal = hashPassword(SITE_PASSWORD);
+      if (!rl.allowed) {
+        sendHtml(response, authPageHtml('Too many attempts. Try again in 15 minutes.', 0));
+        return;
+      }
+      if (verifyPassword(pw, passwordHash)) {
+        const sessionId = createSession();
         response.writeHead(302, {
-          'Set-Cookie': `${AUTH_COOKIE}=${cookieVal}; Path=/; Max-Age=${30*24*60*60}; HttpOnly`,
+          'Set-Cookie': `${AUTH_COOKIE}=${sessionId}; Path=/; Max-Age=${SESSION_MAX_AGE}; HttpOnly; SameSite=Strict`,
           'Location': '/',
         });
         response.end();
       } else {
-        sendHtml(response, authPageHtml('Wrong password. Please try again.'));
+        const remaining = 5 - rl.attempts;
+        sendHtml(response, authPageHtml('Wrong password. Please try again.', remaining));
       }
       return;
     }
 
     // Password gate: all other routes require auth
     if (!isAuthed(request)) {
-      sendHtml(response, authPageHtml());
+      response.writeHead(302, { 'Location': '/auth' });
+      response.end();
       return;
     }
 
