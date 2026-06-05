@@ -386,9 +386,6 @@ document.addEventListener("DOMContentLoaded", function() {
     for (var i = 0; i < pathParts.length; i++) {
       if (pathParts[i] === "profile" && pathParts[i+1]) { profileId = pathParts[i+1]; break; }
     }
-    var urlParams = new URLSearchParams(window.location.search);
-    var queryProfileId = urlParams.get("p");
-    if (queryProfileId) profileId = queryProfileId;
     if (!profileId || profileId === "index.html") return;
     var raw = localStorage.getItem("KaGaMa.offline.profiles");
     if (!raw) { showNotFound(); return; }

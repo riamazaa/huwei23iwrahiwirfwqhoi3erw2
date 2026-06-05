@@ -2,21 +2,114 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>KaGaMa - Page Not Found</title>
-<style>
-  body { background: #16222d; color: #fff; font-family: "Open Sans", Arial, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-  h1 { font-size: 28px; margin-bottom: 12px; }
-  p { color: #888; margin-bottom: 24px; }
-  a { display: inline-block; background: #8ac943; color: #0e1519; padding: 10px 24px; border-radius: 4px; text-decoration: none; font-weight: 700; }
-</style>
+<title>KaGaMa</title>
+<link rel="icon" href="/static/img/favicon.ico?v=3" type="image/x-icon">
+<link href="/static/local/css/app-less-v2.css" rel="stylesheet" type="text/css">
+<link href="/static/local/css/app-sass-v2.css" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,800&subset=latin" rel="stylesheet" type="text/css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="theme-color" content="#000b1d">
 <link rel="stylesheet" href="/static/local/offline-overrides.css">
 <script defer src="/static/local/offline-overrides.js"></script>
 </head>
-<body>
-<div>
-  <h1>Page Not Found</h1>
-  <p>The page you are looking for does not exist.</p>
-  <a href="/">Back to Home</a>
+<body id="root-page-mobile">
+<div id="profile-view" style="display:none;">
+<header id="pageheader"></header>
+<div id="content"><div id="content-container"><div id="main-content"><div id="notification"></div>
+<div class="mobile-page"><div class="mobile-page-content">
+<article id="profile-page" class="content-content" data-kagama-profile-root>
+<section class="section-top">
+<div class="section-top-background"><div class="background-avatar"></div></div>
+<div class="username"><h2></h2></div>
+<div class="progression">
+<div class="level"><img src="/static/img/xp-level-icon.jpg" height="26"></div>
+<div class="xp-bar-outer"><div class="xp-bar-inner"><span class="xp-bar-text"></span></div></div>
+<div class="gold"><span class="coin"><img src="/static/img/gold-coin.svg" height="16"></span> <span class="data"></span></div>
 </div>
+</section>
+<section class="section-profile-details">
+<div class="details-table">
+<div class="row rank"><div class="label">Rank</div><div class="data"></div></div>
+<div class="row xp"><div class="label">Experience</div><div class="data"></div></div>
+<div class="row friends"><div class="label">Friends</div><div class="data"></div></div>
+<div class="row gold"><div class="label">Gold</div><div class="data"></div></div>
+</div>
+<div class="section-profile-admin-bar"><span class="text"></span></div>
+<div class="profile-created-date"></div>
+</section>
+<section class="section-profile-badges"><ul class="badges"></ul></section>
+</article>
+</div></div></div></div></div>
+</div>
+<div id="not-found-view" style="display:none;">
+<div style="background:#16222d;min-height:100vh;color:#fff;font-family:'Open Sans',Arial,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center;">
+<div>
+<h1 style="font-size:28px;margin-bottom:12px">User not found</h1>
+<p style="color:#888;margin-bottom:24px">This user does not exist or has been removed.</p>
+<a href="/" style="display:inline-block;background:#8ac943;color:#0e1519;padding:10px 24px;border-radius:4px;text-decoration:none;font-weight:700">Back to Home</a>
+</div>
+</div>
+</div>
+<div id="generic-404" style="display:none;">
+<div style="background:#16222d;min-height:100vh;color:#fff;font-family:'Open Sans',Arial,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center;">
+<div>
+<h1 style="font-size:28px;margin-bottom:12px">Page Not Found</h1>
+<p style="color:#888;margin-bottom:24px">The page you are looking for does not exist.</p>
+<a href="/" style="display:inline-block;background:#8ac943;color:#0e1519;padding:10px 24px;border-radius:4px;text-decoration:none;font-weight:700">Back to Home</a>
+</div>
+</div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var path = window.location.pathname;
+  var match = path.match(/\/profile\/(\d+)/);
+  if (!match) {
+    document.getElementById("generic-404").style.display = "";
+    return;
+  }
+  var profileId = match[1];
+  var raw = localStorage.getItem("KaGaMa.offline.profiles");
+  if (!raw) { document.getElementById("not-found-view").style.display = ""; return; }
+  var profiles = JSON.parse(raw);
+  var profile = profiles[profileId];
+  if (!profile || !profile.username) { document.getElementById("not-found-view").style.display = ""; return; }
+  document.getElementById("profile-view").style.display = "";
+  document.title = profile.username + " - KaGaMa";
+  var h2 = document.querySelector(".username h2");
+  if (h2) h2.textContent = profile.username;
+  var rank = document.querySelector(".rank .data");
+  if (rank) rank.textContent = String(profile.rank || 0).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  var xp = document.querySelector(".xp .data");
+  if (xp) xp.textContent = String(profile.xp || 0).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  var fr = document.querySelector(".friends .data");
+  if (fr) fr.textContent = String(profile.friends || 0);
+  var gd = document.querySelector(".gold .data");
+  if (gd) gd.textContent = String(profile.gold || 0).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  if (profile.createdAt) {
+    var d = new Date(profile.createdAt);
+    if (!isNaN(d.getTime())) {
+      var j = document.querySelector(".profile-created-date");
+      if (j) j.textContent = "Joined KaGaMa on " + d.toLocaleDateString("en-US", {month:"short",day:"numeric",year:"numeric"});
+    }
+  }
+  if (profile.avatarImage) {
+    var bgAv = document.querySelector(".background-avatar");
+    if (bgAv) bgAv.style.backgroundImage = "url(" + profile.avatarImage + ")";
+  }
+  var mod = document.querySelector(".section-profile-admin-bar .text");
+  if (mod) {
+    if (profileId === "1") {
+      mod.innerHTML = '<i class="icon-help-circled"></i>' + profile.username.replace(/</g,"&lt;") + '&nbsp;is a moderator';
+    } else {
+      var bar = mod.closest('.section-profile-admin-bar');
+      if (bar) bar.style.display = 'none';
+    }
+  }
+  if (profileId !== "1") {
+    var elite = document.querySelector('img._3TOEv');
+    if (elite) elite.style.display = 'none';
+  }
+});
+</script>
 </body>
 </html>

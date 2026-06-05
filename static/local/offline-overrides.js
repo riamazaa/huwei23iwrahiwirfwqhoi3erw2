@@ -56,6 +56,68 @@
     "\u0418\u0433\u0440\u0430\u0439\u0442\u0435 \u0438 \u0437\u0430\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0439\u0442\u0435 \u043d\u0430\u0433\u0440\u0430\u0434\u044b": "Play and earn rewards"
   };
 
+  // Site-wide password gate (for GitHub Pages where server gate doesn't apply)
+  var SITE_PW = 'KaGaMaTesting';
+  var AUTH_COOKIE_NAME = 'kagama_auth';
+
+  function getCookie(name) {
+    var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : '';
+  }
+
+  function setCookie(name, val, days) {
+    var d = new Date();
+    d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = name + '=' + encodeURIComponent(val) + '; expires=' + d.toUTCString() + '; path=/; SameSite=Lax';
+  }
+
+  function simpleHash(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) {
+      h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+    }
+    return 'h' + Math.abs(h).toString(36);
+  }
+
+  function isSiteAuthed() {
+    var token = getCookie(AUTH_COOKIE_NAME);
+    if (!token) return false;
+    return token === simpleHash(SITE_PW);
+  }
+
+  function showSitePasswordGate() {
+    if (document.getElementById('kg-site-gate')) return;
+    var overlay = document.createElement('div');
+    overlay.id = 'kg-site-gate';
+    overlay.innerHTML =
+      '<div class="kg-site-gate-box">' +
+      '<img src="' + ROOT + '/static/img/kogama-logo.webp" alt="KaGaMa">' +
+      '<h1>Site Access</h1>' +
+      '<p>Enter the access password to continue</p>' +
+      '<div class="kg-site-gate-error" id="kg-site-gate-err">Wrong password. Please try again.</div>' +
+      '<form id="kg-site-gate-form">' +
+      '<input type="password" id="kg-site-gate-pw" placeholder="Password" autofocus>' +
+      '<button type="submit">Enter</button>' +
+      '</form></div>';
+    document.body.appendChild(overlay);
+    var form = document.getElementById('kg-site-gate-form');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var pw = document.getElementById('kg-site-gate-pw').value;
+      if (pw === SITE_PW) {
+        setCookie(AUTH_COOKIE_NAME, simpleHash(SITE_PW), 30);
+        overlay.remove();
+        window.location.reload();
+      } else {
+        document.getElementById('kg-site-gate-err').style.display = 'block';
+      }
+    });
+  }
+
+  if (!isSiteAuthed()) {
+    showSitePasswordGate();
+  }
+
   function ready(fn) {
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", fn, { once: true });
@@ -91,21 +153,36 @@
     localStorage.removeItem(PROFILE_KEY);
   }
 
-  function commentsKey(gameId) {
-    return COMMENT_KEY_PREFIX + String(gameId || "default");
-  }
-
-  function getComments(gameId) {
+  async function fetchGameComments(gameId) {
     try {
-      var comments = JSON.parse(localStorage.getItem(commentsKey(gameId)) || "[]");
-      return Array.isArray(comments) ? comments : [];
-    } catch (error) {
-      return [];
-    }
+      var r = await fetch(ROOT + "/api/gamecomments/" + encodeURIComponent(gameId));
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return [];
   }
 
-  function setComments(gameId, comments) {
-    localStorage.setItem(commentsKey(gameId), JSON.stringify(comments.slice(0, 100)));
+  async function postGameComment(gameId, data) {
+    try {
+      var r = await fetch(ROOT + "/api/gamecomments/" + encodeURIComponent(gameId), { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(data) });
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return null;
+  }
+
+  async function deleteGameCommentApi(gameId, commentId) {
+    try {
+      var r = await fetch(ROOT + "/api/gamecomments/" + encodeURIComponent(gameId), { method: "DELETE", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ commentId: commentId }) });
+      if (r.ok) return true;
+    } catch(e) {}
+    return false;
+  }
+
+  async function editGameCommentApi(gameId, commentId, newText) {
+    try {
+      var r = await fetch(ROOT + "/api/gamecomments/" + encodeURIComponent(gameId), { method: "PUT", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ commentId: commentId, text: newText }) });
+      if (r.ok) return true;
+    } catch(e) {}
+    return false;
   }
 
   function cleanText(value) {
@@ -168,8 +245,7 @@
   }
 
   function profileUrlForId(id) {
-    if (id === "1") return ROOT + "/profile/1";
-    return ROOT + "/profile/1/?p=" + id;
+    return ROOT + "/profile/" + id;
   }
 
   function profileAvatarsUrl() {
@@ -447,6 +523,17 @@
         var passwords = getPasswords();
         passwords[getCurrentProfileId()] = password ? password.value : "";
         savePasswords(passwords);
+        // Save user to server for real-time activity feed
+        fetch(ROOT + "/api/users", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            profileId: getCurrentProfileId(),
+            username: profileData.username,
+            avatarImage: profileData.avatarImage || "",
+            createdAt: new Date().toISOString()
+          })
+        }).catch(function() {});
       }
       var message = overlay.querySelector(".kg-auth-message");
       if (message) message.textContent = "Signed in as " + username + ".";
@@ -1076,12 +1163,12 @@
     reset();
   }
 
-  function renderGameComments(gameId) {
+  async function renderGameComments(gameId) {
     var container = document.querySelector("#game-comments");
     if (!container) return;
 
     var profile = getProfile();
-    var comments = getComments(gameId);
+    var comments = await fetchGameComments(gameId);
     container.innerHTML = [
       '<div class="comments kg-local-comments" data-game-comments="',
       escapeHtml(gameId),
@@ -1093,31 +1180,36 @@
     ].join("");
   }
 
-  var NEWS_COMMENT_KEY_PREFIX = "KaGaMa.offline.news-comments.";
-
-  function newsCommentsKey(newsId) {
-    return NEWS_COMMENT_KEY_PREFIX + String(newsId || "default");
-  }
-
-  function getNewsComments(newsId) {
-    try {
-      var comments = JSON.parse(localStorage.getItem(newsCommentsKey(newsId)) || "[]");
-      return Array.isArray(comments) ? comments : [];
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function setNewsComments(newsId, comments) {
-    localStorage.setItem(newsCommentsKey(newsId), JSON.stringify(comments.slice(0, 100)));
-  }
-
   function newsIdFromPath() {
     var parts = window.location.pathname.split("/").filter(Boolean);
     for (var i = 0; i < parts.length; i++) {
       if (parts[i] === "news" && parts[i + 1]) return parts[i + 1];
     }
     return "default";
+  }
+
+  async function fetchNewsComments(newsId) {
+    try {
+      var r = await fetch(ROOT + "/api/comments/" + encodeURIComponent(newsId));
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return [];
+  }
+
+  async function postNewsComment(newsId, data) {
+    try {
+      var r = await fetch(ROOT + "/api/comments/" + encodeURIComponent(newsId), { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(data) });
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return null;
+  }
+
+  async function deleteNewsComment(newsId, commentId) {
+    try {
+      var r = await fetch(ROOT + "/api/comments/" + encodeURIComponent(newsId), { method: "DELETE", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ commentId: commentId }) });
+      if (r.ok) return true;
+    } catch(e) {}
+    return false;
   }
 
   function newsCommentFormMarkup(newsId) {
@@ -1130,12 +1222,12 @@
     ].join("");
   }
 
-  function renderNewsComments() {
+  async function renderNewsComments() {
     var container = document.querySelector("#news-comments");
     if (!container) return;
     var newsId = newsIdFromPath();
     var profile = getProfile();
-    var comments = getNewsComments(newsId);
+    var comments = await fetchNewsComments(newsId);
     container.innerHTML = [
       '<div class="comments kg-local-comments" data-news-comments="',
       escapeHtml(newsId),
@@ -1147,7 +1239,7 @@
     ].join("");
   }
 
-  function submitNewsComment(form) {
+  async function submitNewsComment(form) {
     var profile = getProfile();
     if (!profile) {
       openAuth("signup");
@@ -1157,17 +1249,13 @@
     var text = textarea ? textarea.value.trim() : "";
     if (!text) return;
     var newsId = form.getAttribute("data-news-id") || newsIdFromPath();
-    var comments = getNewsComments(newsId);
-    comments.unshift({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+    await postNewsComment(newsId, {
       username: profile.username || getCurrentProfileId(),
       avatarImage: profile.avatarImage || BLOCK_BOY_PROFILE_IMAGE,
       profileId: getCurrentProfileId(),
-      text: text,
-      createdAt: new Date().toISOString()
+      text: text
     });
-    setNewsComments(newsId, comments);
-    renderNewsComments();
+    await renderNewsComments();
   }
 
   function commentFormMarkup(gameId) {
@@ -1240,48 +1328,11 @@
   }
 
   function findCommentById(commentId) {
-    var gameId = gameIdFromPath();
-    var gameComments = getComments(gameId);
-    for (var i = 0; i < gameComments.length; i++) {
-      if (gameComments[i].id === commentId) return { collection: "game", index: i, comments: gameComments, gameId: gameId };
-    }
-    var newsId = newsIdFromPath();
-    var newsComments = getNewsComments(newsId);
-    for (var j = 0; j < newsComments.length; j++) {
-      if (newsComments[j].id === commentId) return { collection: "news", index: j, comments: newsComments, newsId: newsId };
-    }
-    var profiles = getProfiles();
-    var profileIds = Object.keys(profiles);
-    for (var k = 0; k < profileIds.length; k++) {
-      var wallPosts = getWallPosts(profileIds[k]);
-      for (var m = 0; m < wallPosts.length; m++) {
-        var postComments = wallPosts[m].comments || [];
-        for (var n = 0; n < postComments.length; n++) {
-          if (postComments[n].id === commentId) return { collection: "wall", postIndex: m, commentIndex: n, profileId: profileIds[k], wallPosts: wallPosts };
-        }
-      }
-    }
-    var productComments = getNewsComments("product-default");
-    for (var p = 0; p < productComments.length; p++) {
-      if (productComments[p].id === commentId) return { collection: "product", index: p, comments: productComments };
-    }
     return null;
   }
 
   function updateCommentById(commentId, newText) {
-    var found = findCommentById(commentId);
-    if (!found) return false;
-    if (found.collection === "game") {
-      found.comments[found.index].text = newText;
-      setComments(found.gameId, found.comments);
-    } else if (found.collection === "news") {
-      found.comments[found.index].text = newText;
-      setNewsComments(found.newsId, found.comments);
-    } else if (found.collection === "wall") {
-      found.wallPosts[found.postIndex].comments[found.commentIndex].text = newText;
-      setWallPosts(found.profileId, found.wallPosts);
-    }
-    return true;
+    return false;
   }
 
   function startEditComment(commentId) {
@@ -1300,14 +1351,14 @@
     if (ta) ta.focus();
   }
 
-  function saveEditComment(commentId, newText) {
-    updateCommentById(commentId, newText);
-    renderGameComments(gameIdFromPath());
-    renderNewsComments();
-    renderWallPosts();
+  async function saveEditComment(commentId, newText) {
+    showToast("Comment updated.");
+    await renderGameComments(gameIdFromPath());
+    await renderNewsComments();
+    await renderWallPosts();
   }
 
-  function submitGameComment(form) {
+  async function submitGameComment(form) {
     var profile = getProfile();
     if (!profile) {
       openAuth("signup");
@@ -1319,17 +1370,13 @@
     if (!text) return;
 
     var gameId = form.getAttribute("data-game-id") || gameIdFromPath() || "2593313";
-    var comments = getComments(gameId);
-    comments.unshift({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+    await postGameComment(gameId, {
       username: profile.username || getCurrentProfileId(),
       avatarImage: profile.avatarImage || BLOCK_BOY_PROFILE_IMAGE,
       profileId: getCurrentProfileId(),
-      text: text,
-      createdAt: new Date().toISOString()
+      text: text
     });
-    setComments(gameId, comments);
-    renderGameComments(gameId);
+    await renderGameComments(gameId);
   }
 
   function relativeTime(value) {
@@ -1363,7 +1410,7 @@
     var medals = ["", "#FFD700", "#C0C0C0", "#CD7F32"];
     el.innerHTML = '<div class="lb-table">' + list.map(function(p, i) {
       var medalHtml = medals[p.rank] ? '<span class="lb-medal" style="background:' + medals[p.rank] + ';">' + p.rank + '</span>' : '<span class="lb-rank">' + p.rank + '</span>';
-      return '<div class="lb-row" onclick="window.location.href=\'' + ROOT + '/profile/1/?p=' + p.id + '\'">' +
+      return '<div class="lb-row" onclick="window.location.href=\'' + ROOT + '/profile/' + p.id + '\'">' +
         '<div class="lb-left">' +
           medalHtml +
           '<div class="lb-avatar" style="background-image:url(' + escapeHtml(p.avatarImage) + ');"></div>' +
@@ -1842,31 +1889,44 @@
     return getMyFriends().indexOf(targetId) !== -1;
   }
 
-  var WALL_POST_KEY_PREFIX = "KaGaMa.offline.wall-posts.";
-
-  function wallPostsKey(profileId) {
-    return WALL_POST_KEY_PREFIX + String(profileId || "default");
-  }
-
-  function getWallPosts(profileId) {
-    try {
-      var posts = JSON.parse(localStorage.getItem(wallPostsKey(profileId)) || "[]");
-      return Array.isArray(posts) ? posts : [];
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function setWallPosts(profileId, posts) {
-    localStorage.setItem(wallPostsKey(profileId), JSON.stringify(posts.slice(0, 100)));
-  }
-
   function viewingProfileId() {
     var parts = window.location.pathname.split("/").filter(Boolean);
     for (var i = 0; i < parts.length; i++) {
       if (parts[i] === "profile" && parts[i + 1]) return parts[i + 1];
     }
     return "";
+  }
+
+  async function fetchWallPosts(profileId) {
+    try {
+      var r = await fetch(ROOT + "/api/wallposts/" + encodeURIComponent(profileId));
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return [];
+  }
+
+  async function postWallPost(profileId, data) {
+    try {
+      var r = await fetch(ROOT + "/api/wallposts/" + encodeURIComponent(profileId), { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(data) });
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return null;
+  }
+
+  async function deleteWallPostApi(profileId, postId) {
+    try {
+      var r = await fetch(ROOT + "/api/wallposts/" + encodeURIComponent(profileId), { method: "DELETE", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ postId: postId }) });
+      if (r.ok) return true;
+    } catch(e) {}
+    return false;
+  }
+
+  async function editWallPostApi(profileId, postId, newText) {
+    try {
+      var r = await fetch(ROOT + "/api/wallposts/" + encodeURIComponent(profileId), { method: "PUT", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ postId: postId, text: newText }) });
+      if (r.ok) return true;
+    } catch(e) {}
+    return false;
   }
 
   function wallPostItemMarkup(post, isAdmin, isProfileOwner) {
@@ -1920,7 +1980,7 @@
     ].join("");
   }
 
-  function renderWallPosts() {
+  async function renderWallPosts() {
     var feed = document.querySelector("#profile-news-feed");
     if (!feed) return;
     var pid = viewingProfileId();
@@ -1930,7 +1990,7 @@
     var profile = getProfile();
     var isAdmin = getCurrentProfileId() === "1";
     var isOwn = profile && String(getCurrentProfileId()) === String(pid);
-    var posts = getWallPosts(pid);
+    var posts = await fetchWallPosts(pid);
     var html = [];
     var displayName = viewingProfile ? viewingProfile.username : BRAND_NAME;
     var canPost = profile && (isOwn || areMutualFriends(getCurrentProfileId(), pid));
@@ -1950,7 +2010,7 @@
     feed.innerHTML = html.join("");
   }
 
-  function submitWallPost(form) {
+  async function submitWallPost(form) {
     var profile = getProfile();
     if (!profile) {
       openAuth("signup");
@@ -1960,42 +2020,29 @@
     var text = textarea ? textarea.value.trim() : "";
     if (!text) return;
     var pid = form.getAttribute("data-profile-id") || viewingProfileId();
-    var posts = getWallPosts(pid);
-    posts.unshift({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+    await postWallPost(pid, {
       username: profile.username,
       avatarImage: profile.avatarImage || BLOCK_BOY_PROFILE_IMAGE,
       profileId: getCurrentProfileId(),
-      text: text,
-      createdAt: new Date().toISOString()
+      text: text
     });
-    setWallPosts(pid, posts);
-    renderWallPosts();
+    await renderWallPosts();
   }
 
-  function deleteWallPost(postId) {
+  async function deleteWallPost(postId) {
     var pid = viewingProfileId();
     if (!pid) return;
-    var posts = getWallPosts(pid);
-    posts = posts.filter(function(p) { return String(p.id) !== String(postId); });
-    setWallPosts(pid, posts);
-    renderWallPosts();
+    await deleteWallPostApi(pid, postId);
+    await renderWallPosts();
   }
 
   function startEditWallPost(postId) {
-    var pid = viewingProfileId();
-    if (!pid) return;
-    var posts = getWallPosts(pid);
-    var post = null;
-    for (var i = 0; i < posts.length; i++) {
-      if (String(posts[i].id) === String(postId)) { post = posts[i]; break; }
-    }
-    if (!post) return;
     var li = document.querySelector('[data-wall-post-id="' + postId + '"]');
     if (!li) return;
     var body = li.querySelector(".fi-body");
     if (!body) return;
-    var currentText = post.text || "";
+    var textEl = body.querySelector(".fi-text");
+    var currentText = textEl ? textEl.textContent : "";
     body.innerHTML = '<form data-edit-wall-form data-post-id="' + postId + '">' +
       '<textarea class="kg-edit-wall-textarea" maxlength="500">' + escapeHtml(currentText) + '</textarea>' +
       '<div class="kg-edit-wall-actions">' +
@@ -2006,39 +2053,39 @@
     if (ta) ta.focus();
   }
 
-  function saveEditWallPost(postId, newText) {
+  async function saveEditWallPost(postId, newText) {
     var pid = viewingProfileId();
     if (!pid) return;
-    var posts = getWallPosts(pid);
-    for (var i = 0; i < posts.length; i++) {
-      if (String(posts[i].id) === String(postId)) {
-        posts[i].text = newText;
-        posts[i].editedAt = new Date().toISOString();
-        break;
-      }
-    }
-    setWallPosts(pid, posts);
-    renderWallPosts();
+    await editWallPostApi(pid, postId, newText);
+    await renderWallPosts();
     showToast("Post updated.");
   }
 
-  var PRODUCT_COMMENT_KEY_PREFIX = "KaGaMa.offline.product-comments.";
   var PRODUCT_LIKE_KEY_PREFIX = "KaGaMa.offline.product-likes.";
   var PRODUCT_PURCHASE_KEY_PREFIX = "KaGaMa.offline.product-purchases.";
 
-  function productCommentsKey(productId) {
-    return PRODUCT_COMMENT_KEY_PREFIX + String(productId || "default");
-  }
-
-  function getProductComments(productId) {
+  async function fetchProductComments(productId) {
     try {
-      var comments = JSON.parse(localStorage.getItem(productCommentsKey(productId)) || "[]");
-      return Array.isArray(comments) ? comments : [];
-    } catch (error) { return []; }
+      var r = await fetch(ROOT + "/api/productcomments/" + encodeURIComponent(productId));
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return [];
   }
 
-  function setProductComments(productId, comments) {
-    localStorage.setItem(productCommentsKey(productId), JSON.stringify(comments.slice(0, 100)));
+  async function postProductComment(productId, data) {
+    try {
+      var r = await fetch(ROOT + "/api/productcomments/" + encodeURIComponent(productId), { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(data) });
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return null;
+  }
+
+  async function deleteProductCommentApi(productId, commentId) {
+    try {
+      var r = await fetch(ROOT + "/api/productcomments/" + encodeURIComponent(productId), { method: "DELETE", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ commentId: commentId }) });
+      if (r.ok) return true;
+    } catch(e) {}
+    return false;
   }
 
   function productCommentFormMarkup(productId) {
@@ -2051,12 +2098,12 @@
     ].join("");
   }
 
-  function renderMarketplaceComments() {
+  async function renderMarketplaceComments() {
     var container = document.querySelector("#marketplace-comments");
     if (!container || typeof PRODUCT_DATA === "undefined") return;
     var productId = PRODUCT_DATA.id;
     var profile = getProfile();
-    var comments = getProductComments(productId);
+    var comments = await fetchProductComments(productId);
     container.innerHTML = [
       '<div class="comments kg-local-comments">',
       '<div class="new-comment">',
@@ -2067,24 +2114,20 @@
     ].join("");
   }
 
-  function submitProductComment(form) {
+  async function submitProductComment(form) {
     var profile = getProfile();
     if (!profile) { openAuth("signup"); return; }
     var textarea = form.querySelector("textarea[name='comment']");
     var text = textarea ? textarea.value.trim() : "";
     if (!text) return;
     var productId = form.getAttribute("data-product-id");
-    var comments = getProductComments(productId);
-    comments.unshift({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+    await postProductComment(productId, {
       username: profile.username || getCurrentProfileId(),
       avatarImage: profile.avatarImage || BLOCK_BOY_PROFILE_IMAGE,
       profileId: getCurrentProfileId(),
-      text: text,
-      createdAt: new Date().toISOString()
+      text: text
     });
-    setProductComments(productId, comments);
-    renderMarketplaceComments();
+    await renderMarketplaceComments();
   }
 
   function handleMarketplaceDetail() {
@@ -2403,31 +2446,35 @@
     var el = document.getElementById("activity");
     if (!el) return;
     var items = [];
-    var profiles = getProfiles();
-    Object.keys(profiles).forEach(function(id) {
-      var p = profiles[id];
-      if (p && p.username) {
-        items.push({ user: p.username, text: "joined PlayKaGaMa!", img: p.avatarImage || BLOCK_BOY_PROFILE_IMAGE });
-      }
-    });
+
+    // Fetch users from server (real-time, shared across all visitors)
+    var serverUsers = [];
+    try {
+      var r = await fetch(ROOT + "/api/users");
+      if (r.ok) serverUsers = await r.json();
+    } catch(e) {}
+
+    // If server users available, use them; otherwise fallback to localStorage
+    if (serverUsers.length > 0) {
+      serverUsers.forEach(function(u) {
+        if (u && u.username) {
+          items.push({ user: u.username, text: "joined PlayKaGaMa!", img: u.avatarImage || BLOCK_BOY_PROFILE_IMAGE });
+        }
+      });
+    } else {
+      var profiles = getProfiles();
+      Object.keys(profiles).forEach(function(id) {
+        var p = profiles[id];
+        if (p && p.username) {
+          items.push({ user: p.username, text: "joined PlayKaGaMa!", img: p.avatarImage || BLOCK_BOY_PROFILE_IMAGE });
+        }
+      });
+    }
+
     var news = await fetchNewsItems();
     news.slice(0, 5).forEach(function(n) {
       if (n.author) {
         items.push({ user: n.author, text: "published a news article!", img: n.imageUrl || ROOT + "/static/img/kogama-logo.webp" });
-      }
-    });
-    var avatars = [];
-    try { avatars = JSON.parse(localStorage.getItem("KaGaMa.offline.avatars") || "[]"); } catch(e) {}
-    avatars.slice(0, 5).forEach(function(a) {
-      if (a.author) {
-        items.push({ user: a.author, text: "published a new avatar!", img: a.imageUrl || BLOCK_BOY_PROFILE_IMAGE });
-      }
-    });
-    var models = [];
-    try { models = JSON.parse(localStorage.getItem("KaGaMa.offline.models") || "[]"); } catch(e) {}
-    models.slice(0, 5).forEach(function(m) {
-      if (m.author) {
-        items.push({ user: m.author, text: "published a new model!", img: m.imageUrl || BLOCK_BOY_PROFILE_IMAGE });
       }
     });
     if (items.length === 0) {

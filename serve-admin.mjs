@@ -1,4 +1,5 @@
 ﻿import http from 'node:http';
+import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -8,6 +9,66 @@ const root = __dirname;
 const siteRoot = root;
 const dataDir = path.resolve(__dirname, 'data');
 const port = Number(process.env.PORT ?? 8787);
+
+const SITE_PASSWORD = 'KaGaMaTesting';
+const AUTH_COOKIE = 'kagama_auth';
+const AUTH_SECRET = 'kagama-site-secret-2026';
+
+function hashPassword(pw) {
+  return crypto.createHmac('sha256', AUTH_SECRET).update(pw).digest('hex');
+}
+
+function parseCookies(header) {
+  const cookies = {};
+  if (!header) return cookies;
+  header.split(';').forEach(c => {
+    const [k, ...v] = c.trim().split('=');
+    if (k) cookies[k.trim()] = decodeURIComponent(v.join('='));
+  });
+  return cookies;
+}
+
+function isAuthed(request) {
+  const cookies = parseCookies(request.headers.cookie);
+  const token = cookies[AUTH_COOKIE];
+  if (!token) return false;
+  return token === hashPassword(SITE_PASSWORD);
+}
+
+function authPageHtml(errorMsg) {
+  const errDiv = errorMsg ? `<div class="gate-error" style="display:block">${escapeHtml(errorMsg)}</div>` : '';
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KaGaMa - Site Access</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #16222d; color: #fff; font-family: "Open Sans", Arial, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .gate-box { background: #1e2d3d; border-radius: 8px; padding: 40px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .gate-box img { height: 64px; margin-bottom: 16px; }
+    .gate-box h1 { font-size: 18px; margin-bottom: 6px; }
+    .gate-box p { font-size: 13px; color: #aaa; margin-bottom: 20px; }
+    .gate-box input { width: 100%; padding: 12px 14px; border: 1px solid #3a4f63; border-radius: 4px; background: #0d1821; color: #fff; font-size: 14px; outline: none; margin-bottom: 12px; }
+    .gate-box input:focus { border-color: #ff370f; }
+    .gate-box button { width: 100%; padding: 12px; background: #ff370f; color: #fff; border: none; border-radius: 4px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+    .gate-box button:hover { background: #e63200; }
+    .gate-error { color: #ff5252; font-size: 12px; margin-bottom: 10px; display: none; }
+  </style>
+</head>
+<body>
+  <form class="gate-box" method="POST" action="/auth">
+    <img src="/static/img/kogama-logo.webp" alt="KaGaMa">
+    <h1>Site Access</h1>
+    <p>Enter the access password to continue</p>
+    ${errDiv}
+    <input type="password" name="password" placeholder="Password" autofocus required>
+    <button type="submit">Enter</button>
+  </form>
+</body>
+</html>`;
+}
 
 const mimeTypes = new Map([
   ['.html', 'text/html; charset=utf-8'],
@@ -78,6 +139,58 @@ async function loadNews() {
 
 async function saveNews(data) {
   await fs.writeFile(newsFile, JSON.stringify(data, null, 2), 'utf8');
+}
+
+const commentsFile = path.resolve(__dirname, 'data', 'comments.json');
+
+async function loadComments() {
+  try {
+    const raw = await fs.readFile(commentsFile, 'utf8');
+    return JSON.parse(raw);
+  } catch { return {}; }
+}
+
+async function saveComments(data) {
+  await fs.writeFile(commentsFile, JSON.stringify(data, null, 2), 'utf8');
+}
+
+const wallpostsFile = path.resolve(__dirname, 'data', 'wallposts.json');
+
+async function loadWallposts() {
+  try {
+    const raw = await fs.readFile(wallpostsFile, 'utf8');
+    return JSON.parse(raw);
+  } catch { return {}; }
+}
+
+async function saveWallposts(data) {
+  await fs.writeFile(wallpostsFile, JSON.stringify(data, null, 2), 'utf8');
+}
+
+const gamecommentsFile = path.resolve(__dirname, 'data', 'gamecomments.json');
+
+async function loadGameComments() {
+  try {
+    const raw = await fs.readFile(gamecommentsFile, 'utf8');
+    return JSON.parse(raw);
+  } catch { return {}; }
+}
+
+async function saveGameComments(data) {
+  await fs.writeFile(gamecommentsFile, JSON.stringify(data, null, 2), 'utf8');
+}
+
+const productcommentsFile = path.resolve(__dirname, 'data', 'productcomments.json');
+
+async function loadProductComments() {
+  try {
+    const raw = await fs.readFile(productcommentsFile, 'utf8');
+    return JSON.parse(raw);
+  } catch { return {}; }
+}
+
+async function saveProductComments(data) {
+  await fs.writeFile(productcommentsFile, JSON.stringify(data, null, 2), 'utf8');
 }
 
 async function readBody(request) {
@@ -711,6 +824,39 @@ const server = http.createServer(async (request, response) => {
     const url = new URL(request.url ?? '/', `http://${request.headers.host}`);
     let pathname = normalizeArchivePath(url.pathname);
 
+    // Auth routes (exempt from gate)
+    if (pathname === '/auth' && request.method === 'GET') {
+      sendHtml(response, authPageHtml());
+      return;
+    }
+    if (pathname === '/auth' && request.method === 'POST') {
+      const body = await readBody(request);
+      let pw = '';
+      if (typeof body === 'string') {
+        const match = body.match(/password=([^&]*)/);
+        if (match) pw = decodeURIComponent(match[1]);
+      } else if (body && body.password) {
+        pw = body.password;
+      }
+      if (pw === SITE_PASSWORD) {
+        const cookieVal = hashPassword(SITE_PASSWORD);
+        response.writeHead(302, {
+          'Set-Cookie': `${AUTH_COOKIE}=${cookieVal}; Path=/; Max-Age=${30*24*60*60}; HttpOnly`,
+          'Location': '/',
+        });
+        response.end();
+      } else {
+        sendHtml(response, authPageHtml('Wrong password. Please try again.'));
+      }
+      return;
+    }
+
+    // Password gate: all other routes require auth
+    if (!isAuthed(request)) {
+      sendHtml(response, authPageHtml());
+      return;
+    }
+
     if (pathname === '/admin' || pathname === '/admin/') {
       sendHtml(response, adminPage());
       return;
@@ -718,6 +864,28 @@ const server = http.createServer(async (request, response) => {
 
     if (pathname.startsWith('/admin/api/')) {
       await handleAdminAPI(request, response);
+      return;
+    }
+
+    // Users API routes
+    if (pathname === '/api/users' && request.method === 'GET') {
+      const data = await loadUsers();
+      sendJson(response, data.users || []);
+      return;
+    }
+    if (pathname === '/api/users' && request.method === 'POST') {
+      const body = await readBody(request);
+      if (!body || !body.username) { sendJson(response, { error: 'Missing username' }, 400); return; }
+      const data = await loadUsers();
+      const user = {
+        id: body.profileId || Date.now().toString(36),
+        username: body.username,
+        avatarImage: body.avatarImage || '',
+        createdAt: body.createdAt || new Date().toISOString(),
+      };
+      data.users.push(user);
+      await saveUsers(data);
+      sendJson(response, user, 201);
       return;
     }
 
@@ -758,6 +926,202 @@ const server = http.createServer(async (request, response) => {
       if (idx === -1) { sendJson(response, { error: 'Not found' }, 404); return; }
       news.splice(idx, 1);
       await saveNews(news);
+      sendJson(response, { ok: true });
+      return;
+    }
+
+    // Comments API: /api/comments/{profileId}
+    const commentsMatch = pathname.match(/^\/api\/comments\/(\d+)$/);
+    if (commentsMatch && request.method === 'GET') {
+      const pid = commentsMatch[1];
+      const all = await loadComments();
+      sendJson(response, all[pid] || []);
+      return;
+    }
+    if (commentsMatch && request.method === 'POST') {
+      const pid = commentsMatch[1];
+      const body = await readBody(request);
+      if (!body || !body.text) { sendJson(response, { error: 'Missing text' }, 400); return; }
+      const all = await loadComments();
+      if (!all[pid]) all[pid] = [];
+      const comment = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+        profileId: pid,
+        authorId: body.authorId || '',
+        username: body.username || 'Anonymous',
+        avatarImage: body.avatarImage || '',
+        text: body.text,
+        createdAt: new Date().toISOString()
+      };
+      all[pid].unshift(comment);
+      await saveComments(all);
+      sendJson(response, comment, 201);
+      return;
+    }
+    if (commentsMatch && request.method === 'DELETE') {
+      const pid = commentsMatch[1];
+      const body = await readBody(request);
+      const commentId = body && body.commentId;
+      if (!commentId) { sendJson(response, { error: 'Missing commentId' }, 400); return; }
+      const all = await loadComments();
+      if (all[pid]) {
+        all[pid] = all[pid].filter(c => c.id !== commentId);
+        await saveComments(all);
+      }
+      sendJson(response, { ok: true });
+      return;
+    }
+
+    // Wall posts API: /api/wallposts/{profileId}
+    const wallpostsMatch = pathname.match(/^\/api\/wallposts\/(\d+)$/);
+    if (wallpostsMatch && request.method === 'GET') {
+      const pid = wallpostsMatch[1];
+      const all = await loadWallposts();
+      sendJson(response, all[pid] || []);
+      return;
+    }
+    if (wallpostsMatch && request.method === 'POST') {
+      const pid = wallpostsMatch[1];
+      const body = await readBody(request);
+      if (!body || !body.text) { sendJson(response, { error: 'Missing text' }, 400); return; }
+      const all = await loadWallposts();
+      if (!all[pid]) all[pid] = [];
+      const post = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+        profileId: pid,
+        authorId: body.authorId || '',
+        username: body.username || 'Anonymous',
+        avatarImage: body.avatarImage || '',
+        text: body.text,
+        createdAt: new Date().toISOString()
+      };
+      all[pid].unshift(post);
+      await saveWallposts(all);
+      sendJson(response, post, 201);
+      return;
+    }
+    if (wallpostsMatch && request.method === 'DELETE') {
+      const pid = wallpostsMatch[1];
+      const body = await readBody(request);
+      const postId = body && body.postId;
+      if (!postId) { sendJson(response, { error: 'Missing postId' }, 400); return; }
+      const all = await loadWallposts();
+      if (all[pid]) {
+        all[pid] = all[pid].filter(p => p.id !== postId);
+        await saveWallposts(all);
+      }
+      sendJson(response, { ok: true });
+      return;
+    }
+    if (wallpostsMatch && request.method === 'PUT') {
+      const pid = wallpostsMatch[1];
+      const body = await readBody(request);
+      const postId = body && body.postId;
+      const newText = body && body.text;
+      if (!postId || !newText) { sendJson(response, { error: 'Missing postId or text' }, 400); return; }
+      const all = await loadWallposts();
+      if (all[pid]) {
+        const post = all[pid].find(p => p.id === postId);
+        if (post) { post.text = newText; await saveWallposts(all); }
+      }
+      sendJson(response, { ok: true });
+      return;
+    }
+
+    // Game comments API: /api/gamecomments/{gameId}
+    const gameCommentsMatch = pathname.match(/^\/api\/gamecomments\/(\d+)$/);
+    if (gameCommentsMatch && request.method === 'GET') {
+      const gid = gameCommentsMatch[1];
+      const all = await loadGameComments();
+      sendJson(response, all[gid] || []);
+      return;
+    }
+    if (gameCommentsMatch && request.method === 'POST') {
+      const gid = gameCommentsMatch[1];
+      const body = await readBody(request);
+      if (!body || !body.text) { sendJson(response, { error: 'Missing text' }, 400); return; }
+      const all = await loadGameComments();
+      if (!all[gid]) all[gid] = [];
+      const comment = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+        gameId: gid,
+        authorId: body.authorId || '',
+        username: body.username || 'Anonymous',
+        avatarImage: body.avatarImage || '',
+        text: body.text,
+        createdAt: new Date().toISOString()
+      };
+      all[gid].unshift(comment);
+      await saveGameComments(all);
+      sendJson(response, comment, 201);
+      return;
+    }
+    if (gameCommentsMatch && request.method === 'DELETE') {
+      const gid = gameCommentsMatch[1];
+      const body = await readBody(request);
+      const commentId = body && body.commentId;
+      if (!commentId) { sendJson(response, { error: 'Missing commentId' }, 400); return; }
+      const all = await loadGameComments();
+      if (all[gid]) {
+        all[gid] = all[gid].filter(c => c.id !== commentId);
+        await saveGameComments(all);
+      }
+      sendJson(response, { ok: true });
+      return;
+    }
+    if (gameCommentsMatch && request.method === 'PUT') {
+      const gid = gameCommentsMatch[1];
+      const body = await readBody(request);
+      const commentId = body && body.commentId;
+      const newText = body && body.text;
+      if (!commentId || !newText) { sendJson(response, { error: 'Missing commentId or text' }, 400); return; }
+      const all = await loadGameComments();
+      if (all[gid]) {
+        const cmt = all[gid].find(c => c.id === commentId);
+        if (cmt) { cmt.text = newText; await saveGameComments(all); }
+      }
+      sendJson(response, { ok: true });
+      return;
+    }
+
+    // Product comments API: /api/productcomments/{productId}
+    const productCommentsMatch = pathname.match(/^\/api\/productcomments\/([a-z0-9_-]+)$/);
+    if (productCommentsMatch && request.method === 'GET') {
+      const pid = productCommentsMatch[1];
+      const all = await loadProductComments();
+      sendJson(response, all[pid] || []);
+      return;
+    }
+    if (productCommentsMatch && request.method === 'POST') {
+      const pid = productCommentsMatch[1];
+      const body = await readBody(request);
+      if (!body || !body.text) { sendJson(response, { error: 'Missing text' }, 400); return; }
+      const all = await loadProductComments();
+      if (!all[pid]) all[pid] = [];
+      const comment = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+        productId: pid,
+        authorId: body.authorId || '',
+        username: body.username || 'Anonymous',
+        avatarImage: body.avatarImage || '',
+        text: body.text,
+        createdAt: new Date().toISOString()
+      };
+      all[pid].unshift(comment);
+      await saveProductComments(all);
+      sendJson(response, comment, 201);
+      return;
+    }
+    if (productCommentsMatch && request.method === 'DELETE') {
+      const pid = productCommentsMatch[1];
+      const body = await readBody(request);
+      const commentId = body && body.commentId;
+      if (!commentId) { sendJson(response, { error: 'Missing commentId' }, 400); return; }
+      const all = await loadProductComments();
+      if (all[pid]) {
+        all[pid] = all[pid].filter(c => c.id !== commentId);
+        await saveProductComments(all);
+      }
       sendJson(response, { ok: true });
       return;
     }
