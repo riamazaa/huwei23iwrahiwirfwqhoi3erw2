@@ -2,11 +2,21 @@
 <html lang="en_US">
    <head>
       <script>
-         // Lazy-load images: add loading="lazy" once on DOMContentLoaded
-         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('img:not([loading])').forEach(function(img) { img.setAttribute('loading', 'lazy'); });
-         });
-      </script>
+          // Low-end PC optimization: enforce a minimum interval for setInterval
+          // to reduce CPU churn from aggressive polling (300ms, 200ms, etc).
+          (function() {
+             var _origSI = window.setInterval;
+             window.setInterval = function(fn, ms) {
+                var args = Array.prototype.slice.call(arguments, 2);
+                if (typeof ms === 'number' && ms > 0 && ms < 1000) ms = 1000;
+                return _origSI.apply(window, [fn, ms].concat(args));
+             };
+          })();
+          // Lazy-load images: add loading="lazy" once on DOMContentLoaded
+          document.addEventListener('DOMContentLoaded', function() {
+             document.querySelectorAll('img:not([loading])').forEach(function(img) { img.setAttribute('loading', 'lazy'); });
+          });
+       </script>
       <script>
          (window.kogama = (window.kogama || {})).MOBILE_WEBSITE = true;
          console.log('window.kogama defined');
@@ -315,36 +325,25 @@
              <a class="kg-standalone-banner__btn kg-standalone-banner__btn--secondary" href="https://www-gamelauncher.kogstatic.com/www/KogamaLauncher.msi?_t=1437643420" target="_blank" rel="noopener">Download App</a>
           </div>
        </div>
-        <script>
-        function waitForClass(selector, className) {
-          return new Promise((resolve) => {
-            const element = document.querySelector(selector);
-            if (element && element.classList.contains(className)) {
-              return resolve(element);
-            }
-            const observer = new MutationObserver((mutations, obs) => {
-              const el = document.querySelector(selector);
-              if (el && el.classList.contains(className)) {
-                obs.disconnect();
-                resolve(el);
-              }
-            });
-            observer.observe(document.body, {
-              childList: true,
-              subtree: true,
-              attributes: true,
-              attributeFilter: ['class']
-            });
-          });
-        }
-        waitForClass('._1aUa_', '_1aUa_').then((element) => {
-        if (element) {
-                {% if object_data['object'] and object_data['object']['description'] %}
-                element.innerHTML = {{ object_data['object']['description'] | tojson }};
-                {% endif %}
-            }
-        });
-        </script>
+         <script>
+         // Low-end PC: use a short setTimeout poll instead of a body-level
+         // attribute MutationObserver (which fires on every class change).
+         (function() {
+            var tries = 0;
+            var timer = setInterval(function() {
+               tries++;
+               var element = document.querySelector('._1aUa_');
+               if (element && element.classList.contains('_1aUa_')) {
+                  {% if object_data['object'] and object_data['object']['description'] %}
+                  element.innerHTML = {{ object_data['object']['description'] | tojson }};
+                  {% endif %}
+                  clearInterval(timer);
+               } else if (tries > 25) {
+                  clearInterval(timer);
+               }
+            }, 200);
+         })();
+         </script>
         <script>
         (function() {
            var banner = document.getElementById("kg-standalone-banner");
@@ -412,52 +411,53 @@
            }
         })();
         </script>
-            <script>
-       const kagamaObserver = new MutationObserver((mutations) => {
-          for (const mutation of mutations) {
-             for (const node of mutation.addedNodes) {
-                if (node.nodeType === 3 && node.textContent.includes('KoGaMa')) {
-                   node.textContent = node.textContent.replace(/KoGaMa/g, 'KaGaMa');
-                } else if (node.nodeType === 1) {
-                   const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
-                   let textNode;
-                   while (textNode = walker.nextNode()) {
-                      if (textNode.textContent.includes('KoGaMa')) {
-                         textNode.textContent = textNode.textContent.replace(/KoGaMa/g, 'KaGaMa');
-                      }
-                   }
-                }
-             }
-          }
-       });
-       const rupertObserver = new MutationObserver((mutations) => {
-          for (const mutation of mutations) {
-             for (const node of mutation.addedNodes) {
-                if (node.nodeType === 3 && node.textContent.includes('support@kogama.com')) {
-                   node.textContent = node.textContent.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz');
-                } else if (node.nodeType === 1) {
-                   const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
-                   let textNode;
-                   while (textNode = walker.nextNode()) {
-                      if (textNode.textContent.includes('support@kogama.com')) {
-                         textNode.textContent = textNode.textContent.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz');
-                      }
-                   }
-                }
-             }
-          }
-       });
-        kagamaObserver.observe(document.body, { childList: true, subtree: true });
-        rupertObserver.observe(document.body, { childList: true, subtree: true });
-        document.querySelectorAll('*').forEach(el => {
-           el.childNodes.forEach(n => {
-              if (n.nodeType === 3 && n.textContent.includes('KoGaMa')) {
-                 n.textContent = n.textContent.replace(/KoGaMa/g, 'KaGaMa');
+        <script>
+        // Consolidated text-replacement observer (was 2 separate observers).
+        // Single observer handles both KoGaMa->KaGaMa and email replacement.
+        const textReplaceObserver = new MutationObserver((mutations) => {
+           for (const mutation of mutations) {
+              for (const node of mutation.addedNodes) {
+                 replaceTextInNode(node);
               }
-           });
+           }
         });
-        setTimeout(function() { kagamaObserver.disconnect(); rupertObserver.disconnect(); }, 3000);
-       </script>
+        function replaceTextInNode(node) {
+           if (node.nodeType === 3) {
+              if (node.textContent.includes('KoGaMa')) {
+                 node.textContent = node.textContent.replace(/KoGaMa/g, 'KaGaMa');
+              }
+              if (node.textContent.includes('support@kogama.com')) {
+                 node.textContent = node.textContent.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz');
+              }
+           } else if (node.nodeType === 1) {
+              const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+              let textNode;
+              while (textNode = walker.nextNode()) {
+                 if (textNode.textContent.includes('KoGaMa')) {
+                    textNode.textContent = textNode.textContent.replace(/KoGaMa/g, 'KaGaMa');
+                 }
+                 if (textNode.textContent.includes('support@kogama.com')) {
+                    textNode.textContent = textNode.textContent.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz');
+                 }
+              }
+           }
+        }
+         textReplaceObserver.observe(document.body, { childList: true, subtree: true });
+         // One-time initial pass over existing text nodes only (no full * scan).
+         (function initialTextPass() {
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+            let textNode;
+            while (textNode = walker.nextNode()) {
+               if (textNode.textContent.includes('KoGaMa')) {
+                  textNode.textContent = textNode.textContent.replace(/KoGaMa/g, 'KaGaMa');
+               }
+               if (textNode.textContent.includes('support@kogama.com')) {
+                  textNode.textContent = textNode.textContent.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz');
+               }
+            }
+         })();
+         setTimeout(function() { textReplaceObserver.disconnect(); }, 3000);
+        </script>
        <style>
           .footer-social-links {
              display: flex;
@@ -817,17 +817,26 @@
                 }, true);
              }
 
-             function runAll() { setupInvitesBtn(); overrideLastSeen(); }
-              var obs = new MutationObserver(function() { runAll(); });
-              obs.observe(document.body, { childList: true, subtree: true });
-              attachImgFallback();
-              runAll();
-              setTimeout(runAll, 1500);
-              setTimeout(function() { obs.disconnect(); }, 4000);
-             setTimeout(function() { refreshInvites(); }, 2000);
-             setInterval(overrideLastSeen, 60000);
-             setInterval(refreshInvites, 60000);
-          })();
+              function runAll() { setupInvitesBtn(); overrideLastSeen(); }
+               var obs = new MutationObserver(function() { runAll(); });
+               obs.observe(document.body, { childList: true, subtree: true });
+               attachImgFallback();
+               runAll();
+               setTimeout(runAll, 1500);
+               setTimeout(function() { obs.disconnect(); }, 4000);
+              setTimeout(function() { refreshInvites(); }, 2000);
+
+               // Low-end PC: pause refreshInvites polling while tab is hidden.
+               // Resume a single refresh when the tab becomes visible again.
+               // On-demand fetch on SPA route change is handled by the app itself.
+               document.addEventListener('visibilitychange', function() {
+                  if (!document.hidden) {
+                     // tab visible again: refresh once, do not resume 60s polling
+                     try { overrideLastSeen(); } catch (e) {}
+                     try { refreshInvites(); } catch (e) {}
+                  }
+               });
+           })();
            </script>
        <script>
        /* === Badge Achievement Popup Animation Enhancer === */
@@ -964,11 +973,11 @@
              }
           }, true);
 
-          /* Initial check + periodic fallback */
-          setTimeout(runBadgeAnimChecks, 1000);
-          setTimeout(runBadgeAnimChecks, 3000);
-          setInterval(runBadgeAnimChecks, 10000);
-       })();
+           /* Initial check + periodic fallback (no forever interval — observer
+              already covers DOM changes; extra timers are one-shot only) */
+           setTimeout(runBadgeAnimChecks, 1000);
+           setTimeout(runBadgeAnimChecks, 3000);
+        })();
        </script>
        </body>
 </html>
