@@ -1032,9 +1032,16 @@
             var tag = (parent.tagName || '').toUpperCase();
             if (tag === 'BODY' || tag === 'HTML' || parent.id === 'root' || parent === document.body) return;
             try {
-              if (!parent.style.backgroundImage) parent.style.backgroundImage = grad;
-              if (txt.trim() === grad) parent.removeChild(textNode);
-              else textNode.textContent = txt.replace(grad, '');
+              // Relocate the gradient to the parent's background ONLY when the
+              // parent is a simple wrapper (no element children), so we never
+              // tint a large container. Otherwise just hide the stray text.
+              if (!parent.querySelector(':scope > *') && !parent.style.backgroundImage) {
+                parent.style.backgroundImage = grad;
+              }
+              // Hide the visible gradient text WITHOUT removing the node:
+              // removing a React-managed text node throws the ReactDOM
+              // "removeChild" invariant and crashes the whole SPA (blank page).
+              textNode.textContent = (txt.trim() === grad) ? ' ' : txt.replace(grad, '');
             } catch (e) {}
           }
           function fixAll(root) {
@@ -1057,7 +1064,7 @@
               }
             });
             go.observe(document.body, { childList: true, subtree: true });
-            setTimeout(function() { try { go.disconnect(); } catch (e) {} }, 60000);
+            setTimeout(function() { try { go.disconnect(); } catch (e) {} }, 120000);
           }
         })();
         </script>
