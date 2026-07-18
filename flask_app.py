@@ -1450,6 +1450,14 @@ def rewrite_archive_urls(response):
         pass
     return response
 
+@app.after_request
+def no_cache_html(response):
+    ct = response.content_type or ''
+    if 'text/html' in ct and not request.path.startswith('/static/'):
+        response.headers['Cache-Control'] = 'no-cache'
+        response.headers.pop('Expires', None)
+    return response
+
 # ==================================================
 #  PERFORMANCE: lightweight in-memory response cache
 #  (anonymous GET only, for safe public endpoints)
