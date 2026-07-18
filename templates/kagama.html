@@ -61,7 +61,7 @@
              DOMReady(function() {
                  console.log('DOMReady');
                  var _ = _ || ({ extend: Object.assign });
-                 var options = {"ADSENSE": true, "ADSENSE_GAMES_ENABLED": true, "ADSENSE_GAMES_TESTING_ENABLED": false, "ANALYTICS_ENABLED": true, "ANDROID_ENABLED": true, "ANDROID_STORE_LISTING_URL": "https://play.google.com/store/apps/details?id=com.multiverse.kogama", "AWAY_TIMEOUT": 300000, "CARRY_SERVICE_ENABLED": true, "CHAT_ENABLED": true, "CHAT_SERVICE_ENABLED": false, "COOKIE_POLICY_VERSION": 2, "EMBED_ENABLED": false, "LANGUAGE_DEFAULT": "en_US", "NOTIFY_SERVICE_ENABLED": true, "PING_SERVICE_ENABLED": false, "PUBLIC_DOMAIN_API": "https://api-www.kgoma.com", "PUBLIC_STATIC_URL_BASE": "/static/img", "PUBLIC_URL": "https://playskagama.pythonanywhere.com", "RECAPTCHA_LOGIN_ENABLED": false, "REGION": "EU", "SESSION_LOCATOR_DOMAIN_API": null, "SESSION_LOCATOR_SERVICE_ENABLED": true, "USERNAME_CHANGE_GOLD_PRICE": 25, "WEBSITE_CODENAME": "www", "XP_LEVEL_ENABLED": true, "PAYMENT_STRIPE_KEY": "pk_live_9JuTnQflh2YehcmzL45dHTQ4", "PAYMENT_PAYMENTWALL_URI": "https://api-www.kgoma.com/v1/payment/paymentwall/", "PAYMENT_URI": "https://api-www.kgoma.com/v1/payment/", "GOOGLE_RECAPTCHA_V3_SITE_KEY": "6LfebYsUAAAAACpXcBjLBbP2U109NCagVJ3sFnn1", "GOOGLE_ANALYTICS_GA4_ID": "G-EELXW7F2HT", "VIDEO_TUTORIAL_ENABLED": false, "FORUM_LINK_ENABLED": false};
+                 var options = {"ADSENSE": true, "ADSENSE_GAMES_ENABLED": true, "ADSENSE_GAMES_TESTING_ENABLED": false, "ANALYTICS_ENABLED": true, "ANDROID_ENABLED": true, "ANDROID_STORE_LISTING_URL": "https://play.google.com/store/apps/details?id=com.multiverse.kogama", "AWAY_TIMEOUT": 300000, "CARRY_SERVICE_ENABLED": true, "CHAT_ENABLED": true, "CHAT_SERVICE_ENABLED": false, "COOKIE_POLICY_VERSION": 2, "EMBED_ENABLED": false, "LANGUAGE_DEFAULT": "en_US", "NOTIFY_SERVICE_ENABLED": true, "PING_SERVICE_ENABLED": false, "PUBLIC_DOMAIN_API": "https://api-www.kgoma.com", "PUBLIC_STATIC_URL_BASE": "/img_proxy?url=https://web.archive.org/web/20250307084042/https://static.kogstatic.com", "PUBLIC_URL": "https://playskagama.pythonanywhere.com", "RECAPTCHA_LOGIN_ENABLED": false, "REGION": "EU", "SESSION_LOCATOR_DOMAIN_API": null, "SESSION_LOCATOR_SERVICE_ENABLED": true, "USERNAME_CHANGE_GOLD_PRICE": 25, "WEBSITE_CODENAME": "www", "XP_LEVEL_ENABLED": true, "PAYMENT_STRIPE_KEY": "pk_live_9JuTnQflh2YehcmzL45dHTQ4", "PAYMENT_PAYMENTWALL_URI": "https://api-www.kgoma.com/v1/payment/paymentwall/", "PAYMENT_URI": "https://api-www.kgoma.com/v1/payment/", "GOOGLE_RECAPTCHA_V3_SITE_KEY": "6LfebYsUAAAAACpXcBjLBbP2U109NCagVJ3sFnn1", "GOOGLE_ANALYTICS_GA4_ID": "G-EELXW7F2HT", "VIDEO_TUTORIAL_ENABLED": false, "FORUM_LINK_ENABLED": false};
                  options.bootstrap = {{ object_data | tojson | safe }};
                  options.breadcrumb = {{ breadcrumb_data | safe }};
                  options.ERROR_DATA = {{ error_data | safe }};
@@ -307,8 +307,8 @@
              }
          </style>
     </head>
-     <body id="root-page-mobile">
-         <div id="root"><div style="color:#888;padding:40px;text-align:center;font-family:sans-serif">Loading...</div></div>
+      <body id="root-page-mobile">
+          <div id="root"></div>
        <div id="kg-standalone-banner" class="kg-standalone-banner">
           <button class="kg-standalone-banner__close" type="button" aria-label="Close">&times;</button>
           <div class="kg-standalone-banner__inner">
@@ -421,32 +421,39 @@
               }
            }
         });
-        function replaceTextInNode(node) {
-           if (node.nodeType === 3) {
-              if (node.textContent.includes('KoGaMa')) {
-                 node.textContent = node.textContent.replace(/KoGaMa/g, 'KaGaMa');
-              }
-              if (node.textContent.includes('support@kogama.com')) {
-                 node.textContent = node.textContent.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz');
-              }
-           } else if (node.nodeType === 1) {
-              const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
-              let textNode;
-              while (textNode = walker.nextNode()) {
-                 if (textNode.textContent.includes('KoGaMa')) {
-                    textNode.textContent = textNode.textContent.replace(/KoGaMa/g, 'KaGaMa');
-                 }
-                 if (textNode.textContent.includes('support@kogama.com')) {
-                    textNode.textContent = textNode.textContent.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz');
-                 }
-              }
-           }
-        }
-         textReplaceObserver.observe(document.body, { childList: true, subtree: true });
-         // One-time initial pass over existing text nodes only (no full * scan).
-         (function initialTextPass() {
-            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-            let textNode;
+         function replaceTextInNode(node) {
+            if (node.nodeType === 3) {
+               if (node.textContent.includes('KoGaMa')) {
+                  node.textContent = node.textContent.replace(/KoGaMa/g, 'KaGaMa');
+               }
+               if (node.textContent.includes('support@kogama.com')) {
+                  node.textContent = node.textContent.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz');
+               }
+            } else if (node.nodeType === 1) {
+               // alt/title/aria-label attributes (e.g. logo alt="KoGaMa")
+               ['alt', 'title', 'aria-label'].forEach(function(attr) {
+                  var v = node.getAttribute && node.getAttribute(attr);
+                  if (v && v.includes('KoGaMa')) node.setAttribute(attr, v.replace(/KoGaMa/g, 'KaGaMa'));
+                  if (v && v.includes('support@kogama.com')) node.setAttribute(attr, v.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz'));
+               });
+               const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+               let textNode;
+               while (textNode = walker.nextNode()) {
+                  if (textNode.textContent.includes('KoGaMa')) {
+                     textNode.textContent = textNode.textContent.replace(/KoGaMa/g, 'KaGaMa');
+                  }
+                  if (textNode.textContent.includes('support@kogama.com')) {
+                     textNode.textContent = textNode.textContent.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz');
+                  }
+               }
+            }
+         }
+         // Full pass over the whole document (text + alt/title/aria-label) for
+         // late-rendered content such as login/signup modals that open on click
+         // (after the mutation observer has already disconnected).
+         function replaceAllText() {
+            var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+            var textNode;
             while (textNode = walker.nextNode()) {
                if (textNode.textContent.includes('KoGaMa')) {
                   textNode.textContent = textNode.textContent.replace(/KoGaMa/g, 'KaGaMa');
@@ -455,8 +462,25 @@
                   textNode.textContent = textNode.textContent.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz');
                }
             }
-         })();
-         setTimeout(function() { textReplaceObserver.disconnect(); }, 3000);
+            var all = document.querySelectorAll('[alt],[title],[aria-label]');
+            for (var i = 0; i < all.length; i++) {
+               ['alt', 'title', 'aria-label'].forEach(function(attr) {
+                  var v = all[i].getAttribute(attr);
+                  if (v && v.includes('KoGaMa')) all[i].setAttribute(attr, v.replace(/KoGaMa/g, 'KaGaMa'));
+                  if (v && v.includes('support@kogama.com')) all[i].setAttribute(attr, v.replace(/support@kogama.com/g, 'Rupert@playkagama.xyz'));
+               });
+            }
+         }
+         textReplaceObserver.observe(document.body, { childList: true, subtree: true });
+         replaceAllText();
+         // Bounded re-run for late modals: every 5s for first 30s, plus when the
+         // tab becomes visible again. Mutation observer still disconnects early.
+         var _brandTimer = setInterval(function() { replaceAllText(); }, 5000);
+         setTimeout(function() { clearInterval(_brandTimer); }, 30000);
+         document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) replaceAllText();
+         });
+         setTimeout(function() { textReplaceObserver.disconnect(); }, 5000);
         </script>
        <style>
           .footer-social-links {
@@ -800,20 +824,23 @@
                 }
              }
 
-             // ---- WS6 / banner: broken image safety net (avatars, kogstatic, archive, discord) ----
-             function attachImgFallback() {
-                if (window.__kgImgFallbackBound) return;
-                window.__kgImgFallbackBound = true;
-                document.addEventListener('error', function(e) {
-                   var el = e.target;
-                   if (el && el.tagName === 'IMG') {
-                      var src = el.getAttribute('src') || '';
-                        if (!el.dataset.kgFallback && !el.classList.contains('eq7_m')) {
-                         el.dataset.kgFallback = '1';
-                         el.src = DEFAULT_AVATAR;
-                         if (el.srcset) el.srcset = '';
-                      }
-                   }
+              // ---- WS6 / banner: broken image safety net (avatars, kogstatic, archive, discord) ----
+              // Only swap images from known-dead domains; never paint a logo or
+              // gold-icon as the generic avatar SVG.
+              function attachImgFallback() {
+                 if (window.__kgImgFallbackBound) return;
+                 window.__kgImgFallbackBound = true;
+                 document.addEventListener('error', function(e) {
+                    var el = e.target;
+                    if (el && el.tagName === 'IMG') {
+                       var src = el.getAttribute('src') || '';
+                         var knownDead = /kogstatic|web\.archive\.org|discordapp/.test(src);
+                         if (!el.dataset.kgFallback && !el.classList.contains('eq7_m') && knownDead) {
+                          el.dataset.kgFallback = '1';
+                          el.src = DEFAULT_AVATAR;
+                          if (el.srcset) el.srcset = '';
+                       }
+                    }
                 }, true);
              }
 
