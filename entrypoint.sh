@@ -1,11 +1,31 @@
 #!/bin/sh
-echo "Starting KaGaMa backend..."
+set -e
+echo "=== KaGaMa Backend Starting ==="
 echo "PORT=$PORT"
-python -c "import flask; print(f'Flask {flask.__version__}')"
-python -c "import flask_sqlalchemy; print('flask_sqlalchemy OK')"
-python -c "import flask_login; print('flask_login OK')"
-python -c "import flask_limiter; print('flask_limiter OK')"
-python -c "import flask_mail; print('flask_mail OK')"
-python -c "import gunicorn; print(f'gunicorn {gunicorn.__version__}')"
-echo "All imports OK, starting gunicorn..."
-exec gunicorn flask_app:app --bind 0.0.0.0:${PORT:-8000} --timeout 120 --log-level info
+echo "Python: $(python --version 2>&1)"
+
+# Test basic imports first
+python -c "import flask; print(f'Flask {flask.__version__}')" 2>&1 || echo "IMPORT FAIL: flask"
+python -c "import flask_sqlalchemy" 2>&1 || echo "IMPORT FAIL: flask_sqlalchemy"
+python -c "import flask_login" 2>&1 || echo "IMPORT FAIL: flask_login"
+python -c "import flask_limiter" 2>&1 || echo "IMPORT FAIL: flask_limiter"
+python -c "import flask_mail" 2>&1 || echo "IMPORT FAIL: flask_mail"
+python -c "import flask_wtf" 2>&1 || echo "IMPORT FAIL: flask_wtf"
+python -c "import gunicorn" 2>&1 || echo "IMPORT FAIL: gunicorn"
+python -c "import requests" 2>&1 || echo "IMPORT FAIL: requests"
+
+echo "=== Imports done, testing flask_app import ==="
+python -c "
+import sys
+try:
+    import flask_app
+    print('flask_app imported OK')
+except Exception as e:
+    print(f'flask_app IMPORT ERROR: {e}')
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)
+" 2>&1
+
+echo "=== Starting gunicorn ==="
+exec gunicorn flask_app:app --bind 0.0.0.0:${PORT:-8000} --timeout 120 --log-level debug --access-logfile - --error-logfile -
