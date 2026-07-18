@@ -996,10 +996,71 @@
 
            /* Initial check + periodic fallback (no forever interval — observer
               already covers DOM changes; extra timers are one-shot only) */
-           setTimeout(runBadgeAnimChecks, 1000);
-           setTimeout(runBadgeAnimChecks, 3000);
+            setTimeout(runBadgeAnimChecks, 1000);
+            setTimeout(runBadgeAnimChecks, 3000);
+         })();
+        </script>
+        <script>
+        // Fix: a SPA widget renders a CSS gradient value as a visible text node
+        // (e.g. <div>linear-gradient(45deg, ...)</div>). Relocate that value onto the
+        // parent element's backgroundImage so it renders as the intended background,
+        // and clear the stray text. Component-agnostic and safe for legitimate text.
+        (function() {
+          function extractGradient(text) {
+            var start = text.indexOf('linear-gradient(');
+            if (start === -1) return null;
+            var i = start + 'linear-gradient('.length - 1; // index of first '('
+            var depth = 0, inStr = false, end = -1;
+            for (; i < text.length; i++) {
+              var ch = text[i];
+              if (ch === "'" || ch === '"') { inStr = !inStr; continue; }
+              if (inStr) continue;
+              if (ch === '(') depth++;
+              else if (ch === ')') { depth--; if (depth === 0) { end = i; break; } }
+            }
+            if (end === -1) return null;
+            return text.substring(start, end + 1);
+          }
+          function fixNode(textNode) {
+            if (!textNode || textNode.nodeType !== 3) return;
+            var txt = textNode.textContent || '';
+            if (txt.indexOf('linear-gradient(') === -1) return;
+            var grad = extractGradient(txt);
+            if (!grad) return;
+            var parent = textNode.parentNode;
+            if (!parent || !parent.style) return;
+            var tag = (parent.tagName || '').toUpperCase();
+            if (tag === 'BODY' || tag === 'HTML' || parent.id === 'root' || parent === document.body) return;
+            try {
+              if (!parent.style.backgroundImage) parent.style.backgroundImage = grad;
+              if (txt.trim() === grad) parent.removeChild(textNode);
+              else textNode.textContent = txt.replace(grad, '');
+            } catch (e) {}
+          }
+          function fixAll(root) {
+            if (!root) return;
+            var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            var nodes = [], n;
+            while (n = walker.nextNode()) nodes.push(n);
+            for (var k = 0; k < nodes.length; k++) fixNode(nodes[k]);
+          }
+          fixAll(document.body);
+          if (window.MutationObserver) {
+            var go = new MutationObserver(function(mutations) {
+              for (var m = 0; m < mutations.length; m++) {
+                var added = mutations[m].addedNodes;
+                for (var a = 0; a < added.length; a++) {
+                  var node = added[a];
+                  if (node.nodeType === 3) fixNode(node);
+                  else if (node.nodeType === 1) fixAll(node);
+                }
+              }
+            });
+            go.observe(document.body, { childList: true, subtree: true });
+            setTimeout(function() { try { go.disconnect(); } catch (e) {} }, 60000);
+          }
         })();
-       </script>
-       </body>
+        </script>
+        </body>
 </html>
 
