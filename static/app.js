@@ -61,7 +61,7 @@ if (!self.__WB_pmw) {
             }
             ,
             8681: (e, t, a) => {
-                e.exports = "/static/img/gold-coin.svg"
+                e.exports = "https://playskagama.pythonanywhere.com/static/img/gold-coin.svg"
             }
             ,
             6215: (e, t, a) => {
@@ -89,7 +89,7 @@ if (!self.__WB_pmw) {
             }
             ,
             1435: (e, t, a) => {
-                e.exports = a.p + "7df61fddf9821feaf58453a0cebf8f28.svg"
+                e.exports = "https://playskagama.pythonanywhere.com/static/img/gold-coin.svg"
             }
             ,
             8170: (e, t, a) => {
