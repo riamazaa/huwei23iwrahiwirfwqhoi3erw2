@@ -57,7 +57,7 @@
       "label": "Kogama Players"
     },
     {
-      "src": "/static/img/screenshots/screenshot4.webp",
+        "src": "/static/img/screenshots/screenshot3.jpg",
       "sizes": "1920x1080",
       "type": "image/webp",
       "platform": "wide",
@@ -79,7 +79,7 @@
   ],
   "protocol_handlers": [
     {
-      "protocol": "web+kogama2-www",
+        "protocol": "web+kogama",
       "url": "/games/play/%s?standalone=1"
     }
   ]
