@@ -1,22 +1,4 @@
-var _____WB$wombat$assign$function_____ = function(name) {
-    return (self._wb_wombat && self._wb_wombat.local_init && self._wb_wombat.local_init(name)) || self[name];
-};
-if (!self.__WB_pmw) {
-    self.__WB_pmw = function(obj) {
-        this.__WB_source = obj;
-        return this;
-    }
-}
-{
-    let window = _____WB$wombat$assign$function_____("window");
-    let self = _____WB$wombat$assign$function_____("self");
-    let document = _____WB$wombat$assign$function_____("document");
-    let location = _____WB$wombat$assign$function_____("location");
-    let top = _____WB$wombat$assign$function_____("top");
-    let parent = _____WB$wombat$assign$function_____("parent");
-    let frames = _____WB$wombat$assign$function_____("frames");
-    let opens = _____WB$wombat$assign$function_____("opens");
-    var kogamaApp;
+var kogamaApp;
     console.log("Loading... ", "app.js"),
     ( () => {
         var e, t, a = {
@@ -61,7 +43,7 @@ if (!self.__WB_pmw) {
             }
             ,
             8681: (e, t, a) => {
-                e.exports = a.p + "d8d0c409a16489800ffb50008620b118.svg"
+                e.exports = "/static/img/gold-coin.svg"
             }
             ,
             6215: (e, t, a) => {
@@ -89881,7 +89863,8 @@ if (!self.__WB_pmw) {
             }
             ));
             function z6(e) {
-                var t = e.data
+                var t = e && e.data;
+                if (!t) return null;
                   , a = e.t;
                 return WD().locale(xS.language),
                 vn.createElement("div", {
@@ -117107,4 +117090,3 @@ if (!self.__WB_pmw) {
     )(),
     console.log("Loaded: ", "app.js"),
     jsLoadedCallback();
-}

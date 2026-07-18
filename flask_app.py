@@ -1430,6 +1430,8 @@ def check_current_user_ban():
 
 @app.after_request
 def rewrite_archive_urls(response):
+    if request.path.startswith('/static/'):
+        return response
     ct = response.content_type or ''
     if 'text/html' not in ct:
         return response
@@ -9105,6 +9107,29 @@ def ensure_admin_roles():
             u.role = 'mod'
             db.session.commit()
 
+def ensure_ronman_alt():
+    user = User.query.filter(User.username.ilike('RonmanAlt')).first()
+    if not user:
+        print('[init] RonmanAlt not found - skipping elite/framer grant')
+        return
+    changed = False
+    if user.role != 'elite':
+        user.role = 'elite'
+        changed = True
+    badge = Badge.query.filter_by(name='Framer').first()
+    if not badge:
+        badge = Badge(name='Framer', icon_url='', rarity='rare', is_exclusive=True)
+        db.session.add(badge)
+        db.session.flush()
+    has = UserBadge.query.filter_by(user_id=user.id, badge_id=badge.id).first()
+    if not has:
+        db.session.add(UserBadge(user_id=user.id, badge_id=badge.id, awarded_by=user.id, note='Framer status'))
+        changed = True
+    if changed:
+        db.session.commit()
+        print('[init] RonmanAlt granted elite role + Framer badge')
+
+
 def format_time_left(td):
     days = td.days
     hours = td.seconds // 3600
@@ -9125,6 +9150,7 @@ with app.app_context():
     migrate_reports_columns()
     reset_last_ping()
     ensure_admin_roles()
+    ensure_ronman_alt()
 
 START_TIME = datetime.now(timezone.utc)
 

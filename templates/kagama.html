@@ -39,23 +39,17 @@
              attachRootObserver();
              document.addEventListener('DOMContentLoaded', attachRootObserver);
           })();
-         window.onerror = function(msg, url, line, col, error) {
-           var info = {msg: msg, url: url, line: line, col: col, stack: error && error.stack, time: Date.now()};
-           window.__kgErrors.push(info);
-           var el = document.getElementById('root');
-           if (el && !el.hasChildNodes()) {
-             el.innerHTML = '<div style="color:white;padding:20px;font-family:monospace;background:#000;min-height:100vh"><h2>JS Error</h2><pre>' + msg + '\n' + url + ':' + line + ':' + col + (error ? '\n' + error.stack : '') + '</pre></div>';
-           }
-           return false;
-         };
-         window.addEventListener('unhandledrejection', function(e) {
-           var info = {type:'promise', msg: e.reason && (e.reason.stack || String(e.reason)), time: Date.now()};
-           window.__kgErrors.push(info);
-           var el = document.getElementById('root');
-           if (el && !el.hasChildNodes()) {
-             el.innerHTML = '<div style="color:white;padding:20px;font-family:monospace;background:#000;min-height:100vh"><h2>Promise Rejection</h2><pre>' + (e.reason && e.reason.stack || e.reason) + '</pre></div>';
-           }
-         });
+          window.onerror = function(msg, url, line, col, error) {
+            var info = {msg: msg, url: url, line: line, col: col, stack: error && error.stack, time: Date.now()};
+            window.__kgErrors.push(info);
+            console.error('[KaGaMa] JS Error:', msg, url + ':' + line + ':' + col, error);
+            return false;
+          };
+          window.addEventListener('unhandledrejection', function(e) {
+            var info = {type:'promise', msg: e.reason && (e.reason.stack || String(e.reason)), time: Date.now()};
+            window.__kgErrors.push(info);
+            console.error('[KaGaMa] Unhandled rejection:', e.reason);
+          });
          function jsLoadedCallback() {
              console.log('jsLoadedCallback');
              DOMReady(function() {
