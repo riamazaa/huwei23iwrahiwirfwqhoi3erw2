@@ -175,7 +175,7 @@ class User(UserMixin, db.Model):
     language = db.Column(db.String(150), default="en_US", nullable=False)
     notified_of_new_level = db.Column(db.Integer, default=0, nullable=False)
     location = db.Column(db.String(150), nullable=True)
-    last_ping = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    last_ping = db.Column(db.DateTime(timezone=True), default=datetime.utcnow, nullable=False)
     is_banned = db.Column(db.Boolean, default=False)
     ban_expires = db.Column(db.DateTime, nullable=True)
     ban_reason = db.Column(db.String(255), nullable=True)
@@ -574,19 +574,19 @@ class User(UserMixin, db.Model):
     def pulse_status(self):
         now = datetime.now(timezone.utc)
         last_ping = self.last_ping
+        if last_ping is None:
+            return 1
         if last_ping.tzinfo is None:
             last_ping = last_ping.replace(tzinfo=timezone.utc)
         time_difference = now - last_ping
         if time_difference < timedelta(seconds=5):
             return 2
-        else:
-            self.location = None
-            return 1
+        return 1
     # TTL cache for leaderboard rank (the single most expensive call on the
     # profile page: it used to load + sort the ENTIRE User table). Rank only
     # changes when someone gains XP, so a short TTL is safe.
     _RANK_CACHE = {}
-    _RANK_TTL = 60.0
+    _RANK_TTL = 300.0
 
     @property
     def rank(self):
@@ -3850,7 +3850,9 @@ def profile(user_id):
         user_language = current_user.language
     if not user:
         abort(404)
-    friend_rel = current_user.is_authenticated and db.session.query(Friend).filter(or_(and_(Friend.profile_id == current_user.id, Friend.friend_profile_id == user.id), and_(Friend.profile_id == user.id, Friend.friend_profile_id == current_user.id))).first()
+    friend_rel = None
+    if current_user.is_authenticated:
+        friend_rel = db.session.query(Friend).filter(or_(and_(Friend.profile_id == current_user.id, Friend.friend_profile_id == user.id), and_(Friend.profile_id == user.id, Friend.friend_profile_id == current_user.id))).first()
     object_data = {
        "object":{
           "gold":user.gold,
@@ -4007,10 +4009,7 @@ def profile(user_id):
        }
     }
     if current_user.is_authenticated:
-        if current_user.id != user.id and db.session.query(Friend).filter(or_(and_(Friend.profile_id == current_user.id, Friend.friend_profile_id == user.id, Friend.friend_status == "accepted"), and_(Friend.profile_id == user.id, Friend.friend_profile_id == current_user.id, Friend.friend_status == "accepted"))).first():
-            object_data["is_friend"] = True
-        else:
-            object_data["is_friend"] = False
+        object_data["is_friend"] = (current_user.id != user.id and friend_rel is not None and friend_rel.friend_status == "accepted")
         object_data["current_user"] = {
             "gold": current_user.gold,
             "is_child": _safe_is_child(current_user.birthdate),
@@ -9085,12 +9084,13 @@ def reset_last_ping():
     # Make "online" count + last-seen real.
     # Accounts that never logged in -> last_ping epoch => SPA shows "Never seen".
     # Accounts that did log in -> backfill last_ping from last_login (real last-seen).
-    epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
+    # NOTE: Use naive UTC datetimes — SQLite cannot handle tz-aware datetimes in raw SQL.
+    epoch = datetime(1970, 1, 1)
     db.session.execute(text('UPDATE "user" SET last_ping = :e WHERE last_login IS NULL'), {'e': epoch})
     db.session.execute(text(
         'UPDATE "user" SET last_ping = last_login '
         'WHERE last_login IS NOT NULL AND last_ping <= :cutoff'
-    ), {'cutoff': datetime(1971, 1, 1, tzinfo=timezone.utc)})
+    ), {'cutoff': datetime(1971, 1, 1)})
     db.session.commit()
 
 

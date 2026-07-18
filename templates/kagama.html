@@ -2,6 +2,12 @@
 <html lang="en_US">
    <head>
       <script>
+         // Lazy-load images: add loading="lazy" once on DOMContentLoaded
+         document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('img:not([loading])').forEach(function(img) { img.setAttribute('loading', 'lazy'); });
+         });
+      </script>
+      <script>
          (window.kogama = (window.kogama || {})).MOBILE_WEBSITE = true;
          console.log('window.kogama defined');
          window.__kgErrors = [];
@@ -45,7 +51,7 @@
              DOMReady(function() {
                  console.log('DOMReady');
                  var _ = _ || ({ extend: Object.assign });
-                 var options = {"ADSENSE": true, "ADSENSE_GAMES_ENABLED": true, "ADSENSE_GAMES_TESTING_ENABLED": false, "ANALYTICS_ENABLED": true, "ANDROID_ENABLED": true, "ANDROID_STORE_LISTING_URL": "https://play.google.com/store/apps/details?id=com.multiverse.kogama", "AWAY_TIMEOUT": 300000, "CARRY_SERVICE_ENABLED": true, "CHAT_ENABLED": true, "CHAT_SERVICE_ENABLED": false, "COOKIE_POLICY_VERSION": 2, "EMBED_ENABLED": false, "LANGUAGE_DEFAULT": "en_US", "NOTIFY_SERVICE_ENABLED": true, "PING_SERVICE_ENABLED": false, "PUBLIC_DOMAIN_API": "https://api-www.kgoma.com", "PUBLIC_STATIC_URL_BASE": "/static/img", "PUBLIC_URL": "https://kagama-backend-production.up.railway.app", "RECAPTCHA_LOGIN_ENABLED": false, "REGION": "EU", "SESSION_LOCATOR_DOMAIN_API": null, "SESSION_LOCATOR_SERVICE_ENABLED": true, "USERNAME_CHANGE_GOLD_PRICE": 25, "WEBSITE_CODENAME": "www", "XP_LEVEL_ENABLED": true, "PAYMENT_STRIPE_KEY": "pk_live_9JuTnQflh2YehcmzL45dHTQ4", "PAYMENT_PAYMENTWALL_URI": "https://api-www.kgoma.com/v1/payment/paymentwall/", "PAYMENT_URI": "https://api-www.kgoma.com/v1/payment/", "GOOGLE_RECAPTCHA_V3_SITE_KEY": "6LfebYsUAAAAACpXcBjLBbP2U109NCagVJ3sFnn1", "GOOGLE_ANALYTICS_GA4_ID": "G-EELXW7F2HT", "VIDEO_TUTORIAL_ENABLED": false, "FORUM_LINK_ENABLED": false};
+                 var options = {"ADSENSE": true, "ADSENSE_GAMES_ENABLED": true, "ADSENSE_GAMES_TESTING_ENABLED": false, "ANALYTICS_ENABLED": true, "ANDROID_ENABLED": true, "ANDROID_STORE_LISTING_URL": "https://play.google.com/store/apps/details?id=com.multiverse.kogama", "AWAY_TIMEOUT": 300000, "CARRY_SERVICE_ENABLED": true, "CHAT_ENABLED": true, "CHAT_SERVICE_ENABLED": false, "COOKIE_POLICY_VERSION": 2, "EMBED_ENABLED": false, "LANGUAGE_DEFAULT": "en_US", "NOTIFY_SERVICE_ENABLED": true, "PING_SERVICE_ENABLED": false, "PUBLIC_DOMAIN_API": "https://api-www.kgoma.com", "PUBLIC_STATIC_URL_BASE": "/static/img", "PUBLIC_URL": "https://playskagama.pythonanywhere.com", "RECAPTCHA_LOGIN_ENABLED": false, "REGION": "EU", "SESSION_LOCATOR_DOMAIN_API": null, "SESSION_LOCATOR_SERVICE_ENABLED": true, "USERNAME_CHANGE_GOLD_PRICE": 25, "WEBSITE_CODENAME": "www", "XP_LEVEL_ENABLED": true, "PAYMENT_STRIPE_KEY": "pk_live_9JuTnQflh2YehcmzL45dHTQ4", "PAYMENT_PAYMENTWALL_URI": "https://api-www.kgoma.com/v1/payment/paymentwall/", "PAYMENT_URI": "https://api-www.kgoma.com/v1/payment/", "GOOGLE_RECAPTCHA_V3_SITE_KEY": "6LfebYsUAAAAACpXcBjLBbP2U109NCagVJ3sFnn1", "GOOGLE_ANALYTICS_GA4_ID": "G-EELXW7F2HT", "VIDEO_TUTORIAL_ENABLED": false, "FORUM_LINK_ENABLED": false};
                  options.bootstrap = {{ object_data | tojson | safe }};
                  options.breadcrumb = {{ breadcrumb_data | safe }};
                  options.ERROR_DATA = {{ error_data | safe }};
@@ -441,15 +447,16 @@
              }
           }
        });
-       kagamaObserver.observe(document.body, { childList: true, subtree: true });
-       rupertObserver.observe(document.body, { childList: true, subtree: true });
-       document.querySelectorAll('*').forEach(el => {
-          el.childNodes.forEach(n => {
-             if (n.nodeType === 3 && n.textContent.includes('KoGaMa')) {
-                n.textContent = n.textContent.replace(/KoGaMa/g, 'KaGaMa');
-             }
-          });
-       });
+        kagamaObserver.observe(document.body, { childList: true, subtree: true });
+        rupertObserver.observe(document.body, { childList: true, subtree: true });
+        document.querySelectorAll('*').forEach(el => {
+           el.childNodes.forEach(n => {
+              if (n.nodeType === 3 && n.textContent.includes('KoGaMa')) {
+                 n.textContent = n.textContent.replace(/KoGaMa/g, 'KaGaMa');
+              }
+           });
+        });
+        setTimeout(function() { kagamaObserver.disconnect(); rupertObserver.disconnect(); }, 3000);
        </script>
        <style>
           .footer-social-links {
@@ -503,9 +510,12 @@
                  }
               });
            }
-          var bannerObs = new MutationObserver(function() { replaceBannerImages(); });
-          bannerObs.observe(document.body, { childList: true, subtree: true });
-          replaceBannerImages();
+           var bannerObs = new MutationObserver(function() { 
+              replaceBannerImages(); 
+              bannerObs.disconnect();
+           });
+           bannerObs.observe(document.body, { childList: true, subtree: true });
+           replaceBannerImages();
        })();
        </script>
         <div style="position:fixed;bottom:20px;left:20px;z-index:9999;color:#666;font-size:11px;font-family:'Open Sans',sans-serif;">
@@ -624,16 +634,21 @@
                 }
              }
 
+             var _adminTimer = null;
              var observer = new MutationObserver(function() {
-                fixMarketplaceIcons();
-                injectAdminButton();
+                if (_adminTimer) return;
+                _adminTimer = setTimeout(function() {
+                   fixMarketplaceIcons();
+                   injectAdminButton();
+                   _adminTimer = null;
+                }, 500);
              });
              observer.observe(document.body, { childList: true, subtree: true });
              setTimeout(function() {
+                observer.disconnect();
                 fixMarketplaceIcons();
                 injectAdminButton();
-             }, 2000);
-              setTimeout(injectAdminButton, 5000);
+             }, 5000);
            })();
            </script>
 
@@ -668,12 +683,12 @@
                 article.innerHTML = '<div class="kg-terms-custom" id="kg-terms-root">' + TERMS_HTML + '</div>';
                 fixTrademark();
              }
-             var termsObs = new MutationObserver(function() { applyTerms(); });
-             termsObs.observe(document.body, { childList: true, subtree: true });
-             applyTerms();
-             setTimeout(applyTerms, 600);
-             setTimeout(applyTerms, 1500);
-             setTimeout(applyTerms, 3000);
+              var termsObs = new MutationObserver(function() { applyTerms(); });
+              termsObs.observe(document.body, { childList: true, subtree: true });
+              applyTerms();
+              setTimeout(applyTerms, 600);
+              setTimeout(applyTerms, 1500);
+              setTimeout(function() { termsObs.disconnect(); }, 3000);
           })();
            </script>
           <script>
@@ -803,15 +818,15 @@
              }
 
              function runAll() { setupInvitesBtn(); overrideLastSeen(); }
-             var obs = new MutationObserver(function() { runAll(); });
-             obs.observe(document.body, { childList: true, subtree: true });
-             attachImgFallback();
-             runAll();
-             setTimeout(runAll, 1500);
-             setTimeout(runAll, 4000);
+              var obs = new MutationObserver(function() { runAll(); });
+              obs.observe(document.body, { childList: true, subtree: true });
+              attachImgFallback();
+              runAll();
+              setTimeout(runAll, 1500);
+              setTimeout(function() { obs.disconnect(); }, 4000);
              setTimeout(function() { refreshInvites(); }, 2000);
-             setInterval(overrideLastSeen, 30000);
-             setInterval(refreshInvites, 20000);
+             setInterval(overrideLastSeen, 60000);
+             setInterval(refreshInvites, 60000);
           })();
            </script>
        <script>
@@ -926,7 +941,7 @@
              checkForBadgeClicks();
           }
 
-          /* Observe DOM changes */
+          /* Observe DOM changes — disconnect after 5s to avoid freezing */
           var observer = new MutationObserver(function() {
              runBadgeAnimChecks();
           });
@@ -934,6 +949,7 @@
           if (document.body) {
              observer.observe(document.body, { childList: true, subtree: true });
           }
+          setTimeout(function() { observer.disconnect(); }, 5000);
 
           /* Also intercept the close button for animated close */
           document.addEventListener('click', function(e) {
@@ -951,7 +967,7 @@
           /* Initial check + periodic fallback */
           setTimeout(runBadgeAnimChecks, 1000);
           setTimeout(runBadgeAnimChecks, 3000);
-          setInterval(runBadgeAnimChecks, 2000);
+          setInterval(runBadgeAnimChecks, 10000);
        })();
        </script>
        </body>
