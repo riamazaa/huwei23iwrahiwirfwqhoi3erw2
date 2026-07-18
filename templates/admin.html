@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Management - KaGaMa</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#1a1a2e; color:#e0e0e0; min-height:100vh; display:flex; }
+.sidebar { width:240px; background:#16213e; min-height:100vh; padding:0; position:fixed; top:0; left:0; z-index:100; transition:transform .3s; overflow-y:auto; }
+.sidebar-header { padding:20px 16px; border-bottom:1px solid #233554; display:flex; justify-content:space-between; align-items:center; }
+.sidebar-header h3 { color:#e94560; font-size:16px; font-weight:700; margin:0; }
+.sidebar-header .back-link { color:#888; font-size:12px; text-decoration:none; }
+.sidebar-header .back-link:hover { color:#fff; }
+.sidebar-nav { list-style:none; padding:8px 0; }
+.sidebar-nav li { padding:0; }
+.sidebar-nav li a { display:flex; align-items:center; gap:10px; padding:10px 16px; color:#aaa; text-decoration:none; font-size:13px; transition:all .2s; border-left:3px solid transparent; }
+.sidebar-nav li a:hover { background:#1a1a3e; color:#fff; }
+.sidebar-nav li a.active { background:#1a1a3e; color:#e94560; border-left-color:#e94560; }
+.sidebar-nav li a i { width:18px; text-align:center; font-size:14px; }
+.sidebar-nav .nav-section { padding:16px 16px 6px; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:#555; font-weight:600; }
+.main-content { margin-left:240px; flex:1; padding:24px; min-height:100vh; }
+.page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:8px; }
+.page-header h1 { font-size:28px; font-weight:300; color:#fff; margin:0; }
+.stat-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:24px; }
+.stat-card { background:#16213e; border-radius:8px; padding:20px; border:1px solid #233554; }
+.stat-card .stat-value { font-size:32px; font-weight:700; color:#fff; }
+.stat-card .stat-label { font-size:12px; color:#888; margin-top:4px; }
+.panel { background:#16213e; border-radius:8px; border:1px solid #233554; padding:20px; margin-bottom:20px; }
+.panel h3 { color:#fff; font-size:16px; font-weight:600; margin-bottom:16px; }
+.form-control, .form-select { background:#0f3460; border:1px solid #233554; color:#e0e0e0; font-size:13px; }
+.form-control:focus, .form-select:focus { background:#0f3460; color:#fff; border-color:#e94560; box-shadow:0 0 0 .2rem rgba(233,69,96,.25); }
+.form-control::placeholder { color:#666; }
+.btn-admin { background:#e94560; border:none; color:#fff; padding:8px 20px; border-radius:4px; font-size:13px; font-weight:600; cursor:pointer; transition:background .2s; }
+.btn-admin:hover { background:#c73a52; color:#fff; }
+.btn-secondary-admin { background:#233554; border:1px solid #333; color:#e0e0e0; padding:8px 20px; border-radius:4px; font-size:13px; cursor:pointer; }
+.btn-secondary-admin:hover { background:#2d4a6f; color:#fff; }
+.btn-green { background:#35b24a; border:none; color:#fff; }
+.btn-green:hover { background:#2a9140; color:#fff; }
+.btn-blue { background:#2196f3; border:none; color:#fff; }
+.btn-blue:hover { background:#1976d2; color:#fff; }
+.btn-orange { background:#ff9800; border:none; color:#fff; }
+.btn-orange:hover { background:#f57c00; color:#fff; }
+.btn-red { background:#e94560; border:none; color:#fff; }
+.btn-red:hover { background:#c73a52; color:#fff; }
+.btn-sm { padding:4px 10px !important; font-size:12px !important; border-radius:4px; }
+table { width:100%; border-collapse:collapse; }
+table th { background:#0f3460; color:#aaa; font-size:11px; text-transform:uppercase; letter-spacing:.5px; padding:10px 12px; text-align:left; font-weight:600; }
+table td { padding:10px 12px; border-bottom:1px solid #233554; font-size:13px; color:#ccc; vertical-align:top; }
+table tr:hover { background:#1a1a3e; }
+.badge-role { padding:3px 8px; border-radius:3px; font-size:11px; font-weight:600; }
+.badge-owner { background:#9c27b0; color:#fff; }
+.badge-admin { background:#e94560; color:#fff; }
+.badge-mod { background:#ff9800; color:#fff; }
+.badge-staff { background:#2196f3; color:#fff; }
+.badge-user { background:#555; color:#ccc; }
+.page { display:none; }
+.page.active { display:block; }
+.pagination { display:flex; gap:4px; margin-top:16px; flex-wrap:wrap; }
+.pagination button { background:#233554; border:1px solid #333; color:#ccc; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; }
+.pagination button:hover { background:#2d4a6f; color:#fff; }
+.pagination button.active { background:#e94560; border-color:#e94560; color:#fff; }
+.pagination button:disabled { opacity:.4; cursor:default; }
+.alert-banner { background:#0f3460; border:1px solid #233554; border-radius:8px; padding:16px; margin-bottom:20px; }
+.no-data { text-align:center; padding:40px; color:#666; font-size:14px; }
+.status-dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; }
+.status-ok { background:#35b24a; }
+.status-err { background:#e94560; }
+.tabs { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
+.tab-btn { background:#233554; border:1px solid #333; color:#ccc; padding:8px 16px; border-radius:4px; cursor:pointer; font-size:13px; }
+.tab-btn.active { background:#e94560; border-color:#e94560; color:#fff; }
+.modal-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.7); z-index:1000; overflow:auto; }
+.modal-box { max-width:760px; margin:40px auto; background:#16213e; border:1px solid #233554; border-radius:8px; padding:24px; }
+pre.notes { white-space:pre-wrap; background:#0f3460; border:1px solid #233554; border-radius:6px; padding:12px; font-size:12px; color:#bbb; max-height:200px; overflow:auto; }
+.kv { font-size:13px; }
+.kv span { color:#888; }
+@media(max-width:768px) {
+    .sidebar { transform:translateX(-100%); }
+    .sidebar.open { transform:translateX(0); }
+    .main-content { margin-left:0; }
+    .mobile-toggle { display:block !important; }
+}
+.mobile-toggle { display:none; position:fixed; top:12px; left:12px; z-index:200; background:#e94560; border:none; color:#fff; padding:8px 12px; border-radius:4px; cursor:pointer; }
+.action-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+</style>
+</head>
+<body>
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h3>Management</h3>
+        <a href="/" class="back-link">Back to KaGaMa</a>
+    </div>
+    <ul class="sidebar-nav">
+        <li><a href="#" class="active" onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="#" onclick="showPage('players')"><i class="fas fa-users"></i> Players</a></li>
+        <li><a href="#" onclick="showPage('chatlogs')"><i class="fas fa-comments"></i> Chat Logs</a></li>
+        <li><a href="#" onclick="showPage('textposts')"><i class="fas fa-file-alt"></i> Text Posts</a></li>
+        <li><a href="#" onclick="showPage('banlogs')"><i class="fas fa-ban"></i> Ban Logs</a></li>
+        <div class="nav-section">Content</div>
+        <li><a href="#" onclick="showPage('news')"><i class="fas fa-newspaper"></i> News</a></li>
+        <div class="nav-section">Reports &amp; Moderation</div>
+        <li><a href="#" onclick="showPage('reports')"><i class="fas fa-flag"></i> Reports</a></li>
+        <li><a href="#" onclick="showPage('moderate')"><i class="fas fa-gavel"></i> Moderate User</a></li>
+        <li><a href="#" onclick="showPage('modactions')"><i class="fas fa-history"></i> Moderation Log</a></li>
+        <div class="nav-section">Security</div>
+        <li><a href="#" onclick="showPage('security')"><i class="fas fa-shield-alt"></i> Security Center</a></li>
+        <div class="nav-section">Tools</div>
+        <li><a href="#" onclick="showPage('giftall')"><i class="fas fa-gift"></i> Gift All Users</a></li>
+        <li><a href="#" onclick="showPage('featureflags')"><i class="fas fa-flag"></i> Feature Flags</a></li>
+        <li><a href="#" onclick="showPage('rerender')"><i class="fas fa-sync"></i> Force Item Re-Render</a></li>
+    </ul>
+</div>
+
+<div class="main-content">
+    <!-- DASHBOARD -->
+    <div id="page-dashboard" class="page active">
+        <div class="page-header"><h1>Dashboard</h1><span id="dash-server" class="stat-label"></span></div>
+        <div class="stat-cards">
+            <div class="stat-card"><div class="stat-value" id="stat-total">-</div><div class="stat-label">Total Users</div></div>
+            <div class="stat-card"><div class="stat-value" id="stat-online">-</div><div class="stat-label">Online / In-Game</div></div>
+            <div class="stat-card"><div class="stat-value" id="stat-signups">-</div><div class="stat-label">Signups (Hour / Day)</div></div>
+            <div class="stat-card"><div class="stat-value" id="stat-reports">-</div><div class="stat-label">Open Reports</div></div>
+            <div class="stat-card"><div class="stat-value" id="stat-banned">-</div><div class="stat-label">Banned Users</div></div>
+            <div class="stat-card"><div class="stat-value" id="stat-uptime">-</div><div class="stat-label">Uptime</div></div>
+        </div>
+        <div class="panel">
+            <h3>System Status</h3>
+            <div class="kv">Server: <span id="sys-server">-</span></div>
+            <div class="kv">Database: <span id="sys-db">-</span></div>
+            <div class="kv">Started: <span id="sys-start">-</span></div>
+        </div>
+        <div class="panel">
+            <h3>Recent Activity</h3>
+            <table><thead><tr><th>Time</th><th>Action</th><th>By</th><th>Target</th><th>Details</th></tr></thead><tbody id="dash-activity"></tbody></table>
+            <div id="dash-activity-empty" class="no-data">No activity yet</div>
+        </div>
+        <div class="panel">
+            <h3>Latest Reports</h3>
+            <table><thead><tr><th>#</th><th>Reported</th><th>By</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead><tbody id="dash-reports"></tbody></table>
+            <div id="dash-reports-empty" class="no-data">No reports</div>
+        </div>
+    </div>
+
+    <!-- PLAYERS -->
+    <div id="page-players" class="page">
+        <div class="page-header"><h1>Players</h1></div>
+        <div class="panel">
+            <div class="d-flex gap-3 flex-wrap align-items-end">
+                <div><label class="form-label" style="font-size:11px;color:#888">SORT</label><select id="p-sort" class="form-select"><option value="ASC">ASC</option><option value="DESC">DESC</option></select></div>
+                <div><label class="form-label" style="font-size:11px;color:#888">SORT COLUMN</label><select id="p-sortcol" class="form-select"><option value="id">ID</option><option value="username">Username</option><option value="gold">Gold</option><option value="_level">Level</option><option value="created">Created</option></select></div>
+                <div><label class="form-label" style="font-size:11px;color:#888">LIMIT</label><select id="p-limit" class="form-select"><option value="10">10</option><option value="25" selected>25</option><option value="50">50</option><option value="100">100</option></select></div>
+                <div style="flex:1;min-width:200px"><label class="form-label" style="font-size:11px;color:#888">SEARCH USERNAME</label><input type="text" id="p-search" class="form-control" placeholder="Search..." onkeydown="if(event.key==='Enter')loadPlayers(1)"></div>
+                <button class="btn-blue" onclick="loadPlayers(1)"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        <div class="panel"><table><thead><tr><th>ID</th><th>Username</th><th>Role</th><th>Gold</th><th>Level</th><th>Created</th><th>Actions</th></tr></thead><tbody id="players-tbody"></tbody></table></div>
+        <div class="pagination" id="players-pagination"></div>
+    </div>
+
+    <!-- CHAT LOGS -->
+    <div id="page-chatlogs" class="page">
+        <div class="page-header"><h1>Chat Logs</h1></div>
+        <div class="panel">
+            <div class="d-flex gap-3 flex-wrap align-items-end">
+                <div style="flex:1;min-width:200px"><label class="form-label" style="font-size:11px;color:#888">USER ID</label><input type="number" id="cl-userid" class="form-control" placeholder="Filter by user ID..." onkeydown="if(event.key==='Enter')loadChatLogs(1)"></div>
+                <button class="btn-blue" onclick="loadChatLogs(1)"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        <div class="panel"><table><thead><tr><th>#</th><th>From</th><th>To</th><th>Message</th><th>Date</th></tr></thead><tbody id="chatlogs-tbody"></tbody></table></div>
+        <div class="pagination" id="chatlogs-pagination"></div>
+    </div>
+
+    <!-- TEXT POSTS -->
+    <div id="page-textposts" class="page">
+        <div class="page-header"><h1>Text Posts</h1><div class="d-flex gap-2"><button class="btn-green" onclick="loadTextPosts(1)"><i class="fas fa-sync"></i> Reset</button></div></div>
+        <div class="panel"><table><thead><tr><th>#</th><th>Title</th><th>Post</th><th>User</th><th>Date</th></tr></thead><tbody id="textposts-tbody"></tbody></table></div>
+        <div class="pagination" id="textposts-pagination"></div>
+    </div>
+
+    <!-- BAN LOGS -->
+    <div id="page-banlogs" class="page">
+        <div class="page-header"><h1>Ban Logs</h1></div>
+        <div class="panel"><table><thead><tr><th>#</th><th>UserID</th><th>Username</th><th>Reason</th><th>Expires</th></tr></thead><tbody id="banlogs-tbody"></tbody></table></div>
+        <div class="pagination" id="banlogs-pagination"></div>
+    </div>
+
+    <!-- REPORTS -->
+    <div id="page-reports" class="page">
+        <div class="page-header"><h1>Reports</h1></div>
+        <div class="panel">
+            <div class="d-flex gap-3 flex-wrap align-items-end">
+                <div><label class="form-label" style="font-size:11px;color:#888">STATUS</label><select id="r-status" class="form-select"><option value="all">All</option><option value="pending">Pending</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option><option value="archived">Archived</option></select></div>
+                <div style="flex:1;min-width:200px"><label class="form-label" style="font-size:11px;color:#888">SEARCH (REPORTED / REPORTER / DETAILS)</label><input type="text" id="r-search" class="form-control" placeholder="Search..." onkeydown="if(event.key==='Enter')loadReports(1)"></div>
+                <button class="btn-blue" onclick="loadReports(1)"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        <div class="panel"><table><thead><tr><th>#</th><th>Reported</th><th>By</th><th>Category</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="reports-tbody"></tbody></table></div>
+        <div class="pagination" id="reports-pagination"></div>
+    </div>
+
+    <!-- MODERATE USER -->
+    <div id="page-moderate" class="page">
+        <div class="page-header"><h1>Moderate User</h1></div>
+        <div class="panel">
+            <div class="d-flex gap-3 flex-wrap align-items-end">
+                <div style="flex:1;min-width:240px"><label class="form-label" style="font-size:11px;color:#888">FIND USER (USERNAME OR ID)</label><input type="text" id="m-search" class="form-control" placeholder="Search..." onkeydown="if(event.key==='Enter')findUser()"></div>
+                <button class="btn-blue" onclick="findUser()"><i class="fas fa-search"></i> Find</button>
+            </div>
+        </div>
+        <div id="m-target-panel" style="display:none">
+            <div class="panel">
+                <h3 id="m-target-name">User</h3>
+                <div class="kv" id="m-target-info"></div>
+                <div class="action-grid" style="margin-top:16px">
+                    <button class="btn-red" onclick="moderate('ban')"><i class="fas fa-ban"></i> Ban (perm)</button>
+                    <button class="btn-green" onclick="moderate('unban')"><i class="fas fa-undo"></i> Unban</button>
+                    <button class="btn-orange" onclick="moderate('mute')"><i class="fas fa-comment-slash"></i> Mute 24h</button>
+                    <button class="btn-green" onclick="moderate('unmute')"><i class="fas fa-comment"></i> Unmute</button>
+                    <button class="btn-orange" onclick="moderate('warn')"><i class="fas fa-exclamation-triangle"></i> Warn</button>
+                    <button class="btn-blue" onclick="moderate('remove_warning')"><i class="fas fa-check"></i> Remove Warning</button>
+                    <button class="btn-red" onclick="moderate('shadow_ban')"><i class="fas fa-eye-slash"></i> Shadow Ban</button>
+                    <button class="btn-green" onclick="moderate('shadow_unban')"><i class="fas fa-eye"></i> Unshadow</button>
+                    <button class="btn-orange" onclick="moderate('lock')"><i class="fas fa-lock"></i> Lock</button>
+                    <button class="btn-green" onclick="moderate('unlock')"><i class="fas fa-unlock"></i> Unlock</button>
+                    <button class="btn-orange" onclick="moderate('suspend')"><i class="fas fa-pause"></i> Suspend</button>
+                    <button class="btn-green" onclick="moderate('unsuspend')"><i class="fas fa-play"></i> Unsuspend</button>
+                    <button class="btn-blue" onclick="moderate('reset_password')"><i class="fas fa-key"></i> Reset Password</button>
+                    <button class="btn-red" onclick="moderate('force_logout')"><i class="fas fa-sign-out-alt"></i> Force Logout</button>
+                </div>
+                <div id="m-result" style="margin-top:12px;font-size:13px"></div>
+            </div>
+            <div class="panel">
+                <h3>Moderation Notes</h3>
+                <pre class="notes" id="m-notes">No notes</pre>
+                <div class="d-flex gap-2" style="margin-top:10px">
+                    <input type="text" id="m-note-input" class="form-control" placeholder="Add a note..." onkeydown="if(event.key==='Enter')addNote()">
+                    <button class="btn-blue" onclick="addNote()"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+            <div class="panel">
+                <h3>Moderation History</h3>
+                <table><thead><tr><th>Time</th><th>Action</th><th>By</th><th>Reason</th></tr></thead><tbody id="m-history"></tbody></table>
+                <div id="m-history-empty" class="no-data">No moderation actions</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODERATION LOG -->
+    <div id="page-modactions" class="page">
+        <div class="page-header"><h1>Moderation Log</h1></div>
+        <div class="panel"><table><thead><tr><th>#</th><th>Time</th><th>Kind</th><th>Subject</th><th>Detail</th><th>By</th></tr></thead><tbody id="modactions-tbody"></tbody></table></div>
+        <div class="pagination" id="modactions-pagination"></div>
+    </div>
+
+    <!-- SECURITY CENTER -->
+    <div id="page-security" class="page">
+        <div class="page-header"><h1>Security Center</h1></div>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="setSecTab('audit',this)">Audit Log</button>
+            <button class="tab-btn" onclick="setSecTab('groups',this)">Permission Groups</button>
+            <button class="tab-btn" onclick="setSecTab('sessions',this)">Login Sessions</button>
+        </div>
+        <div id="sec-audit" class="panel">
+            <div class="d-flex gap-3 flex-wrap align-items-end" style="margin-bottom:12px">
+                <div style="flex:1;min-width:200px"><label class="form-label" style="font-size:11px;color:#888">FILTER ACTION (e.g. ban, user_edit)</label><input type="text" id="sec-audit-action" class="form-control" placeholder="All actions" onkeydown="if(event.key==='Enter')loadAudit(1)"></div>
+                <button class="btn-blue" onclick="loadAudit(1)"><i class="fas fa-search"></i> Search</button>
+            </div>
+            <table><thead><tr><th>#</th><th>Time</th><th>Action</th><th>Actor</th><th>Target</th><th>Details</th></tr></thead><tbody id="audit-tbody"></tbody></table>
+            <div class="pagination" id="audit-pagination"></div>
+        </div>
+        <div id="sec-groups" class="panel" style="display:none">
+            <h3>Staff Permission Groups</h3>
+            <div class="d-flex gap-2" style="margin-bottom:16px">
+                <input type="text" id="grp-name" class="form-control" style="max-width:250px" placeholder="Group name">
+                <input type="text" id="grp-perms" class="form-control" placeholder="Comma-separated permissions">
+                <button class="btn-green" onclick="createGroup()"><i class="fas fa-plus"></i> Create</button>
+            </div>
+            <table><thead><tr><th>#</th><th>Name</th><th>Permissions</th><th>Actions</th></tr></thead><tbody id="groups-tbody"></tbody></table>
+        </div>
+        <div id="sec-sessions" class="panel" style="display:none">
+            <table><thead><tr><th>#</th><th>Time</th><th>User</th><th>IP</th><th>Success</th><th>User Agent</th></tr></thead><tbody id="sessions-tbody"></tbody></table>
+            <div class="pagination" id="sessions-pagination"></div>
+        </div>
+    </div>
+
+    <!-- GIFT ALL USERS -->
+    <div id="page-giftall" class="page">
+        <div class="page-header"><h1>Gift All Users</h1></div>
+        <div class="panel">
+            <h3>Send Gold to All Users</h3>
+            <div class="d-flex gap-3 align-items-end" style="max-width:400px">
+                <div style="flex:1"><label class="form-label" style="font-size:11px;color:#888">GOLD AMOUNT</label><input type="number" id="gift-amount" class="form-control" value="100" min="1"></div>
+                <button class="btn-green" onclick="giftAll()"><i class="fas fa-gift"></i> Gift</button>
+            </div>
+            <div id="gift-result" style="margin-top:12px;font-size:13px"></div>
+        </div>
+    </div>
+
+    <!-- FEATURE FLAGS -->
+    <div id="page-featureflags" class="page">
+        <div class="page-header"><h1>Feature Flags</h1></div>
+        <div class="panel no-data">Feature flag management coming soon.</div>
+    </div>
+
+    <!-- FORCE ITEM RE-RENDER -->
+    <div id="page-rerender" class="page">
+        <div class="page-header"><h1>Force Item Re-Render</h1></div>
+        <div class="panel">
+            <h3>Re-render Items</h3>
+            <p style="color:#888;font-size:13px;margin-bottom:16px">Trigger a re-render of cached item images across the site.</p>
+            <button class="btn-orange" onclick="forceRerender()"><i class="fas fa-sync"></i> Force Re-Render</button>
+            <div id="rerender-result" style="margin-top:12px;font-size:13px"></div>
+        </div>
+    </div>
+
+    <!-- NEWS MANAGEMENT -->
+    <div id="page-news" class="page">
+        <div class="page-header">
+            <h1>News Management</h1>
+            <button class="btn-admin" onclick="openNewsModal()"><i class="fas fa-plus"></i> Create News Post</button>
+        </div>
+        <div class="panel">
+            <div class="d-flex gap-2 flex-wrap">
+                <button class="btn-secondary-admin news-filter active" data-status="all" onclick="setNewsFilter('all',this)">All</button>
+                <button class="btn-secondary-admin news-filter" data-status="published" onclick="setNewsFilter('published',this)">Published</button>
+                <button class="btn-secondary-admin news-filter" data-status="draft" onclick="setNewsFilter('draft',this)">Drafts</button>
+                <button class="btn-secondary-admin news-filter" data-status="scheduled" onclick="setNewsFilter('scheduled',this)">Scheduled</button>
+                <button class="btn-secondary-admin news-filter" data-status="archived" onclick="setNewsFilter('archived',this)">Archived</button>
+            </div>
+        </div>
+        <div class="panel"><table><thead><tr><th>#</th><th>Image</th><th>Title</th><th>Author</th><th>Status</th><th>Published</th><th>Scheduled</th><th>Pinned</th><th>Actions</th></tr></thead><tbody id="news-tbody"></tbody></table></div>
+        <div class="pagination" id="news-pagination"></div>
+    </div>
+</div>
+
+<!-- NEWS MODAL -->
+<div id="news-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="page-header" style="margin-bottom:16px"><h1 id="news-modal-title" style="font-size:22px">Create News Post</h1><button class="btn-secondary-admin" onclick="closeNewsModal()">Close</button></div>
+        <input type="hidden" id="news-id">
+        <div class="mb-3"><label class="form-label" style="font-size:12px;color:#888">TITLE</label><input type="text" id="news-title" class="form-control" placeholder="News title"></div>
+        <div class="mb-3"><label class="form-label" style="font-size:12px;color:#888">EXCERPT (SHORT SUMMARY)</label><input type="text" id="news-excerpt" class="form-control" placeholder="Short summary shown in listings"></div>
+        <div class="mb-3"><label class="form-label" style="font-size:12px;color:#888">BODY (HTML)</label><div id="news-editor" style="background:#fff;min-height:200px"></div></div>
+        <div class="mb-3"><label class="form-label" style="font-size:12px;color:#888">FEATURED IMAGE URLS (ONE PER LINE)</label><textarea id="news-images" class="form-control" rows="2" placeholder="https://example.com/img1.png"></textarea></div>
+        <div class="mb-3"><label class="form-label" style="font-size:12px;color:#888">SUPPORT IMAGE URL (SINGLE HERO IMAGE)</label><input type="text" id="news-support-image" class="form-control" placeholder="https://example.com/hero.png"></div>
+        <div class="row mb-3">
+            <div class="col"><label class="form-label" style="font-size:12px;color:#888">LANGUAGE</label><input type="text" id="news-language" class="form-control" value="en_US"></div>
+            <div class="col"><label class="form-label" style="font-size:12px;color:#888">SCHEDULE PUBLISH (OPTIONAL)</label><input type="datetime-local" id="news-schedule" class="form-control"></div>
+        </div>
+        <div class="d-flex gap-4 mb-3">
+            <div class="form-check"><input class="form-check-input" type="checkbox" id="news-published" checked><label class="form-check-label" style="font-size:12px;color:#ccc">Published</label></div>
+            <div class="form-check"><input class="form-check-input" type="checkbox" id="news-pinned"><label class="form-check-label" style="font-size:12px;color:#ccc">Pinned</label></div>
+            <div class="form-check"><input class="form-check-input" type="checkbox" id="news-archived"><label class="form-check-label" style="font-size:12px;color:#ccc">Archived</label></div>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn-green" onclick="saveNews()"><i class="fas fa-save"></i> Save</button>
+            <span id="news-modal-result" style="font-size:13px;align-self:center"></span>
+        </div>
+    </div>
+</div>
+
+<!-- REPORT DETAIL MODAL -->
+<div id="report-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="page-header" style="margin-bottom:16px"><h1 style="font-size:22px">Report #<span id="rep-id"></span></h1><button class="btn-secondary-admin" onclick="closeReportModal()">Close</button></div>
+        <div class="kv" id="rep-detail"></div>
+        <div class="panel" style="margin-top:16px">
+            <h3>Admin Note</h3>
+            <textarea id="rep-note" class="form-control" rows="3" placeholder="Internal note about this report..."></textarea>
+            <div class="form-check" style="margin-top:8px"><input class="form-check-input" type="checkbox" id="rep-contact"><label class="form-check-label" style="font-size:12px;color:#ccc">Mark as contacted reporter</label></div>
+            <div class="d-flex gap-2 flex-wrap mt-2">
+                <button class="btn-green" onclick="reportAction('note')"><i class="fas fa-save"></i> Save Note</button>
+                <button class="btn-blue" onclick="reportAction('status', 'accepted')"><i class="fas fa-check"></i> Mark Accepted</button>
+                <button class="btn-secondary-admin" onclick="reportAction('archive')"><i class="fas fa-archive"></i> Archive</button>
+                <button class="btn-red" onclick="reportAction('ban')"><i class="fas fa-ban"></i> Ban Reported User</button>
+            </div>
+            <div id="rep-result" style="margin-top:10px;font-size:13px"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+var API = '/api/admin';
+
+function showPage(name) {
+    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+    document.getElementById('page-' + name).classList.add('active');
+    document.querySelectorAll('.sidebar-nav a').forEach(function(a) { a.classList.remove('active'); });
+    if (typeof event !== 'undefined' && event.currentTarget) event.currentTarget.classList.add('active');
+    document.querySelector('.sidebar').classList.remove('open');
+    if (name === 'dashboard') loadStats();
+    if (name === 'players') loadPlayers(1);
+    if (name === 'chatlogs') loadChatLogs(1);
+    if (name === 'textposts') loadTextPosts(1);
+    if (name === 'banlogs') loadBanLogs(1);
+    if (name === 'news') loadNews(1);
+    if (name === 'reports') loadReports(1);
+    if (name === 'modactions') loadModActions(1);
+    if (name === 'security') loadAudit(1);
+    if (name === 'moderate') {} // lazy
+}
+
+function api(path) { return API + path; }
+
+function loadStats() {
+    fetch(api('/dashboard/')).then(function(r){return r.json()}).then(function(d) {
+        document.getElementById('stat-total').textContent = d.total_users;
+        document.getElementById('stat-online').textContent = d.online + ' / ' + d.in_game;
+        document.getElementById('stat-signups').textContent = d.new_today + ' / ' + (d.signups_day||0);
+        document.getElementById('stat-reports').textContent = d.open_reports;
+        document.getElementById('stat-banned').textContent = d.banned;
+        var up = d.uptime_seconds || 0;
+        var hrs = Math.floor(up/3600), mins = Math.floor((up%3600)/60);
+        document.getElementById('stat-uptime').textContent = hrs + 'h ' + mins + 'm';
+        document.getElementById('sys-server').innerHTML = (d.server_status==='ok'?'<span class="status-dot status-ok"></span>Operational':'<span class="status-dot status-err"></span>Down');
+        document.getElementById('sys-db').innerHTML = (d.db_status==='ok'?'<span class="status-dot status-ok"></span>Connected':'<span class="status-dot status-err"></span>Error');
+        document.getElementById('sys-start').textContent = (d.start_time||'').replace('T',' ').substring(0,19);
+        var act = document.getElementById('dash-activity');
+        if (d.recent_activity && d.recent_activity.length) {
+            document.getElementById('dash-activity-empty').style.display='none';
+            act.innerHTML = d.recent_activity.map(function(a){
+                return '<tr><td>'+(a.created||'').replace('T',' ').substring(0,19)+'</td><td>'+esc(a.action)+'</td><td>'+esc(a.actor_username||'-')+'</td><td>'+(a.target_type||'')+' #'+(a.target_id||'')+'</td><td>'+esc((a.details||'').substring(0,120))+'</td></tr>';
+            }).join('');
+        } else { document.getElementById('dash-activity-empty').style.display='block'; act.innerHTML=''; }
+        var rep = document.getElementById('dash-reports');
+        if (d.recent_reports && d.recent_reports.length) {
+            document.getElementById('dash-reports-empty').style.display='none';
+            rep.innerHTML = d.recent_reports.map(function(r){
+                return '<tr><td>'+r.id+'</td><td>'+esc(r.reported_username||'-')+'</td><td>'+esc(r.reporter_username||'-')+'</td><td>'+esc(r.report_type||'-')+'</td><td>'+esc(r.status||'pending')+'</td><td><button class="btn-blue btn-sm" onclick="openReport('+r.id+')">View</button></td></tr>';
+            }).join('');
+        } else { document.getElementById('dash-reports-empty').style.display='block'; rep.innerHTML=''; }
+    }).catch(function(){});
+}
+
+function loadPlayers(page) {
+    var sort = document.getElementById('p-sort').value;
+    var sortcol = document.getElementById('p-sortcol').value;
+    var limit = document.getElementById('p-limit').value;
+    var search = document.getElementById('p-search').value;
+    fetch(api('/users/?page=' + page + '&limit=' + limit + '&sort=' + sort + '&sort_column=' + sortcol + '&search=' + encodeURIComponent(search)))
+    .then(function(r){return r.json()}).then(function(d) {
+        var tbody = document.getElementById('players-tbody');
+        if (!d.data || d.data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="no-data">No players found</td></tr>'; return; }
+        tbody.innerHTML = d.data.map(function(u) {
+            var roleClass = 'badge-' + (u.role || 'user');
+            return '<tr><td>' + u.id + '</td><td>' + esc(u.username) + '</td><td><span class="badge-role ' + roleClass + '">' + (u.role || 'user') + '</span></td><td>' + (u.gold||0) + '</td><td>' + (u.level||1) + '</td><td>' + (u.created||'').split('T')[0] + '</td><td><select class="form-select form-select-sm" style="width:auto;display:inline-block;font-size:11px;padding:2px 6px" onchange="setRole(' + u.id + ',this.value)"><option value="user"' + (u.role==='user'?' selected':'') + '>User</option><option value="staff"' + (u.role==='staff'?' selected':'') + '>Staff</option><option value="mod"' + (u.role==='mod'?' selected':'') + '>Mod</option><option value="admin"' + (u.role==='admin'?' selected':'') + '>Admin</option></select> <button class="btn-blue btn-sm" onclick="showPage(\'moderate\');document.getElementById(\'m-search\').value=' + u.id + ';findUser()">Mod</button></td></tr>';
+        }).join('');
+        renderPagination('players', d.page, d.pages);
+    }).catch(function(){});
+}
+
+function setRole(userId, role) {
+    fetch(api('/user/' + userId + '/role/'), { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({role:role}) })
+    .then(function(r){return r.json()}).then(function(){loadPlayers(1)}).catch(function(){});
+}
+
+function loadChatLogs(page) {
+    var userid = document.getElementById('cl-userid').value;
+    var url = api('/chat-logs/?page=' + page + '&limit=50');
+    if (userid) url += '&user_id=' + userid;
+    fetch(url).then(function(r){return r.json()}).then(function(d) {
+        var tbody = document.getElementById('chatlogs-tbody');
+        if (!d.data || d.data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="no-data">No chat messages found</td></tr>'; return; }
+        tbody.innerHTML = d.data.map(function(m,i) {
+            return '<tr><td>' + ((page-1)*50+i+1) + '</td><td>' + esc(m.from_username) + ' (#' + m.from_profile_id + ')</td><td>#' + m.friend_profile_id + '</td><td>' + esc(m.message) + '</td><td>' + (m.created||'').replace('T',' ').substring(0,19) + '</td></tr>';
+        }).join('');
+        renderPagination('chatlogs', d.page, d.pages);
+    }).catch(function(){});
+}
+
+function loadTextPosts(page) {
+    fetch(api('/text-posts/?page=' + page + '&limit=20')).then(function(r){return r.json()}).then(function(d) {
+        var tbody = document.getElementById('textposts-tbody');
+        if (!d.data || d.data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="no-data">There are no posts to show</td></tr>'; return; }
+        tbody.innerHTML = d.data.map(function(p) {
+            return '<tr><td>' + p.id + '</td><td>' + esc(p.title) + '</td><td>' + esc((p.body||'').substring(0,80)) + '</td><td>#' + p.user_id + '</td><td>' + (p.created||'').split('T')[0] + '</td></tr>';
+        }).join('');
+        renderPagination('textposts', d.page, d.pages);
+    }).catch(function(){});
+}
+
+function loadBanLogs(page) {
+    fetch(api('/ban-logs/?page=' + page + '&limit=20')).then(function(r){return r.json()}).then(function(d) {
+        var tbody = document.getElementById('banlogs-tbody');
+        if (!d.data || d.data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="no-data">No ban logs found</td></tr>'; return; }
+        tbody.innerHTML = d.data.map(function(b,i) {
+            return '<tr><td>' + ((page-1)*20+i+1) + '</td><td>' + b.user_id + '</td><td>' + esc(b.username) + '</td><td>' + esc(b.ban_reason) + '</td><td>' + (b.ban_expires || 'Permanent') + '</td></tr>';
+        }).join('');
+        renderPagination('banlogs', d.page, d.pages);
+    }).catch(function(){});
+}
+
+/* REPORTS */
+function loadReports(page) {
+    var status = document.getElementById('r-status').value;
+    var search = document.getElementById('r-search').value;
+    var url = api('/reports/?page=' + page + '&limit=20&status=' + status + '&search=' + encodeURIComponent(search));
+    fetch(url).then(function(r){return r.json()}).then(function(d) {
+        var tbody = document.getElementById('reports-tbody');
+        if (!d.data || d.data.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="no-data">No reports found</td></tr>'; return; }
+        tbody.innerHTML = d.data.map(function(r) {
+            return '<tr><td>'+r.id+'</td><td>'+esc(r.reported_username||'-')+'</td><td>'+esc(r.reporter_username||'-')+'</td><td>'+esc(r.report_type||'-')+'</td><td>'+esc((r.reason||'').substring(0,40))+'</td><td>'+esc(r.status||'pending')+'</td><td>'+(r.created||'').replace('T',' ').substring(0,16)+'</td><td><button class="btn-blue btn-sm" onclick="openReport('+r.id+')">View</button></td></tr>';
+        }).join('');
+        renderPagination('reports', d.page, d.pages);
+    }).catch(function(){});
+}
+
+var currentReportedUsername = '-';
+function openReport(id) {
+    fetch(api('/reports/' + id + '/')).then(function(r){return r.json()}).then(function(r) {
+        currentReportedUsername = r.reported_username || '-';
+        document.getElementById('rep-id').textContent = r.id;
+        document.getElementById('rep-detail').innerHTML = ''
+            + '<div><span>Reported:</span> ' + esc(r.reported_username||'-') + '</div>'
+            + '<div><span>Reporter:</span> ' + esc(r.reporter_username||'-') + '</div>'
+            + '<div><span>Category:</span> ' + esc(r.report_type||'-') + '</div>'
+            + '<div><span>Reason:</span> ' + esc(r.reason||'') + '</div>'
+            + '<div><span>Details:</span> ' + esc(r.details||'') + '</div>'
+            + '<div><span>Evidence:</span> ' + (r.evidence_url ? '<a href="'+esc(r.evidence_url)+'" target="_blank" style="color:#2196f3">link</a>' : '-') + '</div>'
+            + '<div><span>Status:</span> ' + esc(r.status||'pending') + '</div>'
+            + '<div><span>Current note:</span> ' + esc(r.admin_note||'') + '</div>';
+        document.getElementById('rep-note').value = r.admin_note || '';
+        document.getElementById('rep-contact').checked = !!r.contact_reporter;
+        document.getElementById('rep-result').textContent = '';
+        document.getElementById('report-modal').style.display = 'block';
+    }).catch(function(){});
+}
+function closeReportModal() { document.getElementById('report-modal').style.display = 'none'; }
+
+function reportAction(action, extra) {
+    var payload = { action: action };
+    if (action === 'note') { payload.note = document.getElementById('rep-note').value; payload.contact_reporter = document.getElementById('rep-contact').checked; }
+    if (action === 'status') { payload.status = extra; }
+    var id = document.getElementById('rep-id').textContent;
+    fetch(api('/reports/' + id + '/'), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+    .then(function(r){return r.json()}).then(function(d){
+        var msg = 'Updated. Status: ' + (d.status||'');
+        if (action === 'ban') { msg = 'Banned ' + esc(currentReportedUsername || 'user'); }
+        document.getElementById('rep-result').innerHTML = '<span style="color:#35b24a">' + msg + '</span>';
+        loadReports(1);
+    }).catch(function(){ document.getElementById('rep-result').innerHTML = '<span style="color:#e94560">Error</span>'; });
+}
+
+/* MODERATE USER */
+var modTargetId = null;
+function findUser() {
+    var q = document.getElementById('m-search').value.trim();
+    if (!q) return;
+    fetch(api('/users/?search=' + encodeURIComponent(q) + '&limit=10')).then(function(r){return r.json()}).then(function(d) {
+        if (!d.data || !d.data.length) { document.getElementById('m-target-panel').style.display='none'; alert('User not found'); return; }
+        var u = d.data[0];
+        modTargetId = u.id;
+        document.getElementById('m-target-panel').style.display='block';
+        document.getElementById('m-target-name').textContent = u.username + ' (#' + u.id + ')';
+        var flags = [];
+        if (u.is_banned) flags.push('Banned');
+        if (u.locked) flags.push('Locked');
+        if (u.suspended) flags.push('Suspended');
+        if (u.shadow_banned) flags.push('Shadow-banned');
+        document.getElementById('m-target-info').innerHTML = ''
+            + '<div><span>Role:</span> ' + esc(u.role||'user') + '</div>'
+            + '<div><span>Gold:</span> ' + (u.gold||0) + ' &nbsp; <span>Level:</span> ' + (u.level||1) + '</div>'
+            + '<div><span>Status flags:</span> ' + (flags.length?flags.join(', '):'None') + '</div>'
+            + '<div><span>Warnings:</span> ' + (u.warned_count||0) + '</div>';
+        loadNotes(u.id);
+        loadUserHistory(u.id);
+    }).catch(function(){});
+}
+
+function moderate(action) {
+    if (!modTargetId) return;
+    var payload = { action: action };
+    if (action === 'reset_password') {
+        var pw = prompt('Enter new password for this user:', 'changeme123');
+        if (!pw) return;
+        payload.new_password = pw;
+    }
+    if (action === 'ban') {
+        var dur = prompt('Ban duration in days (leave blank for permanent):', '');
+        if (dur && !isNaN(parseInt(dur))) payload.duration_days = parseInt(dur);
+    }
+    if (action === 'mute') {
+        var hrs = prompt('Mute duration in hours:', '24');
+        if (hrs && !isNaN(parseInt(hrs))) payload.hours = parseInt(hrs);
+    }
+    var reason = prompt('Reason / note for this action (optional):', '');
+    if (reason !== null) payload.reason = reason;
+    fetch(api('/users/' + modTargetId + '/moderate/'), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+    .then(function(r){return r.json()}).then(function(d){
+        if (d.error) { document.getElementById('m-result').innerHTML = '<span style="color:#e94560">'+esc(JSON.stringify(d.error))+'</span>'; return; }
+        document.getElementById('m-result').innerHTML = '<span style="color:#35b24a">Action \'' + action + '\' applied.</span>';
+        findUser();
+    }).catch(function(){ document.getElementById('m-result').innerHTML = '<span style="color:#e94560">Error</span>'; });
+}
+
+function loadNotes(id) {
+    fetch(api('/users/' + id + '/notes/')).then(function(r){return r.json()}).then(function(d){
+        document.getElementById('m-notes').textContent = d.notes || 'No notes';
+    }).catch(function(){});
+}
+function addNote() {
+    if (!modTargetId) return;
+    var note = document.getElementById('m-note-input').value.trim();
+    if (!note) return;
+    fetch(api('/users/' + modTargetId + '/notes/'), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({note:note}) })
+    .then(function(r){return r.json()}).then(function(d){ document.getElementById('m-notes').textContent = d.notes; document.getElementById('m-note-input').value=''; }).catch(function(){});
+}
+function loadUserHistory(id) {
+    fetch(api('/moderation/?user_id=' + id + '&limit=50')).then(function(r){return r.json()}).then(function(d){
+        var tbody = document.getElementById('m-history');
+        if (!d.data || !d.data.length) { document.getElementById('m-history-empty').style.display='block'; tbody.innerHTML=''; return; }
+        document.getElementById('m-history-empty').style.display='none';
+        tbody.innerHTML = d.data.map(function(a){
+            return '<tr><td>'+(a.created||'').replace('T',' ').substring(0,19)+'</td><td>'+esc(a.action_type)+'</td><td>'+esc(a.actor_username||'-')+'</td><td>'+esc(a.reason||'')+'</td></tr>';
+        }).join('');
+    }).catch(function(){});
+}
+
+/* MODERATION LOG */
+function loadModActions(page) {
+    fetch(api('/moderation-feed/?page=' + page + '&limit=50')).then(function(r){return r.json()}).then(function(d) {
+        var tbody = document.getElementById('modactions-tbody');
+        if (!d.data || !d.data.length) { tbody.innerHTML = '<tr><td colspan="6" class="no-data">No activity</td></tr>'; return; }
+        tbody.innerHTML = d.data.map(function(e) {
+            var time = (e.created||'').replace('T',' ').substring(0,19);
+            var kind = e.kind;
+            var subject = '-', detail = '-', by = '-';
+            if (kind === 'moderation') {
+                subject = esc(e.user_username||'-');
+                detail = esc(e.action_type||'') + (e.reason ? ' — ' + esc((e.reason||'').substring(0,40)) : '');
+                by = esc(e.actor_username||'-');
+            } else if (kind === 'report') {
+                subject = 'Reported: ' + esc(e.reported_username||'-');
+                detail = esc(e.report_type||'') + (e.status ? ' ('+esc(e.status)+')' : '');
+                by = 'Reporter: ' + esc(e.reporter_username||'-');
+            } else if (kind === 'chat') {
+                subject = esc(e.from_username||'-');
+                detail = esc((e.message||'').substring(0,60));
+                by = 'chat';
+            } else if (kind === 'feed_post') {
+                subject = esc(e.profile_username||'-');
+                detail = esc((e.body||'').substring(0,60));
+                by = 'post';
+            }
+            var badge = kind === 'report' ? 'style="color:#e94560"' : (kind === 'chat' ? 'style="color:#2196f3"' : (kind === 'feed_post' ? 'style="color:#35b24a"' : ''));
+            return '<tr><td>'+e.id+'</td><td>'+time+'</td><td '+badge+'>'+esc(kind)+'</td><td>'+subject+'</td><td>'+detail+'</td><td>'+by+'</td></tr>';
+        }).join('');
+        renderPagination('modactions', d.page, d.pages);
+    }).catch(function(){});
+}
+
+/* SECURITY CENTER */
+function setSecTab(tab, btn) {
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    document.getElementById('sec-audit').style.display = (tab==='audit')?'block':'none';
+    document.getElementById('sec-groups').style.display = (tab==='groups')?'block':'none';
+    document.getElementById('sec-sessions').style.display = (tab==='sessions')?'block':'none';
+    if (tab==='audit') loadAudit(1);
+    if (tab==='groups') loadGroups();
+    if (tab==='sessions') loadSessions(1);
+}
+function loadAudit(page) {
+    var action = document.getElementById('sec-audit-action').value;
+    var url = api('/audit/?page=' + page + '&limit=30' + (action?'&action='+encodeURIComponent(action):''));
+    fetch(url).then(function(r){return r.json()}).then(function(d) {
+        var tbody = document.getElementById('audit-tbody');
+        if (!d.data || !d.data.length) { tbody.innerHTML = '<tr><td colspan="6" class="no-data">No audit entries</td></tr>'; return; }
+        tbody.innerHTML = d.data.map(function(a) {
+            return '<tr><td>'+a.id+'</td><td>'+(a.created||'').replace('T',' ').substring(0,19)+'</td><td>'+esc(a.action)+'</td><td>'+esc(a.actor_username||'-')+'</td><td>'+(a.target_type||'')+' #'+(a.target_id||'')+'</td><td>'+esc((a.details||'').substring(0,120))+'</td></tr>';
+        }).join('');
+        renderPagination('audit', d.page, d.pages);
+    }).catch(function(){});
+}
+function loadGroups() {
+    fetch(api('/permission-groups/')).then(function(r){return r.json()}).then(function(groups) {
+        var tbody = document.getElementById('groups-tbody');
+        if (!groups.length) { tbody.innerHTML = '<tr><td colspan="4" class="no-data">No groups</td></tr>'; return; }
+        tbody.innerHTML = groups.map(function(g){
+            var p = g.permissions;
+            if (Array.isArray(p)) p = p.join(', ');
+            return '<tr><td>'+g.id+'</td><td>'+esc(g.name)+'</td><td>'+esc(p||'')+'</td><td><button class="btn-red btn-sm" onclick="deleteGroup('+g.id+')"><i class="fas fa-trash"></i></button></td></tr>';
+        }).join('');
+    }).catch(function(){});
+}
+function createGroup() {
+    var name = document.getElementById('grp-name').value.trim();
+    var permsRaw = document.getElementById('grp-perms').value.trim();
+    var perms = JSON.stringify(permsRaw ? permsRaw.split(',').map(function(s){return s.trim();}).filter(Boolean) : []);
+    if (!name) return;
+    fetch(api('/permission-groups/'), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name:name, permissions:perms}) })
+    .then(function(){ document.getElementById('grp-name').value=''; document.getElementById('grp-perms').value=''; loadGroups(); }).catch(function(){});
+}
+function deleteGroup(id) {
+    if (!confirm('Delete permission group #' + id + '?')) return;
+    fetch(api('/permission-groups/' + id + '/'), { method:'DELETE' }).then(function(){ loadGroups(); }).catch(function(){});
+}
+function loadSessions(page) {
+    fetch(api('/sessions/?page=' + page + '&limit=30')).then(function(r){return r.json()}).then(function(d) {
+        var tbody = document.getElementById('sessions-tbody');
+        if (!d.data || !d.data.length) { tbody.innerHTML = '<tr><td colspan="6" class="no-data">No login history</td></tr>'; return; }
+        tbody.innerHTML = d.data.map(function(l) {
+            return '<tr><td>'+l.id+'</td><td>'+(l.created||'').replace('T',' ').substring(0,19)+'</td><td>'+esc(l.username||'-')+'</td><td>'+esc(l.ip||'-')+'</td><td>'+(l.success?'<span style="color:#35b24a">Yes</span>':'<span style="color:#e94560">No</span>')+'</td><td>'+esc((l.user_agent||'').substring(0,50))+'</td></tr>';
+        }).join('');
+        renderPagination('sessions', d.page, d.pages);
+    }).catch(function(){});
+}
+
+function giftAll() {
+    var amount = parseInt(document.getElementById('gift-amount').value);
+    if (!amount || amount <= 0) return;
+    if (!confirm('Are you sure you want to gift ' + amount + ' gold to ALL users?')) return;
+    fetch(api('/gift-all/'), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({amount:amount}) })
+    .then(function(r){return r.json()}).then(function(d) {
+        document.getElementById('gift-result').innerHTML = '<span style="color:#35b24a">' + (d.message || d.error) + '</span>';
+    }).catch(function(){});
+}
+
+function forceRerender() {
+    fetch(api('/force-rerender/'), { method:'POST' }).then(function(r){return r.json()}).then(function(d) {
+        document.getElementById('rerender-result').innerHTML = '<span style="color:#35b24a">' + d.message + '</span>';
+    }).catch(function(){});
+}
+
+/* NEWS */
+var newsStatusFilter = 'all';
+var newsQuill = null;
+
+function setNewsFilter(status, btn) {
+    newsStatusFilter = status;
+    document.querySelectorAll('.news-filter').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    loadNews(1);
+}
+
+function loadNews(page) {
+    var url = api('/news/?page=' + page + '&limit=15');
+    if (newsStatusFilter !== 'all') url += '&status=' + newsStatusFilter;
+    fetch(url).then(function(r){return r.json()}).then(function(d) {
+        var tbody = document.getElementById('news-tbody');
+        if (!d.data || d.data.length === 0) { tbody.innerHTML = '<tr><td colspan="9" class="no-data">No news posts found</td></tr>'; return; }
+        tbody.innerHTML = d.data.map(function(n) {
+            var badge = newsBadge(n.status);
+            var pinned = n.is_pinned ? '<span style="color:#ff9800"><i class="fas fa-thumbtack"></i></span>' : '';
+            var imgSrc = n.support_image || (n.featured_images && n.featured_images[0] && n.featured_images[0].url) || '';
+            var thumb = imgSrc ? '<img src="' + esc(imgSrc) + '" style="width:48px;height:32px;object-fit:cover;border-radius:3px" onerror="this.style.display=\'none\'">' : '<span style="color:#555">-</span>';
+            var actions = '';
+            actions += '<button class="btn-blue btn-sm" style="margin-right:4px" onclick="openNewsModal(' + n.id + ')"><i class="fas fa-edit"></i></button>';
+            if (n.is_published) actions += '<button class="btn-orange btn-sm" style="margin-right:4px" onclick="newsToggle(' + n.id + ',\'unpublish\')"><i class="fas fa-eye-slash"></i></button>';
+            else actions += '<button class="btn-green btn-sm" style="margin-right:4px" onclick="newsToggle(' + n.id + ',\'publish\')"><i class="fas fa-eye"></i></button>';
+            if (n.is_pinned) actions += '<button class="btn-secondary-admin btn-sm" style="margin-right:4px" onclick="newsToggle(' + n.id + ',\'unpin\')"><i class="fas fa-thumbtack"></i></button>';
+            else actions += '<button class="btn-secondary-admin btn-sm" style="margin-right:4px" onclick="newsToggle(' + n.id + ',\'pin\')"><i class="fas fa-thumbtack"></i></button>';
+            if (n.is_archived) actions += '<button class="btn-secondary-admin btn-sm" style="margin-right:4px" onclick="newsToggle(' + n.id + ',\'unarchive\')"><i class="fas fa-box-open"></i></button>';
+            else actions += '<button class="btn-secondary-admin btn-sm" style="margin-right:4px" onclick="newsToggle(' + n.id + ',\'archive\')"><i class="fas fa-archive"></i></button>';
+            actions += '<button class="btn-red btn-sm" onclick="deleteNews(' + n.id + ')"><i class="fas fa-trash"></i></button>';
+            return '<tr><td>' + n.id + '</td><td>' + thumb + '</td><td>' + esc(n.title) + '</td><td>' + esc(n.profile_username) + '</td><td>' + badge + '</td><td>' + (n.published||'').replace('T',' ').substring(0,16) + '</td><td>' + (n.scheduled_publish_at ? n.scheduled_publish_at.replace('T',' ').substring(0,16) : '-') + '</td><td>' + pinned + '</td><td>' + actions + '</td></tr>';
+        }).join('');
+        renderPagination('news', d.page, d.pages);
+    }).catch(function(){});
+}
+
+function newsBadge(status) {
+    var map = {
+        'published': ['#35b24a', 'Published'],
+        'draft': ['#888', 'Draft'],
+        'scheduled': ['#2196f3', 'Scheduled'],
+        'archived': ['#555', 'Archived']
+    };
+    var m = map[status] || ['#555', status];
+    return '<span style="background:' + m[0] + ';color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600">' + m[1] + '</span>';
+}
+
+function initQuill() {
+    if (newsQuill) return;
+    newsQuill = new Quill('#news-editor', { theme: 'snow', modules: { toolbar: [
+        ['bold','italic','underline'],
+        [{ 'header': [1,2,3,false] }],
+        ['link','blockquote','image'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['clean']
+    ] } });
+}
+
+function openNewsModal(id) {
+    initQuill();
+    document.getElementById('news-modal-result').textContent = '';
+    if (id) {
+        document.getElementById('news-modal-title').textContent = 'Edit News Post';
+        fetch(api('/news/' + id + '/')).then(function(r){return r.json()}).then(function(n) {
+            document.getElementById('news-id').value = n.id;
+            document.getElementById('news-title').value = n.title || '';
+            document.getElementById('news-excerpt').value = n.excerpt || '';
+            newsQuill.root.innerHTML = n.body_html || '';
+            document.getElementById('news-images').value = (n.featured_images || []).map(function(i){return i.url || i;}).join('\n');
+            document.getElementById('news-language').value = n.language || 'en_US';
+            document.getElementById('news-schedule').value = n.scheduled_publish_at ? n.scheduled_publish_at.substring(0,16) : '';
+            document.getElementById('news-support-image').value = n.support_image || '';
+            document.getElementById('news-published').checked = n.is_published;
+            document.getElementById('news-pinned').checked = n.is_pinned;
+            document.getElementById('news-archived').checked = n.is_archived;
+        }).catch(function(){});
+    } else {
+        document.getElementById('news-modal-title').textContent = 'Create News Post';
+        document.getElementById('news-id').value = '';
+        document.getElementById('news-title').value = '';
+        document.getElementById('news-excerpt').value = '';
+        newsQuill.root.innerHTML = '';
+        document.getElementById('news-images').value = '';
+        document.getElementById('news-language').value = 'en_US';
+        document.getElementById('news-schedule').value = '';
+        document.getElementById('news-support-image').value = '';
+        document.getElementById('news-published').checked = true;
+        document.getElementById('news-pinned').checked = false;
+        document.getElementById('news-archived').checked = false;
+    }
+    document.getElementById('news-modal').style.display = 'block';
+}
+
+function closeNewsModal() { document.getElementById('news-modal').style.display = 'none'; }
+
+function saveNews() {
+    var id = document.getElementById('news-id').value;
+    var images = document.getElementById('news-images').value.split('\n').map(function(s){return s.trim();}).filter(function(s){return s.length;}).map(function(u){return {'url':u,'alt':'KaGaMa News'};});
+    var supportImage = document.getElementById('news-support-image').value.trim();
+    if (!images.length && supportImage) {
+        images = [{'url': supportImage, 'alt': 'KaGaMa News'}];
+    }
+    var schedule = document.getElementById('news-schedule').value;
+    var payload = {
+        title: document.getElementById('news-title').value,
+        excerpt: document.getElementById('news-excerpt').value,
+        body_html: newsQuill.root.innerHTML,
+        featured_images: images,
+        language: document.getElementById('news-language').value,
+        is_published: document.getElementById('news-published').checked,
+        is_pinned: document.getElementById('news-pinned').checked,
+        is_archived: document.getElementById('news-archived').checked,
+        scheduled_publish_at: schedule ? new Date(schedule).toISOString() : null,
+        support_image: document.getElementById('news-support-image').value.trim() || null
+    };
+    var method = id ? 'PUT' : 'POST';
+    var url = id ? api('/news/' + id + '/') : api('/news/');
+    fetch(url, { method: method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+    .then(function(r){return r.json()}).then(function(d) {
+        if (d.error) { document.getElementById('news-modal-result').innerHTML = '<span style="color:#e94560">' + esc(JSON.stringify(d.error)) + '</span>'; return; }
+        document.getElementById('news-modal-result').innerHTML = '<span style="color:#35b24a">Saved!</span>';
+        closeNewsModal();
+        loadNews(1);
+    }).catch(function(e){ document.getElementById('news-modal-result').innerHTML = '<span style="color:#e94560">Error saving</span>'; });
+}
+
+function deleteNews(id) {
+    if (!confirm('Delete news post #' + id + '? This cannot be undone.')) return;
+    fetch(api('/news/' + id + '/'), { method:'DELETE' }).then(function(){ loadNews(1); }).catch(function(){});
+}
+
+function newsToggle(id, action) {
+    fetch(api('/news/' + id + '/' + action + '/'), { method:'POST' }).then(function(){ loadNews(1); }).catch(function(){});
+}
+
+function renderPagination(section, current, total) {
+    var el = document.getElementById(section + '-pagination');
+    if (!el || total <= 1) { if(el) el.innerHTML = ''; return; }
+    var html = '';
+    if (current > 1) html += '<button onclick="load' + capitalize(section) + '(' + (current-1) + ')">Previous</button>';
+    for (var i = 1; i <= total; i++) {
+        if (i === current) html += '<button class="active">' + i + '</button>';
+        else if (Math.abs(i - current) < 3 || i === 1 || i === total) html += '<button onclick="load' + capitalize(section) + '(' + i + ')">' + i + '</button>';
+        else if (Math.abs(i - current) === 3) html += '<button disabled>...</button>';
+    }
+    if (current < total) html += '<button onclick="load' + capitalize(section) + '(' + (current+1) + ')">Next</button>';
+    el.innerHTML = html;
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function esc(s) { if (!s) return ''; var d = document.createElement('div'); d.appendChild(document.createTextNode(s)); return d.innerHTML; }
+
+loadStats();
+</script>
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+</body>
+</html>
