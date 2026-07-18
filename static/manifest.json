@@ -47,21 +47,21 @@
       "sizes": "1280x720",
       "type": "image/jpg",
       "platform": "wide",
-      "label": "Kogama Intro"
+      "label": "KaGaMa Intro"
     },
     {
       "src": "/static/img/screenshots/screenshot1.jpg",
       "sizes": "1920x1080",
       "type": "image/jpg",
       "platform": "wide",
-      "label": "Kogama Players"
+      "label": "KaGaMa Players"
     },
     {
         "src": "/static/img/screenshots/screenshot3.jpg",
       "sizes": "1920x1080",
       "type": "image/webp",
       "platform": "wide",
-      "label": "Kogama Game"
+      "label": "KaGaMa Game"
     }
   ],
   "related_applications": [

@@ -1586,7 +1586,7 @@ def home():
        "referrers": [
           {
              "referrer_id": 1,
-             "name": "Kogama",
+             "name": "Kagama",
              "codename": "kogama",
              "urls": ""
           },
@@ -1766,7 +1766,7 @@ def build_page():
        "referrers": [
           {
              "referrer_id": 1,
-             "name": "Kogama",
+             "name": "Kagama",
              "codename": "kogama",
              "urls": ""
           },
@@ -2108,7 +2108,7 @@ def build_avatar_page(user_id, avatar_id):
        "referrers":[
           {
              "referrer_id":1,
-             "name":"Kogama",
+             "name":"Kagama",
              "codename":"kogama",
              "urls":""
           },
@@ -2423,7 +2423,7 @@ def leaderboard_page():
         "category": None,
         "locale": user_language,
         "referrers": [
-            {"referrer_id": 1, "name": "Kogama", "codename": "kogama", "urls": ""},
+            {"referrer_id": 1, "name": "Kagama", "codename": "kogama", "urls": ""},
             {"referrer_id": 2, "name": "old_spilgames", "codename": "OldSpilGames", "urls": ""},
             {"referrer_id": 3, "name": "AdNPlay", "codename": "adnplay", "urls": ""},
             {"referrer_id": 4, "name": "GSM", "codename": "gsm", "urls": "games\\.poki\\.com|1001oyun\\.com|123pelit\\.com|gamesfreak\\.net|hrajhry\\.sk|jeuxjeuxjeux\\.ch|jeuxjeuxjeux\\.fr|megajatek\\.hu|megaspel\\.se|moiteigri\\.com|paisdelosjuegos\\.cl|paisdelosjuegos\\.co\\.ve|paisdelosjuegos\\.com\\.ar|paisdelosjuegos\\.com\\.co|paisdelosjuegos\\.com\\.do|paisdelosjuegos\\.com\\.ec|paisdelosjuegos\\.com\\.mx|paisdelosjuegos\\.com\\.pa|paisdelosjuegos\\.com\\.pe|paisdelosjuegos\\.com\\.uy|paisdelosjuegos\\.cr|paisdelosjuegos\\.es|poki\\.at|poki\\.be|poki\\.by|poki\\.cn|poki\\.co\\.il|poki\\.com|poki\\.com\\.br|poki\\.cz|poki\\.de|poki\\.dk|poki\\.gr|poki\\.it|poki\\.jp|poki\\.nl|poki\\.no|poki\\.pl|poki\\.pt|poki\\.ro|spielyeti\\.ch|trochoi\\.net"},
@@ -2537,7 +2537,7 @@ def news_page():
        "referrers": [
           {
              "referrer_id": 1,
-             "name": "Kogama",
+             "name": "Kagama",
              "codename": "kogama",
              "urls": ""
           },
@@ -2724,7 +2724,7 @@ def news_feed_page(news_id):
        "referrers":[
           {
              "referrer_id":1,
-             "name":"Kogama",
+             "name":"Kagama",
              "codename":"kogama",
              "urls":""
           },
@@ -3020,7 +3020,7 @@ def help_for_support():
         "referrers":[
           {
              "referrer_id":1,
-             "name":"Kogama",
+             "name":"Kagama",
              "codename":"kogama",
              "urls":""
           },
@@ -3173,7 +3173,7 @@ def help_for_support():
             "is_admin": current_user.role in ('admin', 'mod', 'staff'),
             "object_type_id": 1
         }
-    submenu_data = [{'url': '/help/support/', 'title': 'Support', 'key': 'support'}, {'url': '/help/privacy-policy/', 'title': 'Privacy Policy', 'key': 'privacy'}, {'url': '/help/terms-and-conditions/', 'title': 'Terms &amp; Conditions', 'key': 'terms_and_conditions'}, {'url': '/help/cookies/', 'title': 'Cookies', 'key': 'cookies'}, {'url': '/help/publishing/', 'title': 'KoGaMa Publishing', 'key': 'publishing'}]
+    submenu_data = [{'url': '/help/support/', 'title': 'Support', 'key': 'support'}, {'url': '/help/privacy-policy/', 'title': 'Privacy Policy', 'key': 'privacy'}, {'url': '/help/terms-and-conditions/', 'title': 'Terms &amp; Conditions', 'key': 'terms_and_conditions'}, {'url': '/help/cookies/', 'title': 'Cookies', 'key': 'cookies'}, {'url': '/help/publishing/', 'title': 'KaGaMa Publishing', 'key': 'publishing'}]
     return render_template('kagama.html', language=user_language, title=title, error_data="null", breadcrumb_data="null", submenu_data=submenu_data, object_data=object_data), 200
 
 @app.route('/help/privacy-policy/')
@@ -3189,7 +3189,7 @@ def help_for_privacy_policy():
        "referrers": [
           {
              "referrer_id": 1,
-             "name": "Kogama",
+             "name": "Kagama",
              "codename": "kogama",
              "urls": ""
           },
@@ -3341,7 +3341,7 @@ def help_for_privacy_policy():
             "is_admin": current_user.role in ('admin', 'mod', 'staff'),
             "object_type_id": 1
         }
-    submenu_data = [{'url': '/help/support/', 'title': 'Support', 'key': 'support'}, {'url': '/help/privacy-policy/', 'title': 'Privacy Policy', 'key': 'privacy'}, {'url': '/help/terms-and-conditions/', 'title': 'Terms &amp; Conditions', 'key': 'terms_and_conditions'}, {'url': '/help/cookies/', 'title': 'Cookies', 'key': 'cookies'}, {'url': '/help/publishing/', 'title': 'KoGaMa Publishing', 'key': 'publishing'}]
+    submenu_data = [{'url': '/help/support/', 'title': 'Support', 'key': 'support'}, {'url': '/help/privacy-policy/', 'title': 'Privacy Policy', 'key': 'privacy'}, {'url': '/help/terms-and-conditions/', 'title': 'Terms &amp; Conditions', 'key': 'terms_and_conditions'}, {'url': '/help/cookies/', 'title': 'Cookies', 'key': 'cookies'}, {'url': '/help/publishing/', 'title': 'KaGaMa Publishing', 'key': 'publishing'}]
     return render_template('kagama.html', language=user_language, title=title, error_data="null", breadcrumb_data="null", submenu_data=submenu_data, object_data=object_data), 200
 
 @app.route('/help/terms-and-conditions/')
@@ -3357,7 +3357,7 @@ def help_for_terms_and_conditions():
        "referrers": [
           {
              "referrer_id": 1,
-             "name": "Kogama",
+             "name": "Kagama",
              "codename": "kogama",
              "urls": ""
           },
@@ -3509,7 +3509,7 @@ def help_for_terms_and_conditions():
             "is_admin": current_user.role in ('admin', 'mod', 'staff'),
             "object_type_id": 1
         }
-    submenu_data = [{'url': '/help/support/', 'title': 'Support', 'key': 'support'}, {'url': '/help/privacy-policy/', 'title': 'Privacy Policy', 'key': 'privacy'}, {'url': '/help/terms-and-conditions/', 'title': 'Terms &amp; Conditions', 'key': 'terms_and_conditions'}, {'url': '/help/cookies/', 'title': 'Cookies', 'key': 'cookies'}, {'url': '/help/publishing/', 'title': 'KoGaMa Publishing', 'key': 'publishing'}]
+    submenu_data = [{'url': '/help/support/', 'title': 'Support', 'key': 'support'}, {'url': '/help/privacy-policy/', 'title': 'Privacy Policy', 'key': 'privacy'}, {'url': '/help/terms-and-conditions/', 'title': 'Terms &amp; Conditions', 'key': 'terms_and_conditions'}, {'url': '/help/cookies/', 'title': 'Cookies', 'key': 'cookies'}, {'url': '/help/publishing/', 'title': 'KaGaMa Publishing', 'key': 'publishing'}]
     return render_template('kagama.html', language=user_language, title=title, error_data="null", breadcrumb_data="null", submenu_data=submenu_data, object_data=object_data), 200
 
 @app.route('/help/cookies/')
@@ -3525,7 +3525,7 @@ def help_for_cookies():
        "referrers": [
           {
              "referrer_id": 1,
-             "name": "Kogama",
+             "name": "Kagama",
              "codename": "kogama",
              "urls": ""
           },
@@ -3677,7 +3677,7 @@ def help_for_cookies():
             "is_admin": current_user.role in ('admin', 'mod', 'staff'),
             "object_type_id": 1
         }
-    submenu_data = [{'url': '/help/support/', 'title': 'Support', 'key': 'support'}, {'url': '/help/privacy-policy/', 'title': 'Privacy Policy', 'key': 'privacy'}, {'url': '/help/terms-and-conditions/', 'title': 'Terms &amp; Conditions', 'key': 'terms_and_conditions'}, {'url': '/help/cookies/', 'title': 'Cookies', 'key': 'cookies'}, {'url': '/help/publishing/', 'title': 'KoGaMa Publishing', 'key': 'publishing'}]
+    submenu_data = [{'url': '/help/support/', 'title': 'Support', 'key': 'support'}, {'url': '/help/privacy-policy/', 'title': 'Privacy Policy', 'key': 'privacy'}, {'url': '/help/terms-and-conditions/', 'title': 'Terms &amp; Conditions', 'key': 'terms_and_conditions'}, {'url': '/help/cookies/', 'title': 'Cookies', 'key': 'cookies'}, {'url': '/help/publishing/', 'title': 'KaGaMa Publishing', 'key': 'publishing'}]
     return render_template('kagama.html', language=user_language, title=title, error_data="null", breadcrumb_data="null", submenu_data=submenu_data, object_data=object_data), 200
 
 @app.route('/help/publishing/')
@@ -3693,7 +3693,7 @@ def help_for_publishing():
        "referrers": [
           {
              "referrer_id": 1,
-             "name": "Kogama",
+             "name": "Kagama",
              "codename": "kogama",
              "urls": ""
           },
@@ -3845,7 +3845,7 @@ def help_for_publishing():
             "is_admin": current_user.role in ('admin', 'mod', 'staff'),
             "object_type_id": 1
         }
-    submenu_data = [{'url': '/help/support/', 'title': 'Support', 'key': 'support'}, {'url': '/help/privacy-policy/', 'title': 'Privacy Policy', 'key': 'privacy'}, {'url': '/help/terms-and-conditions/', 'title': 'Terms &amp; Conditions', 'key': 'terms_and_conditions'}, {'url': '/help/cookies/', 'title': 'Cookies', 'key': 'cookies'}, {'url': '/help/publishing/', 'title': 'KoGaMa Publishing', 'key': 'publishing'}];
+    submenu_data = [{'url': '/help/support/', 'title': 'Support', 'key': 'support'}, {'url': '/help/privacy-policy/', 'title': 'Privacy Policy', 'key': 'privacy'}, {'url': '/help/terms-and-conditions/', 'title': 'Terms &amp; Conditions', 'key': 'terms_and_conditions'}, {'url': '/help/cookies/', 'title': 'Cookies', 'key': 'cookies'}, {'url': '/help/publishing/', 'title': 'KaGaMa Publishing', 'key': 'publishing'}];
     return render_template('kagama.html', language=user_language, title=title, error_data="null", breadcrumb_data="null", submenu_data=submenu_data, object_data=object_data), 200
 
 @app.route('/profile/admin/')
@@ -3907,7 +3907,7 @@ def profile(user_id):
        "referrers":[
           {
              "referrer_id":1,
-             "name":"Kogama",
+             "name":"Kagama",
              "codename":"kogama",
              "urls":""
           },
@@ -4399,7 +4399,7 @@ def profile_friends(user_id):
         },
         "locale": user_language,
         "referrers": [
-            {"referrer_id": 1, "name": "Kogama", "codename": "kogama", "urls": ""},
+            {"referrer_id": 1, "name": "Kagama", "codename": "kogama", "urls": ""},
             {"referrer_id": 2, "name": "old_spilgames", "codename": "OldSpilGames", "urls": ""},
             {"referrer_id": 3, "name": "AdNPlay", "codename": "adnplay", "urls": ""},
             {"referrer_id": 4, "name": "GSM", "codename": "gsm", "urls": "games\\.poki\\.com|..."},
@@ -4521,7 +4521,7 @@ def profile_edit(user_id):
         },
       "locale": user_language,
       "referrers": [
-        {"referrer_id": 1, "name": "Kogama", "codename": "kogama", "urls": ""},
+        {"referrer_id": 1, "name": "Kagama", "codename": "kogama", "urls": ""},
         {"referrer_id": 2, "name": "old_spilgames", "codename": "OldSpilGames", "urls": ""},
         {"referrer_id": 3, "name": "AdNPlay", "codename": "adnplay", "urls": ""},
         {"referrer_id": 4, "name": "GSM", "codename": "gsm", "urls": "games\\.poki\\.com|..."},
@@ -4643,7 +4643,7 @@ def profile_username(user_id):
         },
       "locale": user_language,
       "referrers": [
-        {"referrer_id": 1, "name": "Kogama", "codename": "kogama", "urls": ""},
+        {"referrer_id": 1, "name": "Kagama", "codename": "kogama", "urls": ""},
         {"referrer_id": 2, "name": "old_spilgames", "codename": "OldSpilGames", "urls": ""},
         {"referrer_id": 3, "name": "AdNPlay", "codename": "adnplay", "urls": ""},
         {"referrer_id": 4, "name": "GSM", "codename": "gsm", "urls": "games\\.poki\\.com|..."},
@@ -5350,7 +5350,7 @@ def update_email(user_id):
             <p><a href="{{ confirm_url }}">Confirm your email</a></p>
             <p>If that doesn't work, copy and paste the following link in your browser:<br><a href="{{ confirm_url }}">{{ confirm_url }}</a> </p>
             <p>If you have any questions, just reply to this email—we're always happy to help out.</p>
-            <p>Cheers,<br><a href="https://helperskogama-hftp.pythonanywhere.com/help/?utm_source=base_email&utm_medium=email">Kogama Team</a></p>
+            <p>Cheers,<br><a href="https://helperskogama-hftp.pythonanywhere.com/help/?utm_source=base_email&utm_medium=email">Kagama Team</a></p>
          </div>
         </div>
         <img src="https://web.archive.org/web/20250930151609/https://static.kogstatic.com/0000/4114900ac15ce37670f850856bfaecdcb20d888d/a14cb897a5d8c2491ef23b513ba8e022.jpg" height="1" width="1" class="CToWUd" data-bit="iit" jslog="138226; u014N:xr6bB; 53:WzAsMl0.">
@@ -5393,7 +5393,7 @@ def email_confirm(user_id):
         <p><a href="{{ confirm_url }}">Confirm your email</a></p>
         <p>If that doesn't work, copy and paste the following link in your browser:<br><a href="{{ confirm_url }}">{{ confirm_url }}</a> </p>
         <p>If you have any questions, just reply to this email—we're always happy to help out.</p>
-        <p>Cheers,<br><a href="https://helperskogama-hftp.pythonanywhere.com/help/?utm_source=base_email&utm_medium=email">Kogama Team</a></p>
+        <p>Cheers,<br><a href="https://helperskogama-hftp.pythonanywhere.com/help/?utm_source=base_email&utm_medium=email">Kagama Team</a></p>
      </div>
     </div>
     <img src="https://web.archive.org/web/20250930151609/https://static.kogstatic.com/0000/4114900ac15ce37670f850856bfaecdcb20d888d/a14cb897a5d8c2491ef23b513ba8e022.jpg" height="1" width="1" class="CToWUd" data-bit="iit" jslog="138226; u014N:xr6bB; 53:WzAsMl0.">
@@ -7423,7 +7423,7 @@ def regions():
       "data": [
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "da_DK",
@@ -7431,7 +7431,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "de_DE",
@@ -7439,7 +7439,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "en_US",
@@ -7447,7 +7447,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "en_GB",
@@ -7455,7 +7455,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "es_ES",
@@ -7463,7 +7463,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "fi",
@@ -7471,7 +7471,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "fr_FR",
@@ -7479,7 +7479,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "id_ID",
@@ -7487,7 +7487,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "it_IT",
@@ -7495,7 +7495,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "nb_NO",
@@ -7503,7 +7503,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "nl_NL",
@@ -7511,7 +7511,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "pl_PL",
@@ -7519,7 +7519,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "pt",
@@ -7527,7 +7527,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "ru_RU",
@@ -7535,7 +7535,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "sv_SE",
@@ -7543,7 +7543,7 @@ def regions():
         },
         {
           "url": "https://helperskogama-hftp.pythonanywhere.com/",
-          "region_name": "Kogama",
+          "region_name": "Kagama",
           "region_key": "EU",
           "region_selected": True,
           "code": "tr_TR",
@@ -8047,7 +8047,7 @@ def _build_marketplace_object_data(user_language, category):
         "category": category,
         "locale": user_language,
         "referrers": [
-            {"referrer_id": 1, "name": "Kogama", "codename": "kogama", "urls": ""},
+            {"referrer_id": 1, "name": "Kagama", "codename": "kogama", "urls": ""},
             {"referrer_id": 2, "name": "old_spilgames", "codename": "OldSpilGames", "urls": ""},
             {"referrer_id": 3, "name": "AdNPlay", "codename": "adnplay", "urls": ""},
             {"referrer_id": 4, "name": "GSM", "codename": "gsm", "urls": "games\\.poki\\.com|..."},
@@ -8484,7 +8484,7 @@ def page_not_found(e):
        "referrers": [
           {
              "referrer_id": 1,
-             "name": "Kogama",
+             "name": "Kagama",
              "codename": "kogama",
              "urls": ""
           },
@@ -8653,7 +8653,7 @@ def unauthorized_attempt(e):
        "referrers": [
           {
              "referrer_id": 1,
-             "name": "Kogama",
+             "name": "Kagama",
              "codename": "kogama",
              "urls": ""
           },
@@ -8822,7 +8822,7 @@ def internal_server_error(e):
        "referrers": [
           {
              "referrer_id": 1,
-             "name": "Kogama",
+             "name": "Kagama",
              "codename": "kogama",
              "urls": ""
           },
@@ -9163,7 +9163,7 @@ with app.app_context():
 START_TIME = datetime.now(timezone.utc)
 
 # ==================================================
-#  KoGaMa LEADERBOARD SNAPSHOT CAPTURE (formerly _capture.py)
+#  KaGaMa LEADERBOARD SNAPSHOT CAPTURE (formerly _capture.py)
 #  Captures the archived kogama.com/leaderboard page via headless
 #  Chromium (Playwright) and saves a rendered HTML + screenshot into
 #  <project>/snapshot/leaderboard/.

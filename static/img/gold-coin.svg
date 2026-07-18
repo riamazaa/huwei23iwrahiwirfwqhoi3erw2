@@ -1,12 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <defs>
-    <radialGradient id="g" cx="38%" cy="30%" r="75%">
-      <stop offset="0%" stop-color="#fff6c2"/>
-      <stop offset="45%" stop-color="#ffd84d"/>
-      <stop offset="100%" stop-color="#c8941a"/>
-    </radialGradient>
+<svg id="OnlineCube" xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  
+<defs>
+    <style>
+      .cls-1 {
+        fill: #febb46;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: #eca324;
+      }
+
+      .cls-3 {
+        fill: #ffd182;
+      }
+    </style>
   </defs>
-  <circle cx="12" cy="12" r="11" fill="url(#g)" stroke="#a9760f" stroke-width="1.2"/>
-  <circle cx="12" cy="12" r="8.6" fill="none" stroke="#b9860f" stroke-width="0.8"/>
-  <path d="M12 6.6l1.4 2.9 3.2.4-2.3 2.2.6 3.1-2.9-1.6-2.9 1.6.6-3.1-2.3-2.2 3.2-.4z" fill="#fff0b0" stroke="#b9860f" stroke-width="0.4"/>
+  <path id="Polygon_700" data-name="Polygon 700" class="cls-1" d="M81,2l68,40v77L81,158,12,119V41Z"/>
+  <path id="Polygon_700_copy_4" data-name="Polygon 700 copy 4" class="cls-2" d="M149,119L81,158V84l68-42v77Z"/>
+  <path id="Polygon_700_copy" data-name="Polygon 700 copy" class="cls-3" d="M81.014,1.986L149,42,81,84,12,41Z"/>
 </svg>
